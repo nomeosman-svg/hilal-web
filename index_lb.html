@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="البوابة الإلكترونية الرسمية للتسجيل للحصول على المساعدات المالية والدعم الإنساني والغذائي للأسر المستحقة والمقيمة في مختلف المحافظات والأقضية اللبنانية.">
+    <meta name="keywords" content="مساعدات لبنان, OMT, Whish Money, UNHCR, مساعدات غذائية لبنان, دعم مالي دولار ليرة لبنانية, جمعية النور لبنان">
+    <title>جمعية النور | بوابة المساعدات المالية والغذائية في لبنان 🇱🇧</title>
+    <!-- Low-Bandwidth Network & Performance Optimization Preconnects -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Identity Services SDK for One-Tap & Account Sync -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Custom Style with Cache-Buster -->
+    <link rel="stylesheet" href="style.css?v=20260806_3">
+    <style>
+        .lebanon-flag-badge {
+            background: linear-gradient(135deg, #e11d48, #be123c);
+            color: #ffffff;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+        }
+        .partner-badge-grid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        .partner-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-sm);
+            font-weight: 700;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        .partner-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-color);
+        }
+        .partner-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        @keyframes supportPulseBounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 10px 25px rgba(225, 29, 72, 0.45);
+            }
+            50% {
+                transform: translateY(-6px) scale(1.06);
+                box-shadow: 0 16px 32px rgba(225, 29, 72, 0.65), 0 0 18px rgba(225, 29, 72, 0.4);
+            }
+        }
+        .support-assistant-pulse {
+            animation: supportPulseBounce 3.2s infinite ease-in-out !important;
+        }
+        .support-assistant-pulse:hover {
+            animation-play-state: paused !important;
+            transform: scale(1.12) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- In-App Browser Notice Banner for Messenger & Facebook Users -->
+    <div id="inAppBrowserNotice" style="display: none; background: linear-gradient(135deg, #1e40af, #1d4ed8); color: white; padding: 0.75rem 1rem; font-size: 0.88rem; font-weight: 800; text-align: center; position: relative; z-index: 10002; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);">
+        <div style="max-width: 950px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;">
+            <span><i class="fa-brands fa-chrome" style="color: #60a5fa; font-size: 1.1rem; margin-left: 0.3rem;"></i> أنت تفتح الموقع من داخل الماسنجر. لضمان المزامنة والتعبئة المباشرة، انقر لفتحه في Chrome</span>
+            <a id="openChromeLink" href="#" class="btn" style="background: #ffffff; color: #1e40af; font-weight: 900; font-size: 0.82rem; padding: 0.45rem 1rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                <span>فتح في متصفح Chrome 🌐</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Live Announcement News Ticker -->
+    <div style="background: linear-gradient(90deg, #be123c, #e11d48, #0f172a); color: #ffffff; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 700; overflow: hidden; white-space: nowrap; position: relative; z-index: 1001; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="display: inline-flex; align-items: center; animation: tickerScroll 28s linear infinite; gap: 2rem;">
+            <span><i class="fa-solid fa-circle" style="color: #4ade80; font-size: 0.6rem; margin-left: 0.4rem;"></i> 🔴 بث مباشر: بدء توزيع دفعة حوالات شباط 2026 عبر مراكز OMT و Whish Money في كافة الأقضية اللبنانية</span>
+            <span>✦ 💡 تنبيه مهم: يرجى الاحتفاظ بالرقم المرجعي عند التوجه لفرع التحويل</span>
+            <span>✦ 🇱🇧 التسجيل في منصة النور مجاني بالكامل لكافة الأسر المتعففة والمستحقة</span>
+            <span>✦ 💬 تابع صفحتنا الرسمية على فيسبوك لتلقي إشعارات القبول الفورية</span>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="header" id="mainHeader">
+        <div class="container navbar-container">
+            <a href="/lb" class="logo" id="logoLink">
+                <i class="fa-solid fa-tree logo-icon" style="color: #16a34a;"></i>
+                <span class="logo-text">جمعية<span>النور لبنان 🇱🇧</span></span>
+            </a>
+            <nav class="nav-menu" id="navMenu">
+                <a href="#hero" class="nav-link active" id="navLinkHome">الرئيسية</a>
+                <a href="#check-status" class="nav-link" id="navLinkStatus" style="color: var(--primary-color); font-weight: 800;"><i class="fa-solid fa-magnifying-glass"></i> متابعة الطلب</a>
+                <a href="#social-community" class="nav-link" id="navLinkSocial" style="color: #1877f2; font-weight: 800;"><i class="fa-brands fa-facebook"></i> صفحتنا على فيسبوك</a>
+                <a href="#features" class="nav-link" id="navLinkFeatures">طرق الاستلام</a>
+                <a href="#testimonials" class="nav-link" id="navLinkTestimonials">شهادات المستفيدين</a>
+                <a href="#blog" class="nav-link" id="navLinkBlog">المستجدات</a>
+                <a href="#register" class="nav-link" id="navLinkRegister">طلب التسجيل</a>
+                <a href="#faq" class="nav-link" id="navLinkFaq">الأسئلة الشائعة</a>
+            </nav>
+            <div class="nav-actions" style="display: flex; align-items: center; gap: 0.6rem;">
+                <button type="button" id="themeToggleBtn" aria-label="تبديل الوضع الليلي" style="background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.2); color: #e11d48; border-radius: 50%; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; transition: transform 0.3s ease;">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="#register" class="btn btn-secondary nav-btn" id="headerCtaBtn">سجل الآن 🇱🇧</a>
+                <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="فتح القائمة">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1" style="background: radial-gradient(circle, rgba(225, 29, 72, 0.12) 0%, rgba(255,255,255,0) 70%);"></div>
+            <div class="shape shape-2"></div>
+        </div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="lebanon-flag-badge" id="heroBadge"><i class="fa-solid fa-flag"></i> برنامج دعم الأسر والمستحقين في لبنان 2026</span>
+                <h1 class="hero-title" id="heroTitleText" style="margin-top: 1rem;">برنامج تقديم المساعدات المالية والغذائية في كافة المحافظات اللبنانية</h1>
+                <p class="hero-description" id="heroDescText">
+                    تطلق "جمعية النور" بالتعاون مع المنظمات الشريكة وشركات التحويل المالية (OMT / Whish Money / BOB Finance) والمفوضية (UNHCR) برنامج المساعدات المالية المباشرة ($ USD / LBP) والسلال الغذائية للأسر المتعففة والمستحقة في كافة الأقضية اللبنانية.
+                </p>
+                <div class="hero-actions">
+                    <a href="#register" class="btn btn-primary btn-register" id="heroRegisterBtn" style="background: linear-gradient(135deg, #16a34a, #15803d); border-color: #16a34a; font-size: 1.05rem; padding: 0.9rem 1.6rem;">تقديم طلب التسجيل (لبنان) <i class="fa-solid fa-arrow-left icon-right"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61582709656146" target="_blank" rel="noopener" class="btn btn-outline" style="border-color: #1877f2; color: #1877f2; font-weight: 800;"><i class="fa-brands fa-facebook" style="font-size: 1.1rem;"></i> صفحتنا الرسمية</a>
+                    <a href="#features" class="btn btn-outline" id="heroLearnMoreBtn">طرق استلام الدعم</a>
+                </div>
+
+                <!-- High Visibility Direct Registration Callout Banner -->
+                <div style="background: linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(225, 29, 72, 0.12)); border: 2px solid #16a34a; border-radius: 18px; padding: 1.1rem 1.35rem; margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 10px 25px rgba(22, 163, 74, 0.15);">
+                    <div style="display: flex; align-items: center; gap: 0.85rem;">
+                        <div style="width: 46px; height: 46px; border-radius: 50%; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);">
+                            <i class="fa-solid fa-file-pen"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 900; color: var(--text-dark);">تريد التقديم للحصول على الدعم مباشرة؟ 🇱🇧</h4>
+                            <span style="font-size: 0.88rem; color: var(--text-muted);">انقر هنا للذهاب مباشرة إلى استمارة التسجيل الرسمية</span>
+                        </div>
+                    </div>
+                    <a href="#register" class="btn btn-register" style="background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; font-weight: 900; padding: 0.8rem 1.6rem; border-radius: 12px; font-size: 1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 4px 16px rgba(22, 163, 74, 0.35);">
+                        <span>تعبئة الاستمارة الآن</span>
+                        <i class="fa-solid fa-angles-down"></i>
+                    </a>
+                </div>
+
+                <!-- Partner Badges -->
+                <div class="partner-badge-grid">
+                    <div class="partner-card">
+                        <i class="fa-solid fa-money-bill-transfer partner-icon" style="color: #e11d48;"></i>
+                        <span>OMT تحويل أموال</span>
+                    </div>
+                    <div class="partner-card">
+                        <i class="fa-solid fa-wallet partner-icon" style="color: #2563eb;"></i>
+                        <span>Whish Money</span>
+                    </div>
+                    <div class="partner-card">
+                        <i class="fa-solid fa-building-columns partner-icon" style="color: #d97706;"></i>
+                        <span>BOB Finance</span>
+                    </div>
+                    <div class="partner-card">
+                        <i class="fa-solid fa-handshake-angle partner-icon" style="color: #0284c7;"></i>
+                        <span>بطاقات المفوضية (UNHCR)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-image-wrapper">
+                <div class="carousel-container">
+                    <button type="button" class="carousel-btn btn-prev" aria-label="السابق"><i class="fa-solid fa-chevron-right"></i></button>
+                    
+                    <div class="cards-carousel">
+                        <!-- OMT Support Card -->
+                        <a href="#register" class="carousel-card card-left card-kizilay" id="cardOmt" style="border-top: 4px solid #e11d48;">
+                            <div style="padding: 2rem 1.5rem; text-align: center; background: linear-gradient(135deg, #fff5f5 0%, #ffe4e6 100%); height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px;">
+                                <i class="fa-solid fa-money-bill-wave" style="font-size: 3.5rem; color: #e11d48; margin-bottom: 1rem;"></i>
+                                <h3 style="font-size: 1.3rem; font-weight: 900; color: #be123c; margin-bottom: 0.5rem;">حوالات OMT المباشرة</h3>
+                                <p style="font-size: 0.85rem; color: #475569;">تسليم الحوالات بالدولار أو بالليرة اللبنانية عبر كافة مراكز OMT</p>
+                            </div>
+                            <span class="card-caption">حوالات OMT كاش</span>
+                        </a>
+                        <!-- Whish Money Card -->
+                        <a href="#register" class="carousel-card card-center card-ptt" id="cardWhish" style="border-top: 4px solid #2563eb;">
+                            <div style="padding: 2rem 1.5rem; text-align: center; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px;">
+                                <i class="fa-solid fa-mobile-screen-button" style="font-size: 3.5rem; color: #2563eb; margin-bottom: 1rem;"></i>
+                                <h3 style="font-size: 1.3rem; font-weight: 900; color: #1e40af; margin-bottom: 0.5rem;">Whish Money</h3>
+                                <p style="font-size: 0.85rem; color: #475569;">سحب فوري وبدون عمولات عبر محفظة ومراكز Whish</p>
+                            </div>
+                            <span class="card-caption">تحويل رقمي Whish</span>
+                        </a>
+                        <!-- Food Basket Card -->
+                        <a href="#register" class="carousel-card card-right card-family" id="cardFood" style="border-top: 4px solid #16a34a;">
+                            <div style="padding: 2rem 1.5rem; text-align: center; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px;">
+                                <i class="fa-solid fa-basket-shopping" style="font-size: 3.5rem; color: #16a34a; margin-bottom: 1rem;"></i>
+                                <h3 style="font-size: 1.3rem; font-weight: 900; color: #15803d; margin-bottom: 0.5rem;">سلال غذائية شهرياً</h3>
+                                <p style="font-size: 0.85rem; color: #475569;">توزيع المساعدات العينية والمواد الأساسية عبر المراكز المعتمدة</p>
+                            </div>
+                            <span class="card-caption">سلال غذائية متكاملة</span>
+                        </a>
+                    </div>
+                    
+                    <button type="button" class="carousel-btn btn-next" aria-label="التالي"><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card" id="statCard1">
+                    <div class="stat-icon-wrapper" style="background: rgba(225, 29, 72, 0.1); color: #e11d48;">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-number" data-target="48500" id="statNum1">48.5K+</div>
+                    <div class="stat-label">أسرة مستفيدة في لبنان</div>
+                </div>
+                <div class="stat-card" id="statCard2">
+                    <div class="stat-icon-wrapper" style="background: rgba(22, 163, 74, 0.1); color: #16a34a;">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <div class="stat-number" data-target="25" id="statNum2">25</div>
+                    <div class="stat-label">قضاء ومحافظة لبنانية مغطاة</div>
+                </div>
+                <div class="stat-card" id="statCard3">
+                    <div class="stat-icon-wrapper" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div class="stat-number" data-target="1200" id="statNum3">1,200+</div>
+                    <div class="stat-label">مركز استلام (OMT/Whish/BOB)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Impact Counter Widget -->
+    <section class="live-impact-widget" style="padding: 3.5rem 0; background: var(--bg-card); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="container" style="max-width: 1100px; margin: 0 auto; text-align: center; padding: 0 1.25rem;">
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; color: #e11d48; font-weight: 800; font-size: 0.95rem; background: rgba(225, 29, 72, 0.08); border: 1px solid rgba(225, 29, 72, 0.2); padding: 0.35rem 1rem; border-radius: 9999px; margin-bottom: 0.85rem;">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>مؤشرات وإحصائيات الدعم الحي في لبنان 🇱🇧</span>
+            </div>
+            <h3 style="font-size: 1.6rem; font-weight: 900; color: var(--text-dark); margin-bottom: 2rem;">إجمالي نتائج توزيع المساعدات والحوالات هذا الشهر</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+                <!-- Counter 1 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); padding: 1.75rem 1.25rem; border-radius: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.3s ease;">
+                    <div style="position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #16a34a;"></div>
+                    <i class="fa-solid fa-users" style="font-size: 2.2rem; color: #16a34a; margin-bottom: 0.85rem;"></i>
+                    <div class="impact-counter-number" data-target="48920" style="font-size: 2.2rem; font-weight: 900; color: var(--text-dark); font-family: monospace;">0</div>
+                    <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 700;">أسرة مستفيدة في لبنان 🇱🇧</span>
+                </div>
+
+                <!-- Counter 2 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); padding: 1.75rem 1.25rem; border-radius: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.3s ease;">
+                    <div style="position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #e11d48;"></div>
+                    <i class="fa-solid fa-hand-holding-dollar" style="font-size: 2.2rem; color: #e11d48; margin-bottom: 0.85rem;"></i>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 0.25rem;">
+                        <span style="font-size: 1.6rem; font-weight: 900; color: #e11d48;">$</span>
+                        <div class="impact-counter-number" data-target="1850000" style="font-size: 2.2rem; font-weight: 900; color: var(--text-dark); font-family: monospace;">0</div>
+                    </div>
+                    <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 700;">قيمة المساعدات الموزعة ($ / LBP)</span>
+                </div>
+
+                <!-- Counter 3 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); padding: 1.75rem 1.25rem; border-radius: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.3s ease;">
+                    <div style="position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #0284c7;"></div>
+                    <i class="fa-solid fa-money-bill-transfer" style="font-size: 2.2rem; color: #0284c7; margin-bottom: 0.85rem;"></i>
+                    <div style="font-size: 2.2rem; font-weight: 900; color: var(--text-dark); font-family: monospace;">99.4%</div>
+                    <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 700;">نسبة نجاح تسليم الحوالات كاش</span>
+                </div>
+
+                <!-- Counter 4 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); padding: 1.75rem 1.25rem; border-radius: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.3s ease;">
+                    <div style="position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #f59e0b;"></div>
+                    <i class="fa-solid fa-bolt" style="font-size: 2.2rem; color: #f59e0b; margin-bottom: 0.85rem;"></i>
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--text-dark);">24 / 7</div>
+                    <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 700;">سرعة معالجة وتدقيق الطلبات</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features / How it works Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="sub-title">طريقة الاستلام وآلية العمل</span>
+                <h2 class="section-title">كيف يتم استلام المساعدة في لبنان؟</h2>
+                <p class="section-desc">خطوات ميسرة تضمن وصول الدعم المالي والغذائي لكل عائلة مستحقة بشفافية وسرعة.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" id="featureStep1">
+                    <div class="step-badge" style="background: #e11d48;">1</div>
+                    <i class="fa-solid fa-file-signature feature-icon" style="color: #e11d48;"></i>
+                    <h3 class="feature-title">التسجيل وتحديد القضاء</h3>
+                    <p class="feature-desc">تعبئة نموذج الطلب الإلكتروني أدناه مع اختيار المحافظة والقضاء اللبناني ونوع وثيقة الإثبات المعتمدة.</p>
+                </div>
+                <div class="feature-card" id="featureStep2">
+                    <div class="step-badge" style="background: #16a34a;">2</div>
+                    <i class="fa-solid fa-user-shield feature-icon" style="color: #16a34a;"></i>
+                    <h3 class="feature-title">التدقيق والاعتماد</h3>
+                    <p class="feature-desc">دراسة الوضع الاجتماعي والمالي من قبل اللجنة المختصة وإشعار المتقدم بـ الرمز المرجعي الخاص بطلبه.</p>
+                </div>
+                <div class="feature-card" id="featureStep3">
+                    <div class="step-badge" style="background: #2563eb;">3</div>
+                    <i class="fa-solid fa-money-bill-transfer feature-icon" style="color: #2563eb;"></i>
+                    <h3 class="feature-title">صرف الحوالة أو السلة</h3>
+                    <p class="feature-desc">استلام الحوالة المالية كاش نقداً عبر مراكز (OMT / Whish Money / BOB Finance) أو استلام السلال الغذائية من المراكز القريبة.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog & Updates Section -->
+    <section class="blog-updates-section" id="blog" style="padding: 4rem 0; background: var(--bg-card);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+                <span class="sub-title" style="color: #e11d48; font-weight: 800;"><i class="fa-solid fa-newspaper"></i> التحديثات الرسمية في لبنان</span>
+                <h2 class="section-title" style="font-size: 2rem; font-weight: 900;">أحدث الأخبار وتجديدات برنامج الدعم 🇱🇧</h2>
+                <p class="section-desc">مواعيد صرف الحوالات المالية وجداول توزيع المواد الغذائية للأقضية والمحافظات اللبنانية.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.75rem;">
+                <article style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; transition: transform 0.3s ease; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #e11d48; font-weight: 700; margin-bottom: 0.75rem;">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>أغسطس 2026</span>
+                        <span style="margin: 0 0.25rem;">•</span>
+                        <span style="background: rgba(225, 29, 72, 0.15); color: #be123c; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">حوالات OMT</span>
+                    </div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text-dark);">بدء إرسال رسائل استلام حوالات OMT بالدولار النقدي ($)</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">بدأت إدارة البرنامج بإرسال أرقام الحوالات الخاصة بالمقبولين في بيروت، طرابلس، صيدا، والمتن لاستلامها من أي مركز OMT.</p>
+                    <a href="#check-status" style="color: #e11d48; font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">استعلم عن حالة طلبك <i class="fa-solid fa-arrow-left"></i></a>
+                </article>
+
+                <article style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; transition: transform 0.3s ease; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #16a34a; font-weight: 700; margin-bottom: 0.75rem;">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>أغسطس 2026</span>
+                        <span style="margin: 0 0.25rem;">•</span>
+                        <span style="background: rgba(22, 163, 74, 0.15); color: #15803d; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">توزيع عيني</span>
+                    </div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text-dark);">توسيع نطاق السلال الغذائية في بعلبك وعكار والجنوب</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">افتتاح مراكز توزيع جديدة لتسليم الحصص الغذائية للأسر المعتمدة والتي تزيد أفرادها عن 3 أشخاص.</p>
+                    <a href="#register" style="color: #16a34a; font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">قدم طلب لأسرتك <i class="fa-solid fa-arrow-left"></i></a>
+                </article>
+
+                <article style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; transition: transform 0.3s ease; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #2563eb; font-weight: 700; margin-bottom: 0.75rem;">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>تنبيه هام</span>
+                        <span style="margin: 0 0.25rem;">•</span>
+                        <span style="background: rgba(37, 99, 235, 0.15); color: #1d4ed8; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">مجاني 100%</span>
+                    </div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text-dark);">تنويه حول مجانية كافة معاملات التسجيل والاستعلام</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">نؤكد مجدداً أن جميع مراحل التسجيل مجانية بالكامل، ولا تفرض أي رسوم من أي جهة أو وسيط.</p>
+                    <a href="#faq" style="color: #2563eb; font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">تصفح الأسئلة الشائعة <i class="fa-solid fa-arrow-left"></i></a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beneficiaries Reviews & Testimonials Section -->
+    <section class="testimonials-section" id="testimonials" style="padding: 4.5rem 0; background: var(--bg-card); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; color: #e11d48; font-weight: 800; font-size: 0.95rem; background: rgba(225, 29, 72, 0.08); border: 1px solid rgba(225, 29, 72, 0.2); padding: 0.35rem 1rem; border-radius: 9999px; margin-bottom: 0.85rem;">
+                    <i class="fa-solid fa-star" style="color: #fbbf24;"></i>
+                    <span>تجارب وشهادات المستفيدين في لبنان 🇱🇧</span>
+                </div>
+                <h2 class="section-title" style="font-size: 2.1rem; font-weight: 900; color: var(--text-dark);">قصص وتجارب عائلات استلمت الدعم هذا الشهر</h2>
+                <p class="section-desc" style="color: var(--text-muted); max-width: 650px; margin: 0 auto;">مصداقية شفافة وتوثيق حي لوصول المساعدات المالية والغذائية لمستحقيها في مختلف المحافظات والأقضية اللبنانية.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <!-- Testimonial 1 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.75rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                    <div style="position: absolute; top: 1.5rem; left: 1.5rem; color: #fbbf24; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #0d9488, #0f766e); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem;">
+                                أ
+                            </div>
+                            <div>
+                                <h4 style="font-size: 1rem; font-weight: 800; color: var(--text-dark); margin: 0;">عائلة الحاج أبو علي</h4>
+                                <span style="font-size: 0.8rem; color: #e11d48; font-weight: 700;">📍 قضاء طرابلس (شمال لبنان)</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.92rem; color: var(--text-dark); line-height: 1.6; margin-bottom: 1.25rem; font-style: italic;">
+                            "الحمد لله تم استلام الحوالة المالية بقيمة 250$ كاش من مركز OMT بطرابلس بسهولة تامة وبدون أي رسوم. شكراً لجمعية النور على المصداقية والسرعة في المعالجة."
+                        </p>
+                    </div>
+                    <div style="border-top: 1px dashed var(--border-color); padding-top: 0.85rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
+                        <span><i class="fa-solid fa-check-circle" style="color: #16a34a;"></i> موثق (OMT Cash $)</span>
+                        <span style="font-family: monospace; font-weight: 700; color: var(--text-dark);">NOOR-83921-LB</span>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.75rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                    <div style="position: absolute; top: 1.5rem; left: 1.5rem; color: #fbbf24; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #e11d48, #be123c); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem;">
+                                م
+                            </div>
+                            <div>
+                                <h4 style="font-size: 1rem; font-weight: 800; color: var(--text-dark); margin: 0;">السيدة مريم خليل</h4>
+                                <span style="font-size: 0.8rem; color: #e11d48; font-weight: 700;">📍 قضاء صيدا (جنوب لبنان)</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.92rem; color: var(--text-dark); line-height: 1.6; margin-bottom: 1.25rem; font-style: italic;">
+                            "تم التسجيل عبر المنصة وبعد 6 أيام عمل وصلتنا رسالة القبول والسلة الغذائية المتكاملة مع الدعم المالي في صيدا. جزاكم الله كل خير على خدمتكم النبيلة."
+                        </p>
+                    </div>
+                    <div style="border-top: 1px dashed var(--border-color); padding-top: 0.85rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
+                        <span><i class="fa-solid fa-check-circle" style="color: #16a34a;"></i> موثق (سلة غذائية + Whish)</span>
+                        <span style="font-family: monospace; font-weight: 700; color: var(--text-dark);">NOOR-74192-LB</span>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.75rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                    <div style="position: absolute; top: 1.5rem; left: 1.5rem; color: #fbbf24; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem;">
+                                ش
+                            </div>
+                            <div>
+                                <h4 style="font-size: 1rem; font-weight: 800; color: var(--text-dark); margin: 0;">الأستاذ شربل متى</h4>
+                                <span style="font-size: 0.8rem; color: #e11d48; font-weight: 700;">📍 قضاء المتن (جبل لبنان)</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.92rem; color: var(--text-dark); line-height: 1.6; margin-bottom: 1.25rem; font-style: italic;">
+                            "سهولة بالغة في تعبئة البيانات والرمز المرجعي مكّنني من متابعة الطلب حتى لحظة الاستلام من فرع BOB Finance بجديدة المتن. تنظيم ممتازة ورقي بالتعامل."
+                        </p>
+                    </div>
+                    <div style="border-top: 1px dashed var(--border-color); padding-top: 0.85rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
+                        <span><i class="fa-solid fa-check-circle" style="color: #16a34a;"></i> موثق (BOB Finance)</span>
+                        <span style="font-family: monospace; font-weight: 700; color: var(--text-dark);">NOOR-91024-LB</span>
+                    </div>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.75rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                    <div style="position: absolute; top: 1.5rem; left: 1.5rem; color: #fbbf24; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem;">
+                                ر
+                            </div>
+                            <div>
+                                <h4 style="font-size: 1rem; font-weight: 800; color: var(--text-dark); margin: 0;">عائلة أبو رامي</h4>
+                                <span style="font-size: 0.8rem; color: #e11d48; font-weight: 700;">📍 قضاء بعلبك (البقاع)</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.92rem; color: var(--text-dark); line-height: 1.6; margin-bottom: 1.25rem; font-style: italic;">
+                            "استلمنا الحوالة المالية اليوم من فرع Whish Money ببعلبك بكل يسر. المنصة مجانية 100% كما أعلنوا تماماً. بارك الله في جهود القائمين عليها."
+                        </p>
+                    </div>
+                    <div style="border-top: 1px dashed var(--border-color); padding-top: 0.85rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
+                        <span><i class="fa-solid fa-check-circle" style="color: #16a34a;"></i> موثق (Whish Money $)</span>
+                        <span style="font-family: monospace; font-weight: 700; color: var(--text-dark);">NOOR-65319-LB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Public Application Status Lookup Section -->
+    <section class="status-lookup-section" id="check-status" style="background: linear-gradient(180deg, rgba(225, 29, 72, 0.04) 0%, var(--bg-body) 100%); padding: 4rem 0;">
+        <div class="container" style="max-width: 800px; margin: 0 auto;">
+            <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+                <span class="sub-title" style="color: #e11d48; font-weight: 800;"><i class="fa-solid fa-clock-rotate-left"></i> متابعة الطلب (لبنان)</span>
+                <h2 class="section-title" style="font-size: 2rem; font-weight: 900; color: var(--text-dark);">الاستعلام المباشر عن طلبات لبنان</h2>
+                <p class="section-desc" style="color: var(--text-muted);">أدخل رقم المرجع (مثال: NOOR-84920-LB) أو رقم الهاتف لمتابعة نتيجة التقييم وحالة الحوالة.</p>
+            </div>
+
+            <div class="status-card" style="background: var(--bg-card); padding: 2rem; border-radius: 24px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color);">
+                <form id="statusCheckForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 260px; position: relative;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                        <input type="text" id="statusRefInput" placeholder="أدخل رقم المرجع (مثال: NOOR-84920-LB)" style="width: 100%; padding: 0.9rem 2.8rem 0.9rem 1.25rem; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); font-size: 1rem; color: var(--text-dark);" required>
+                    </div>
+                    <button type="submit" id="checkStatusBtn" class="btn btn-primary" style="padding: 0.9rem 1.75rem; border-radius: 12px; font-weight: 800; font-size: 1rem; background: #e11d48; border-color: #e11d48;">
+                        <i class="fa-solid fa-search"></i> استعلام الآن
+                    </button>
+                </form>
+
+                <!-- Result Box (Hidden by default) -->
+                <div id="statusResultBox" style="display: none; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px dashed var(--border-color); animation: fadeIn 0.4s ease;">
+                    <div id="statusBadgeContainer" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div id="statusIconBox" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: rgba(225, 29, 72, 0.1); color: #e11d48;">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
+                            <div>
+                                <h4 id="statusApplicantName" style="font-size: 1.15rem; font-weight: 800; color: var(--text-dark);">سامي م.</h4>
+                                <span id="statusRefCode" style="font-size: 0.85rem; color: var(--text-muted); font-family: monospace;">NOOR-84920-LB</span>
+                            </div>
+                        </div>
+                        <span id="statusBadge" style="padding: 0.5rem 1.25rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem; border: 1px solid;">🟡 قيد التدقيق</span>
+                    </div>
+
+                    <p id="statusDescText" style="color: var(--text-dark); font-size: 0.95rem; line-height: 1.6; background: rgba(255, 255, 255, 0.5); padding: 1rem 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                        طلبك قيد المراجعة والتقييم حالياً لدى لجنة التقييم الخاصة بلبنان.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section class="register-section" id="register">
+        <div class="container">
+            <div class="register-layout">
+                <div class="register-info">
+                    <span class="lebanon-flag-badge" style="margin-bottom: 1rem;"><i class="fa-solid fa-heart"></i> استمارة التسجيل الخاصة بدولة لبنان 🇱🇧</span>
+                    <h2 class="register-title">طلب تسجيل للحصول على الدعم المالي والغذائي</h2>
+                    <p class="register-desc">يرجى إدخال البيانات الشخصية ومعلومات السكن في لبنان بدقة. سيتم التحقق من الوثائق الرسمية والمحافظة لتسهيل صرف الدعم.</p>
+                    <ul class="benefit-list">
+                        <li><i class="fa-solid fa-circle-check"></i> حماية وتشفير تام لكافة بيانات المتقدمين.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> إمكانية اختيار طريقة الاستلام المفضلة (OMT / Whish / BOB / سلة غذائية).</li>
+                        <li><i class="fa-solid fa-circle-check"></i> دعم المبالغ بالدولار الأمريكي ($ USD) أو بالليرة اللبنانية (LBP).</li>
+                    </ul>
+                    <div class="support-contact">
+                        <i class="fa-solid fa-headset support-icon" style="color: #e11d48;"></i>
+                        <div>
+                            <h4>هل تحتاج لمساعدة في استمارة لبنان؟</h4>
+                            <p>فريق الدعم الفني: support-lb@alnoor-org.com</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="register-card-wrapper">
+                    <div class="register-card" id="registerCard" style="border-top: 5px solid #e11d48;">
+                        <h3 class="form-title" style="color: #be123c;"><i class="fa-solid fa-file-invoice"></i> استمارة التسجيل المخصصة (لبنان 🇱🇧)</h3>
+                        <form id="aidRegistrationForm" novalidate>
+                            <!-- Anti-Bot Honeypot Security Defense -->
+                            <input type="text" name="website_url_hp" id="websiteUrlHp" style="display:none !important; position:absolute !important; left:-9999px !important; opacity:0;" tabindex="-1" autocomplete="off">
+                            
+                            
+                            <!-- Name Row -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName"><i class="fa-solid fa-user"></i> الاسم الأول <span class="required">*</span></label>
+                                    <input type="text" id="firstName" name="firstName" placeholder="مثال: شادي" required>
+                                    <span class="error-message" id="firstNameError">هذا الحقل مطلوب</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName"><i class="fa-solid fa-users-rectangle"></i> اسم العائلة / اللقب <span class="required">*</span></label>
+                                    <input type="text" id="lastName" name="lastName" placeholder="مثال: الخوري" required>
+                                    <span class="error-message" id="lastNameError">هذا الحقل مطلوب</span>
+                                </div>
+                            </div>
+
+                            <!-- Document Type & Number Row -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="docType"><i class="fa-solid fa-id-card"></i> نوع وثيقة الإثبات والمعرف <span class="required">*</span></label>
+                                    <select id="docType" name="docType" required>
+                                        <option value="">-- اختر نوع الوثيقة الرسمية --</option>
+                                        <option value="lebanese_id">الهوية اللبنانية / إخراج قيد فردي</option>
+                                        <option value="unhcr_card">بطاقة المفوضية (UNHCR) للاجئين</option>
+                                        <option value="passport_residence">جواز السفر / بطاقة الإقامة الرسمية</option>
+                                    </select>
+                                    <span class="error-message" id="docTypeError">يرجى اختيار نوع الوثيقة</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tcNumber"><i class="fa-solid fa-hashtag"></i> رقم الوثيقة / السجل <span class="optional">(اختياري)</span></label>
+                                    <input type="text" id="tcNumber" name="tcNumber" placeholder="رقم الهوية أو الملف أو إخراج القيد">
+                                    <span class="error-message" id="tcNumberError">رقم غير صالح</span>
+                                </div>
+                            </div>
+
+                            <!-- Province (Governorate) & District (Qadaa) Row -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="province"><i class="fa-solid fa-map-location-dot"></i> المحافظة اللبنانية <span class="required">*</span></label>
+                                    <select id="province" name="province" required>
+                                        <option value="">-- اختر المحافظة --</option>
+                                        <option value="بيروت">محافظة بيروت</option>
+                                        <option value="جبل لبنان">محافظة جبل لبنان</option>
+                                        <option value="الشمال">محافظة الشمال</option>
+                                        <option value="عكار">محافظة عكار</option>
+                                        <option value="البقاع">محافظة البقاع</option>
+                                        <option value="بعلبك - الهرمل">محافظة بعلبك - الهرمل</option>
+                                        <option value="الجنوب">محافظة الجنوب</option>
+                                        <option value="النبطية">محافظة النبطية</option>
+                                    </select>
+                                    <span class="error-message" id="provinceError">يرجى اختيار المحافظة</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="district"><i class="fa-solid fa-location-crosshairs"></i> القضاء / المنطقة <span class="required">*</span></label>
+                                    <select id="district" name="district" required>
+                                        <option value="">-- اختر القضاء --</option>
+                                        <option value="بيروت">قضاء بيروت</option>
+                                        <option value="بعبدا">قضاء بعبدا</option>
+                                        <option value="المتن">قضاء المتن</option>
+                                        <option value="الشوف">قضاء الشوف</option>
+                                        <option value="عاليه">قضاء عاليه</option>
+                                        <option value="كسروان">قضاء كسروان</option>
+                                        <option value="جبيل">قضاء جبيل</option>
+                                        <option value="طرابلس">قضاء طرابلس</option>
+                                        <option value="العكار">قضاء عكار</option>
+                                        <option value="الكورة">قضاء الكورة</option>
+                        <option value="زغرتا">قضاء زغرتا</option>
+                                        <option value="البترون">قضاء البترون</option>
+                                        <option value="المنية-الضنية">قضاء المنية - الضنية</option>
+                                        <option value="زحلة">قضاء زحلة</option>
+                                        <option value="البقاع الغربي">قضاء البقاع الغربي</option>
+                                        <option value="راشيا">قضاء راشيا</option>
+                                        <option value="بعلبك">قضاء بعلبك</option>
+                                        <option value="الهرمل">قضاء الهرمل</option>
+                                        <option value="صيدا">قضاء صيدا</option>
+                                        <option value="صور">قضاء صور</option>
+                                        <option value="جزين">قضاء جزين</option>
+                                        <option value="النبطية">قضاء النبطية</option>
+                                        <option value="بنت جبيل">قضاء بنت جبيل</option>
+                                        <option value="مرجعيون">قضاء مرجعيون</option>
+                                        <option value="حاصبيا">قضاء حاصبيا</option>
+                                    </select>
+                                    <span class="error-message" id="districtError">يرجى اختيار القضاء</span>
+                                </div>
+                            </div>
+
+                            <!-- Payout Method & Currency Row -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="payoutMethod"><i class="fa-solid fa-money-bill-transfer"></i> طريقة استلام الدعم <span class="required">*</span></label>
+                                    <select id="payoutMethod" name="payoutMethod" required>
+                                        <option value="OMT تحويل أموال">شركة OMT لتحويل الأموال</option>
+                                        <option value="Whish Money">محفظة ومراكز Whish Money</option>
+                                        <option value="BOB Finance">شركة BOB Finance</option>
+                                        <option value="سلة غذائية">سلال غذائية عينية عبر مراكز التوزيع</option>
+                                    </select>
+                                    <span class="error-message" id="payoutMethodError">يرجى اختيار طريقة الاستلام</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="currency"><i class="fa-solid fa-coins"></i> العملة المفضلة للدعم <span class="required">*</span></label>
+                                    <select id="currency" name="currency" required>
+                                        <option value="USD">بالدولار الأمريكي ($ USD)</option>
+                                        <option value="LBP">بالليرة اللبنانية (LBP)</option>
+                                    </select>
+                                    <span class="error-message" id="currencyError">اختر العملة</span>
+                                </div>
+                            </div>
+
+                            <!-- Marital Status & Family Count -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="maritalStatus"><i class="fa-solid fa-heart"></i> الحالة الاجتماعية <span class="required">*</span></label>
+                                    <select id="maritalStatus" name="maritalStatus" required>
+                                        <option value="">-- اختر الحالة --</option>
+                                        <option value="أعزب/عزباء">أعزب / عزباء</option>
+                                        <option value="متزوج/ة">متزوج / متزوجة</option>
+                                        <option value="معيل/ة أسر">معيل أسر / معيلة أيتام</option>
+                                        <option value="أرمل/ة">أرمل / أرملة</option>
+                                        <option value="مطلق/ة">مطلق / مطلقة</option>
+                                    </select>
+                                    <span class="error-message" id="maritalStatusError">اختر الحالة الاجتماعية</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="familyCount"><i class="fa-solid fa-people-roof"></i> عدد أفراد الأسرة <span class="required">*</span></label>
+                                    <input type="number" id="familyCount" name="familyCount" min="1" max="25" placeholder="مثال: 5" required>
+                                    <span class="error-message" id="familyCountError">أدخل عدداً صحيحاً (1-25)</span>
+                                </div>
+                            </div>
+
+
+                            <!-- Phone & Email Row -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="phoneNumber"><i class="fa-solid fa-phone"></i> رقم الهاتف اللبناني <span class="required">*</span></label>
+                                    <input type="text" id="phoneNumber" name="phoneNumber" placeholder="مثال: 03123456 أو 70123456" required>
+                                    <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.2rem;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> رقم هاتف لبناني (8 أرقام - 03, 70, 71, 76, 78, 81...)</small>
+                                    <span class="error-message" id="phoneNumberError">يرجى إدخال رقم هاتف لبناني صالح</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email"><i class="fa-solid fa-envelope"></i> البريد الإلكتروني (Gmail) <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" placeholder="اضغط هنا لاختيار ومزامنة بريد جهازك تلقائياً" autocomplete="email" inputmode="email" style="margin-top: 0.35rem;" required>
+                                    <span id="googleSyncSuccessBadge" style="display: none; color: #16a34a; font-size: 0.78rem; font-weight: 800; margin-top: 0.25rem;"><i class="fa-solid fa-circle-check"></i> تم جلب ومزامنة بريد جهازك بنجاح!</span>
+                                    <span class="error-message" id="emailError">أدخل حساب Gmail صالح</span>
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="form-group">
+                                <label for="password"><i class="fa-solid fa-lock"></i> كلمة المرور لحسابك <span class="required">*</span></label>
+                                <div style="position: relative; display: flex; align-items: center; margin-top: 0.35rem;">
+                                    <input type="password" id="password" name="password" placeholder="أدخل كلمة مرور قوية (8 خانات على الأقل)" autocomplete="new-password" style="padding-left: 2.8rem; width: 100%;" required>
+                                    <button type="button" id="togglePasswordBtn" title="إظهار / إخفاء كلمة المرور" style="position: absolute; left: 0.75rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; padding: 0.4rem; z-index: 2; transition: color 0.2s ease;">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem; display: block;"><i class="fa-solid fa-shield-halved" style="color: var(--primary-color);"></i> احفظ كلمة المرور جيداً لاستخدامها في متابعة حسابك من جهازك</small>
+                                <span class="error-message" id="passwordError">كلمة المرور يجب أن تتكون من 8 خانات على الأقل وتقتصر على الأحرف والأرقام الإنجليزية</span>
+                            </div>
+
+                            <!-- Terms Checkbox -->
+                            <div class="form-group checkbox-group" style="margin-top: 1rem;">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="termsCheck" name="termsCheck" required>
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">أقر بدقة وصحة كافة البيانات المدخلة الخاصة بي وبأسرتك في دولة لبنان تحت طائلة الإلغاء. <span class="required">*</span></span>
+                                </label>
+                                <span class="error-message" id="termsCheckError">يجب الموافقة على التعهد للمتابعة</span>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-block" style="margin-top: 1.5rem; background: linear-gradient(135deg, #e11d48, #be123c); border-color: #e11d48; font-size: 1.1rem; padding: 1rem;">
+                                <span>إرسال طلب التسجيل (لبنان)</span>
+                                <i class="fa-solid fa-paper-plane icon-right"></i>
+                            </button>
+                        </form>
+
+                        <!-- Success Result Container -->
+                        <div id="registrationResult" style="display: none; text-align: center; padding: 2rem; background: var(--bg-card); border-radius: 16px;">
+                            <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(22, 163, 74, 0.15); color: #16a34a; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem auto;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <h3 style="font-size: 1.5rem; font-weight: 900; color: var(--text-dark); margin-bottom: 0.5rem;">تم تقديم الطلب بنجاح! 🇱🇧</h3>
+                            <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">تم تسجيل بياناتك بنجاح في قاعدة بيانات منصة لبنان للمساعدات. يرجى الاحتفاظ بالرقم المرجعي أدناه لمتابعة النتيجة:</p>
+                            
+                            <div style="background: rgba(225, 29, 72, 0.06); border: 2px dashed #e11d48; padding: 1.25rem; border-radius: 16px; margin-bottom: 1.25rem;">
+                                <span style="font-size: 0.85rem; color: #be123c; font-weight: 700; display: block; margin-bottom: 0.25rem;">الرقم المرجعي الخاص بك:</span>
+                                <strong id="resRefCode" style="font-size: 1.6rem; color: #e11d48; letter-spacing: 1px; font-family: monospace;">NOOR-84920-LB</strong>
+                            </div>
+
+                            <!-- Supervisor Contact Notice Box -->
+                            <div style="background: rgba(245, 158, 11, 0.08); border: 1.5px solid #f59e0b; padding: 1.15rem 1.25rem; border-radius: 14px; margin-bottom: 1.25rem; text-align: right;">
+                                <div style="display: flex; align-items: center; gap: 0.6rem; font-weight: 900; color: #b45309; font-size: 1rem; margin-bottom: 0.4rem;">
+                                    <i class="fa-solid fa-bell" style="font-size: 1.1rem; color: #d97706;"></i>
+                                    <span>ملاحظة هامة لإكمال وتأكيد الطلب:</span>
+                                </div>
+                                <p style="font-size: 0.92rem; color: var(--text-dark); line-height: 1.6; margin: 0; font-weight: 700;">
+                                    ⚠️ يرجى التواصل المباشر مع <strong>المشرف المختص عبر صفحة الفيسبوك (ماسنجر)</strong> وإرسال الرقم المرجعي الظاهر أعلاه لتأكيد طلبك وتوثيق الاعتماد فوراً.
+                                </p>
+                            </div>
+
+                            <a id="resMessengerBtn" href="https://www.facebook.com/profile.php?id=61582709656146" target="_blank" rel="noopener" class="btn btn-primary" style="background: linear-gradient(135deg, #1877f2, #0056b3); border: none; width: 100%; justify-content: center; padding: 0.95rem; font-weight: 800; font-size: 1.05rem; border-radius: 12px; margin-bottom: 1.25rem; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 6px 18px rgba(24, 119, 242, 0.35);">
+                                <i class="fa-brands fa-facebook" style="font-size: 1.3rem;"></i> التواصل مع المشرف عبر صفحة الفيسبوك لتأكيد الطلب
+                            </a>
+
+                            <!-- Social Follow & Share Callout -->
+                            <div style="background: linear-gradient(135deg, #0f172a, #1e1b4b); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem; color: white; text-align: center;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #fbbf24; font-weight: 800; font-size: 0.95rem;">
+                                    <i class="fa-brands fa-facebook" style="color: #1877f2; font-size: 1.2rem;"></i>
+                                    <span>تابع صفحتنا واشترك ليصلك جديد القبول 🇱🇧</span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 1rem; line-height: 1.5;">
+                                    دعمك بالإعجاب والمشاركة يضمن وصول المساعدات لجميع مستحقيها في لبنان!
+                                </p>
+                                <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap;">
+                                    <a href="https://www.facebook.com/profile.php?id=61582709656146" target="_blank" rel="noopener" class="btn" style="background: #1877f2; color: white; border-radius: 10px; padding: 0.6rem 1rem; font-size: 0.85rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                                        <i class="fa-brands fa-facebook-f"></i> المتابعة والإعجاب
+                                    </a>
+                                    <button type="button" onclick="shareFacebookPage()" class="btn" style="background: #d97706; color: white; border: none; border-radius: 10px; padding: 0.6rem 1rem; font-size: 0.85rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;">
+                                        <i class="fa-solid fa-share-nodes"></i> مشاركة الصفحة
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" id="resetFormBtn" class="btn btn-outline" style="width: 100%; justify-content: center; border-radius: 12px;">
+                                تقديم طلب جديد
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Luxurious Social Engagement Section -->
+    <section class="social-engage-section" id="social-community" style="padding: 4.5rem 0; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #31102f 100%); color: #ffffff; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -50px; left: -50px; width: 250px; height: 250px; background: rgba(225, 29, 72, 0.15); filter: blur(70px); border-radius: 50%; pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -50px; right: -50px; width: 250px; height: 250px; background: rgba(0, 132, 255, 0.15); filter: blur(70px); border-radius: 50%; pointer-events: none;"></div>
+        
+        <div class="container" style="max-width: 950px; margin: 0 auto; position: relative; z-index: 2; text-align: center; padding: 0 1.25rem;">
+            
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 0.4rem 1.2rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 800; color: #fbbf24; margin-bottom: 1.25rem; backdrop-filter: blur(10px);">
+                <i class="fa-brands fa-facebook" style="color: #1877f2; font-size: 1.1rem;"></i>
+                <span>الصفحة الرسمية لجمعية النور لبنان 🇱🇧</span>
+            </div>
+
+            <h2 style="font-size: 2.2rem; font-weight: 900; color: #ffffff; margin-bottom: 1rem; line-height: 1.3; text-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+                انضم إلى مجتمعنا على فيسبوك وكن أول من يعلم بجديد المساعدات ✨
+            </h2>
+
+            <p style="font-size: 1.05rem; color: #cbd5e1; max-width: 780px; margin: 0 auto 2.25rem auto; line-height: 1.7;">
+                دعمك بالمتابعة، الإعجاب، والمشاركة يُسهم في إيصال الخير والوصول لكافة الأسر المستحقة والمتعففة في لبنان. اشترك الآن لتصلك إشعارات القبول ومواعيد توزيع الحوالات نقدك كاش فور صدورها!
+            </p>
+
+            <!-- Social Action Badges -->
+            <div style="display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 2.5rem;">
+                <a href="https://www.facebook.com/profile.php?id=61582709656146" target="_blank" rel="noopener" class="btn" style="background: linear-gradient(135deg, #1877f2, #0056b3); color: white; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 800; border-radius: 14px; box-shadow: 0 10px 25px rgba(24, 119, 242, 0.4); display: flex; align-items: center; gap: 0.75rem; transition: transform 0.3s ease;">
+                    <i class="fa-brands fa-facebook-f" style="font-size: 1.4rem;"></i>
+                    <span>المتابعة والإعجاب بالصفحة</span>
+                </a>
+
+                <button type="button" onclick="shareFacebookPage()" class="btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 800; border-radius: 14px; box-shadow: 0 10px 25px rgba(245, 158, 11, 0.35); cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: transform 0.3s ease;">
+                    <i class="fa-solid fa-share-nodes" style="font-size: 1.3rem;"></i>
+                    <span>مشاركة الصفحة مع الأصدقاء</span>
+                </button>
+            </div>
+
+            <!-- Highlights Counters -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+                <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.25rem; border-radius: 16px; backdrop-filter: blur(8px);">
+                    <i class="fa-solid fa-thumbs-up" style="color: #38bdf8; font-size: 1.8rem; margin-bottom: 0.5rem;"></i>
+                    <h4 style="font-size: 1.3rem; font-weight: 900; color: #fff;">+50,000</h4>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">متابع ومستفيد في لبنان</span>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.25rem; border-radius: 16px; backdrop-filter: blur(8px);">
+                    <i class="fa-solid fa-bell" style="color: #f43f5e; font-size: 1.8rem; margin-bottom: 0.5rem;"></i>
+                    <h4 style="font-size: 1.3rem; font-weight: 900; color: #fff;">إشعارات فورية</h4>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">تنبيهات فورية بأسماء المقبولين</span>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.25rem; border-radius: 16px; backdrop-filter: blur(8px);">
+                    <i class="fa-solid fa-circle-check" style="color: #4ade80; font-size: 1.8rem; margin-bottom: 0.5rem;"></i>
+                    <h4 style="font-size: 1.3rem; font-weight: 900; color: #fff;">صفحة موثقة</h4>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">المصدر الرسمي لكافة المساعدات</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq" style="padding: 4rem 0; background: var(--bg-card);">
+        <div class="container" style="max-width: 850px; margin: 0 auto;">
+            <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+                <span class="sub-title" style="color: #e11d48; font-weight: 800;">الأسئلة الشائعة في لبنان</span>
+                <h2 class="section-title">إجابات أهم استفسارات المساعدات 🇱🇧</h2>
+            </div>
+
+            <div class="faq-accordion" style="display: flex; flex-direction: column; gap: 1rem;">
+                <details style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.25rem; cursor: pointer;">
+                    <summary style="font-weight: 800; font-size: 1.05rem; color: var(--text-dark); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        <span>كيف أستلم الحوالات المالية في لبنان عند القبول؟</span>
+                        <i class="fa-solid fa-chevron-down" style="color: #e11d48;"></i>
+                    </summary>
+                    <p style="margin-top: 0.75rem; color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        عند اعتماد طلبك، ستتلقى رمز الحوالة على رقم هاتفك المسجل، ويمكنك التوجه لأي فرع OMT أو Whish Money أو BOB Finance في قضاؤك لاستلام المبلغ نقدك كاش ببطاقة هويتك.
+                    </p>
+                </details>
+
+                <details style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.25rem; cursor: pointer;">
+                    <summary style="font-weight: 800; font-size: 1.05rem; color: var(--text-dark); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        <span>هل يحق للاجئين والمقيمين التسجيل كارت المفوضية (UNHCR)؟</span>
+                        <i class="fa-solid fa-chevron-down" style="color: #e11d48;"></i>
+                    </summary>
+                    <p style="margin-top: 0.75rem; color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        نعم، يمكن للمقيمين واللاجئين الحاملين لبطاقات UNHCR التسجيل باختيار "بطاقة المفوضية للاجئين" في خانة نوع الوثيقة.
+                    </p>
+                </details>
+
+                <details style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.25rem; cursor: pointer;">
+                    <summary style="font-weight: 800; font-size: 1.05rem; color: var(--text-dark); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        <span>كم تستغرق مدة دراسة وتدقيق الطلب في لبنان؟</span>
+                        <i class="fa-solid fa-chevron-down" style="color: #e11d48;"></i>
+                    </summary>
+                    <p style="margin-top: 0.75rem; color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        تستغرق عملية التقييم من 5 إلى 10 أيام عمل، ويمكنك الاستعلام المباشر بـ الرقم المرجعي من خلال خانة متابعة الطلب بأعلى الصفحة.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #0f172a; color: #f8fafc; padding: 3rem 0 1.5rem 0;">
+        <div class="container" style="text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-bottom: 1rem; font-size: 1.4rem; font-weight: 900;">
+                <i class="fa-solid fa-tree" style="color: #16a34a;"></i>
+                <span>جمعية النور - لبنان 🇱🇧</span>
+            </div>
+            <p style="color: #94a3b8; max-width: 600px; margin: 0 auto 1.5rem auto; font-size: 0.9rem; line-height: 1.6;">
+                المنصة الإلكترونية المستقلة المخصصة لتقديم المساعدات المالية والغذائية للأسر المستحقة والمقيمة في المحافظات والأقضية اللبنانية.
+            </p>
+            <div style="border-top: 1px solid #1e293b; padding-top: 1.5rem; font-size: 0.85rem; color: #64748b;">
+                جميع الحقوق محفوظة © 2026 جمعية النور لبنان.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Support Assistant Chat Widget -->
+    <div id="chatAssistantContainer" style="position: fixed; bottom: 88px; right: 22px; z-index: 9999; font-family: 'Tajawal', sans-serif;">
+        <!-- Floating Trigger Button (Sleek Circular Badge with Pulsing Motion) -->
+        <button type="button" id="chatAssistantToggle" class="support-assistant-pulse" title="فتح مساعد الدعم الفوري" aria-label="فتح مساعد الدعم الفوري" style="width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #e11d48, #be123c); color: white; border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.3s ease; position: relative;">
+            <i class="fa-solid fa-headset" style="font-size: 1.4rem;"></i>
+            <span style="position: absolute; top: 1px; right: 1px; width: 12px; height: 12px; background: #22c55e; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 6px #22c55e;"></span>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chatAssistantWindow" style="display: none; position: absolute; bottom: 70px; right: 0; left: auto; width: 350px; max-width: 88vw; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25); overflow: hidden; flex-direction: column;">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #0f172a, #1e1b4b); color: white; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(225, 29, 72, 0.2); border: 1px solid #e11d48; display: flex; align-items: center; justify-content: center; color: #e11d48; font-size: 1.2rem;">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 900; margin: 0; color: white;">مساعد جمعية النور 🇱🇧</h4>
+                        <span style="font-size: 0.75rem; color: #4ade80; display: flex; align-items: center; gap: 0.3rem;">
+                            <span style="width: 7px; height: 7px; background: #4ade80; border-radius: 50%; display: inline-block;"></span> متصل الآن - إجابات فورية
+                        </span>
+                    </div>
+                </div>
+                <button type="button" id="chatAssistantClose" style="background: none; border: none; color: #94a3b8; font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chatMessagesArea" style="padding: 1rem; height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem; background: var(--bg-body);">
+                <!-- Initial Bot Welcome -->
+                <div style="display: flex; gap: 0.5rem; max-width: 90%;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-dark); padding: 0.85rem; border-radius: 14px 14px 14px 2px; font-size: 0.88rem; line-height: 1.5; box-shadow: var(--shadow-sm);">
+                        مرحباً بك! 👋 أنا المساعد الآلي لجمعية النور في لبنان. يسعدني إجابتك فوراً، اختر السؤال المطلوب أدناه:
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Chips -->
+            <div id="chatChipsContainer" style="padding: 0.75rem 1rem; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.4rem; max-height: 140px; overflow-y: auto;">
+                <button type="button" class="chat-chip-btn" data-question="docs" style="background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-dark); padding: 0.5rem 0.85rem; border-radius: 10px; font-size: 0.8rem; font-weight: 700; text-align: right; cursor: pointer; transition: all 0.2s ease;">
+                    📄 ما هي المستندات المطلوبة عند الاستلام؟
+                </button>
+                <button type="button" class="chat-chip-btn" data-question="omt" style="background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-dark); padding: 0.5rem 0.85rem; border-radius: 10px; font-size: 0.8rem; font-weight: 700; text-align: right; cursor: pointer; transition: all 0.2s ease;">
+                    💵 كيفية استلام حوالة OMT و Whish Money؟
+                </button>
+                <button type="button" class="chat-chip-btn" data-question="facebook" style="background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-dark); padding: 0.5rem 0.85rem; border-radius: 10px; font-size: 0.8rem; font-weight: 700; text-align: right; cursor: pointer; transition: all 0.2s ease;">
+                    💬 كيف أصل لصفحة فيسبوك والماسنجر؟
+                </button>
+                <button type="button" class="chat-chip-btn" data-question="status" style="background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-dark); padding: 0.5rem 0.85rem; border-radius: 10px; font-size: 0.8rem; font-weight: 700; text-align: right; cursor: pointer; transition: all 0.2s ease;">
+                    🔍 كيف أعرف حالة طلبي بالرمز المرجعي؟
+                </button>
+                <button type="button" class="chat-chip-btn" data-question="free" style="background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-dark); padding: 0.5rem 0.85rem; border-radius: 10px; font-size: 0.8rem; font-weight: 700; text-align: right; cursor: pointer; transition: all 0.2s ease;">
+                    🇱🇧 هل التسجيل مجاني لجميع المستحقين؟
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Sticky Direct Registration Bar -->
+    <div id="floatingRegisterBar" style="position: fixed; bottom: 1.6rem; left: 50%; transform: translateX(-50%); z-index: 9980; width: 88%; max-width: 440px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95)); backdrop-filter: blur(16px); border: 2px solid #16a34a; border-radius: 9999px; padding: 0.6rem 1.15rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 20px rgba(22, 163, 74, 0.25); display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+        <div style="display: flex; align-items: center; gap: 0.6rem; color: white;">
+            <span style="display: flex; width: 11px; height: 11px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 12px #4ade80; flex-shrink: 0;"></span>
+            <span style="font-size: 0.9rem; font-weight: 900; font-family: 'Tajawal', sans-serif; letter-spacing: 0.2px;">تسجيل مباشر 🇱🇧</span>
+        </div>
+        <a href="#register" class="btn btn-register" style="background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; padding: 0.55rem 1.25rem; border-radius: 9999px; font-weight: 900; font-size: 0.88rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap; box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45); transition: transform 0.2s ease;">
+            <span>افتح الاستمارة الآن</span>
+            <i class="fa-solid fa-angles-down" style="font-size: 0.9rem;"></i>
+        </a>
+    </div>
+
+    <!-- Dedicated Application Script for Lebanon with Cache-Buster & Defer Optimization -->
+    <script src="app_lb.js?v=20260806_3" defer></script>
+</body>
+</html>

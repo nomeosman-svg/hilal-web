@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="البوابة الإلكترونية الرسمية للتسجيل للحصول على المساعدات المالية والدعم الإنساني للأسر المستحقة والمقيمة في تركيا. سجل الآن لتتم دراسة طلبك.">
+    <meta name="keywords" content="مساعدات مالية تركيا, مساعدات غذائية, دعم مالي وغذائي, الرمز البريدي PTT, جمعية النور">
+    <title>جمعية النور | بوابة التسجيل للمساعدات المالية والغذائية في تركيا</title>
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style with Cache-Buster -->
+    <link rel="stylesheet" href="style.css?v=20260806_3">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header" id="mainHeader">
+        <div class="container navbar-container">
+            <a href="#" class="logo" id="logoLink">
+                <i class="fa-solid fa-hand-holding-heart logo-icon"></i>
+                <span class="logo-text">جمعية<span>النور</span></span>
+            </a>
+            <nav class="nav-menu" id="navMenu">
+                <a href="#hero" class="nav-link active" id="navLinkHome">الرئيسية</a>
+                <a href="#check-status" class="nav-link" id="navLinkStatus" style="color: var(--primary-color); font-weight: 800;"><i class="fa-solid fa-magnifying-glass"></i> متابعة الطلب</a>
+                <a href="#features" class="nav-link" id="navLinkFeatures">كيف نعمل</a>
+                <a href="#blog" class="nav-link" id="navLinkBlog">الإعلانات والمستجدات</a>
+                <a href="#register" class="nav-link" id="navLinkRegister">طلب التسجيل</a>
+                <a href="#faq" class="nav-link" id="navLinkFaq">الأسئلة الشائعة</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="#register" class="btn btn-secondary nav-btn" id="headerCtaBtn">سجل الآن</a>
+                <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="فتح القائمة">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+        </div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="badge" id="heroBadge"><i class="fa-solid fa-circle-check"></i> برنامج دعم الأسر لعام 2026</span>
+                <h1 class="hero-title" id="heroTitleText">معاً لتمكين الأسر وتقديم المساعدات المالية والغذائية</h1>
+                <p class="hero-description" id="heroDescText">
+                    تطلق "جمعية النور" بالتعاون مع المنظمات الشريكة برنامج تقديم المساعدات المالية (عبر الرمز البريدي PTT) والمساعدات الغذائية للأسر المستحقة وذات الدخل المحدود المقيمة في مختلف الولايات التركية لمساعدتهم على تلبية الاحتياجات الأساسية.
+                </p>
+                <div class="hero-actions">
+                    <a href="#register" class="btn btn-primary" id="heroRegisterBtn">تقديم طلب جديد <i class="fa-solid fa-arrow-left icon-right"></i></a>
+                    <a href="#features" class="btn btn-outline" id="heroLearnMoreBtn">شروط الاستحقاق</a>
+                </div>
+            </div>
+            <div class="hero-image-wrapper">
+                <div class="carousel-container">
+                    <button type="button" class="carousel-btn btn-prev" aria-label="السابق"><i class="fa-solid fa-chevron-right"></i></button>
+                    
+                    <div class="cards-carousel">
+                        <!-- Red Crescent Card -->
+                        <a href="#register" class="carousel-card card-left card-kizilay" id="cardKizilay">
+                            <img src="./assets/kizilay_card.png" alt="كرت الهلال الأحمر التركي" class="carousel-img">
+                            <span class="card-caption">كرت الهلال الأحمر</span>
+                        </a>
+                        <!-- PTT Card -->
+                        <a href="#register" class="carousel-card card-center card-ptt" id="cardPtt">
+                            <img src="./assets/ptt_card.png" alt="كرت بي تي تي PTT" class="carousel-img">
+                            <span class="card-caption">كرت PTT المالي</span>
+                        </a>
+                        <!-- Family Support Card -->
+                        <a href="#register" class="carousel-card card-right card-family" id="cardFamily">
+                            <img src="./assets/family_card.png" alt="كرت مساعدات العائلة" class="carousel-img">
+                            <span class="card-caption">كرت المساعدات العائلية</span>
+                        </a>
+                    </div>
+                    
+                    <button type="button" class="carousel-btn btn-next" aria-label="التالي"><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card" id="statCard1">
+                    <div class="stat-icon-wrapper">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-number" data-target="154200" id="statNum1">154K+</div>
+                    <div class="stat-label">أسرة مستفيدة</div>
+                </div>
+                <div class="stat-card" id="statCard2">
+                    <div class="stat-icon-wrapper">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <div class="stat-number" data-target="81" id="statNum2">81</div>
+                    <div class="stat-label">ولاية تركية مغطاة</div>
+                </div>
+                <div class="stat-card" id="statCard3">
+                    <div class="stat-icon-wrapper">
+                        <i class="fa-solid fa-handshake-angle"></i>
+                    </div>
+                    <div class="stat-number" data-target="96" id="statNum3">96%</div>
+                    <div class="stat-label">نسبة رضا المستفيدين</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features / How it works Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="sub-title">آلية العمل</span>
+                <h2 class="section-title">خطوات بسيطة للحصول على الدعم المالي</h2>
+                <p class="section-desc">نهدف لجعل عملية التسجيل والتقييم سهلة وشفافة لضمان وصول الدعم لمستحقيه بأسرع وقت ممكن.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" id="featureStep1">
+                    <div class="step-badge">1</div>
+                    <i class="fa-solid fa-file-signature feature-icon"></i>
+                    <h3 class="feature-title">التسجيل الإلكتروني</h3>
+                    <p class="feature-desc">املأ استمارة الطلب بالمعلومات الشخصية الدقيقة الخاصة بك وعائلتك في أسفل الصفحة.</p>
+                </div>
+                <div class="feature-card" id="featureStep2">
+                    <div class="step-badge">2</div>
+                    <i class="fa-solid fa-user-shield feature-icon"></i>
+                    <h3 class="feature-title">دراسة وتدقيق الطلب</h3>
+                    <p class="feature-desc">يقوم فريقنا بمراجعة البيانات ومقارنتها بمعايير الاستحقاق لتحديد مستوى الاحتياج.</p>
+                </div>
+                <div class="feature-card" id="featureStep3">
+                    <div class="step-badge">3</div>
+                    <i class="fa-solid fa-money-check-dollar feature-icon"></i>
+                    <h3 class="feature-title">استلام المساعدة</h3>
+                    <p class="feature-desc">في حال قبول الطلب، يتم تقديم المساعدات المالية شهرياً عبر الرمز البريدي PTT، بالإضافة إلى توزيع السلال الغذائية للأسر المستفيدة.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog & Updates Section -->
+    <section class="blog-updates-section" id="blog" style="padding: 4rem 0; background: var(--bg-card);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+                <span class="sub-title" style="color: var(--primary-color); font-weight: 800;"><i class="fa-solid fa-newspaper"></i> المستجدات والإعلانات</span>
+                <h2 class="section-title" style="font-size: 2rem; font-weight: 900;">أحدث الأخبار وتحديثات برنامج الدعم</h2>
+                <p class="section-desc">تابع أحدث الإعلانات الرسمية الصادرة حول مواعيد توزيع كروت PTT والسلال الغذائية لعام 2026.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.75rem;">
+                <article style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; transition: transform 0.3s ease; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--primary-color); font-weight: 700; margin-bottom: 0.75rem;">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>أغسطس 2026</span>
+                        <span style="margin: 0 0.25rem;">•</span>
+                        <span style="background: rgba(37, 211, 102, 0.15); color: #16a34a; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">تحديث هام</span>
+                    </div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text-dark);">بدء صرف دفعة كروت PTT المالية لشهر أغسطس</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">تعلن إدارة البرنامج عن البدء في إرسال شفرات استلام الحوالات المالية عبر بريد PTT للمستفيدين المقبولين رسمياً.</p>
+                    <a href="#check-status" style="color: var(--primary-color); font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">استعلم عن حالة حسابك <i class="fa-solid fa-arrow-left"></i></a>
+                </article>
+
+                <article style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; transition: transform 0.3s ease; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--primary-color); font-weight: 700; margin-bottom: 0.75rem;">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>أغسطس 2026</span>
+                        <span style="margin: 0 0.25rem;">•</span>
+                        <span style="background: rgba(13, 148, 136, 0.15); color: var(--primary-color); padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">توزيع عيني</span>
+                    </div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text-dark);">توسيع نطاق توزيع السلال الغذائية للأسر الكبيرة</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">تم إدراج 15 ولاية جديدة ضمن خطة الشحن المباشر للسلال الغذائية والكروت الشرائية للأسر التي يتجاوز عدد أفرادها 4 أشخاص.</p>
+                    <a href="#register" style="color: var(--primary-color); font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">سجل طلب أسرتك <i class="fa-solid fa-arrow-left"></i></a>
+                </article>
+
+                <article style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; transition: transform 0.3s ease; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--primary-color); font-weight: 700; margin-bottom: 0.75rem;">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>تنبيه أمني</span>
+                        <span style="margin: 0 0.25rem;">•</span>
+                        <span style="background: rgba(239, 68, 68, 0.15); color: #dc2626; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">إرشاد أمني</span>
+                    </div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text-dark);">تحذير من الصفحات المزيفة والرسوم الوهمية</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">نؤكد أن جميع خدمات التسجيل والاستعلام مجانية 100%، ولا نطلب أبداً أي مبالغ مالية مقابل تسريع معالجة الطلبات.</p>
+                    <a href="#faq" style="color: var(--primary-color); font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">اقرأ الأسئلة الشائعة <i class="fa-solid fa-arrow-left"></i></a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Public Application Status Lookup Section -->
+    <section class="status-lookup-section" id="check-status" style="background: linear-gradient(180deg, rgba(13, 148, 136, 0.04) 0%, var(--bg-body) 100%); padding: 4rem 0;">
+        <div class="container" style="max-width: 800px; margin: 0 auto;">
+            <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+                <span class="sub-title" style="color: var(--primary-color); font-weight: 800;"><i class="fa-solid fa-clock-rotate-left"></i> متابعة واستعلام</span>
+                <h2 class="section-title" style="font-size: 2rem; font-weight: 900; color: var(--text-dark);">الاستعلام عن حالة الطلب المباشرة</h2>
+                <p class="section-desc" style="color: var(--text-muted);">أدخل رقم المرجع الخفي الممنوح لك (مثال: NOOR-94821-TR) لمعرفة حالة قبول طلبك واستلامك عبر PTT.</p>
+            </div>
+
+            <div class="status-card" style="background: var(--bg-card); padding: 2rem; border-radius: 24px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color);">
+                <form id="statusCheckForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 260px; position: relative;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                        <input type="text" id="statusRefInput" placeholder="أدخل رقم المرجع (مثال: NOOR-94821-TR)" style="width: 100%; padding: 0.9rem 2.8rem 0.9rem 1.25rem; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); font-size: 1rem; color: var(--text-dark);" required>
+                    </div>
+                    <button type="submit" id="checkStatusBtn" class="btn btn-primary" style="padding: 0.9rem 1.75rem; border-radius: 12px; font-weight: 800; font-size: 1rem;">
+                        <i class="fa-solid fa-search"></i> استعلام الآن
+                    </button>
+                </form>
+
+                <!-- Result Box (Hidden by default) -->
+                <div id="statusResultBox" style="display: none; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px dashed var(--border-color); animation: fadeIn 0.4s ease;">
+                    <div id="statusBadgeContainer" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div id="statusIconBox" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: rgba(13, 148, 136, 0.1); color: var(--primary-color);">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
+                            <div>
+                                <h4 id="statusApplicantName" style="font-size: 1.15rem; font-weight: 800; color: var(--text-dark);">أحمد م.</h4>
+                                <span id="statusRefCode" style="font-size: 0.85rem; color: var(--text-muted); font-family: monospace;">NOOR-94821-TR</span>
+                            </div>
+                        </div>
+                        <span id="statusBadge" style="padding: 0.5rem 1.25rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem; border: 1px solid;">🟡 قيد التدقيق</span>
+                    </div>
+
+                    <p id="statusDescText" style="color: var(--text-dark); font-size: 0.95rem; line-height: 1.6; background: rgba(255, 255, 255, 0.5); padding: 1rem 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                        طلبك قيد المراجعة والتقييم حالياً من قبل اللجنة المختصة.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section class="register-section" id="register">
+        <div class="container">
+            <div class="register-layout">
+                <div class="register-info">
+                    <h2 class="register-title">طلب تسجيل البيانات للحصول على الدعم</h2>
+                    <p class="register-desc">يرجى تعبئة الحقول التالية بدقة كاملة. أي بيانات خاطئة قد تؤدي إلى استبعاد الطلب تلقائياً من نظام المراجعة.</p>
+                    <ul class="benefit-list">
+                        <li><i class="fa-solid fa-circle-check"></i> أمان وحماية كاملة لبياناتك الشخصية.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> عملية تدقيق سريعة لا تتعدى 10 أيام عمل.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> إمكانية تتبع حالة الطلب بالبريد الإلكتروني.</li>
+                    </ul>
+                    <div class="support-contact">
+                        <i class="fa-solid fa-headset support-icon"></i>
+                        <div>
+                            <h4>هل تحتاج للمساعدة في التسجيل؟</h4>
+                            <p>تواصل مع فريق الدعم الفني: support@alnoor-tr.org</p>
+                        </div>
+                    </div>
+                    <button type="button" id="openGuideBtn" class="btn btn-outline" style="margin-top: 1.25rem; border-color: var(--primary-color); color: var(--primary-color); width: 100%; justify-content: center; font-weight: 700; background: rgba(13, 148, 136, 0.05); padding: 0.85rem 1rem; border-radius: 12px; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-graduation-cap" style="font-size: 1.2rem;"></i>
+                        <span>فتح دليل التسجيل الشامل خطوة بخطوة</span>
+                    </button>
+
+
+                </div>
+                
+                <div class="register-card-wrapper">
+                    <div class="register-card" id="registerCard">
+                        <h3 class="form-title"><i class="fa-solid fa-pen-to-square"></i> استمارة التسجيل الإلكتروني</h3>
+                        <form id="aidRegistrationForm" novalidate>
+                            <!-- Name Row -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName"><i class="fa-solid fa-user"></i> الاسم الأول <span class="required">*</span></label>
+                                    <input type="text" id="firstName" name="firstName" placeholder="مثال: Ahmet" required>
+                                    <span class="error-message" id="firstNameError">هذا الحقل مطلوب</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName"><i class="fa-solid fa-users-rectangle"></i> اللقب / العائلة <span class="required">*</span></label>
+                                    <input type="text" id="lastName" name="lastName" placeholder="مثال: Yılmaz" required>
+                                    <span class="error-message" id="lastNameError">هذا الحقل مطلوب</span>
+                                </div>
+                            </div>
+
+                             <!-- Identity & Phone Row -->
+                             <div class="form-row">
+                                 <div class="form-group">
+                                     <label for="tcNumber"><i class="fa-solid fa-id-card"></i> رقم الكملك (TC) <span class="optional">(اختياري)</span></label>
+                                     <input type="text" id="tcNumber" name="tcNumber" placeholder="مثال: 99XXXXXXXXX" maxlength="11">
+                                     <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.2rem;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> يتكون من 11 رقماً يبدأ بـ 99</small>
+                                     <span class="error-message" id="tcNumberError">يجب أن يتكون رقم الكملك من 11 رقماً ويبدأ بـ 99</span>
+                                 </div>
+                                 <div class="form-group">
+                                     <label for="phoneNumber"><i class="fa-solid fa-phone"></i> رقم الهاتف <span class="required">*</span></label>
+                                     <input type="text" id="phoneNumber" name="phoneNumber" placeholder="مثال: 05XXXXXXXXX" maxlength="11" required>
+                                     <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.2rem;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> رقم تركي 11 خانة يبدأ بـ 05</small>
+                                     <span class="error-message" id="phoneNumberError">يجب إدخال رقم هاتف تركي صالح (11 خانة تبدأ بـ 05)</span>
+                                 </div>
+                             </div>
+
+                            <!-- Email Row -->
+                            <div class="form-group">
+                                <label for="email"><i class="fa-solid fa-envelope"></i> البريد الإلكتروني (Gmail حصراً) <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
+                                <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.2rem;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> يجب استخدام عنوان يتبع لنطاق @gmail.com لضمان الوصول</small>
+                                <span class="error-message" id="emailError">يجب أن يكون البريد الإلكتروني حساب Gmail صالحاً (ينتهي بـ @gmail.com)</span>
+                            </div>
+
+                            <!-- Password Row -->
+                            <div class="form-group password-group">
+                                <label for="password"><i class="fa-solid fa-lock"></i> كلمة المرور <span class="required">*</span></label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="password" name="password" placeholder="••••••••" required dir="ltr" style="text-align: left;">
+                                    <button type="button" class="toggle-password" id="togglePasswordBtn" aria-label="عرض كلمة المرور">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.2rem;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> بالأحرف والأرقام الإنجليزية فقط (8 خانات على الأقل، تجنب الأرقام المتسلسلة مثل 12345678)</small>
+                                <span class="error-message" id="passwordError">يجب أن تكون كلمة المرور بالأحرف والأرقام الإنجليزية فقط (8 خانات على الأقل)</span>
+                            </div>
+                            <!-- Marital Status Row -->
+                            <div class="form-group">
+                                <label for="maritalStatus"><i class="fa-solid fa-ring"></i> الحالة الاجتماعية <span class="required">*</span></label>
+                                <select id="maritalStatus" name="maritalStatus" required>
+                                    <option value="" disabled selected>اختر الحالة الاجتماعية</option>
+                                    <option value="single">أعزب / عزباء (Bekar)</option>
+                                    <option value="married">متزوج / متزوجة (Evli)</option>
+                                    <option value="divorced">مطلق / مطلقة (Boşanmış)</option>
+                                    <option value="widowed">أرمل / أرملة (Dul)</option>
+                                </select>
+                                <span class="error-message" id="maritalStatusError">يرجى تحديد الحالة الاجتماعية للمتابعة</span>
+                            </div>
+
+                            <!-- Grid Row: Family Count & Province -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="familyCount"><i class="fa-solid fa-people-group"></i> عدد أفراد الأسرة <span class="required">*</span></label>
+                                    <input type="number" id="familyCount" name="familyCount" min="1" max="25" placeholder="1" required>
+                                    <span class="error-message" id="familyCountError">العدد يجب أن يكون بين 1 و 25</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="province"><i class="fa-solid fa-location-dot"></i> ولاية الإقامة <span class="required">*</span></label>
+                                    <select id="province" name="province" required>
+                                        <option value="" disabled selected>اختر الولاية</option>
+                                        <option value="istanbul">إسطنبول (İstanbul)</option>
+                                        <option value="ankara">أنقرة (Ankara)</option>
+                                        <option value="izmir">إزمير (İzmir)</option>
+                                        <option value="gaziantep">غازي عنتاب (Gaziantep)</option>
+                                        <option value="hatay">هاتاي (Hatay)</option>
+                                        <option value="sanliurfa">شانلي أورفا (Şanlıurfa)</option>
+                                        <option value="mersin">مرسين (Mersin)</option>
+                                        <option value="bursa">بورصة (Bursa)</option>
+                                        <option value="adana">أضنة (Adana)</option>
+                                        <option value="other">ولاية أخرى (Diğer)</option>
+                                    </select>
+                                    <span class="error-message" id="provinceError">يرجى تحديد ولاية إقامتك</span>
+                                </div>
+                            </div>
+
+                            <!-- Terms and conditions checkbox -->
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label" for="termsCheck">
+                                    <input type="checkbox" id="termsCheck" name="termsCheck" required>
+                                    <span class="checkmark"></span>
+                                    <span>أقر بأن جميع البيانات المدخلة صحيحة وأتحمل المسؤولية القانونية كاملة عنها.</span>
+                                </label>
+                                <span class="error-message" id="termsCheckError">يجب الموافقة على صحة البيانات للمتابعة</span>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary btn-block" id="submitFormBtn">
+                                <span class="btn-text">إرسال طلب التسجيل</span>
+                                <span class="spinner" id="formSpinner"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="sub-title">الإجابات والأسئلة</span>
+                <h2 class="section-title">الأسئلة الشائعة حول المساعدات المالية</h2>
+                <p class="section-desc">نجيب على أهم استفساراتكم حول المعايير والآليات والمستندات المطلوبة.</p>
+            </div>
+            
+            <div class="faq-accordion-wrapper">
+                <div class="faq-item" id="faqItem1">
+                    <button class="faq-question" aria-expanded="false" id="faqQuest1">
+                        <span>ما هي شروط الاستحقاق الأساسية للحصول على الدعم؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer" id="faqAns1">
+                        <p>يستهدف برنامج الدعم الأسر ذات الدخل المحدود أو المعدوم، والأرامل، والأيتام، والعائلات التي بها أفراد من ذوي الاحتياجات الخاصة، شريطة إقامتهم القانونية في تركيا وامتلاكهم وثيقة إقامة أو كملك ساري المفعول.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="faqItem2">
+                    <button class="faq-question" aria-expanded="false" id="faqQuest2">
+                        <span>هل يتطلب تقديم الطلب دفع أي رسوم مالية؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer" id="faqAns2">
+                        <p>لا، التسجيل وتقديم الطلبات مجاني تماماً بنسبة 100%. نحذر بشدة من التعامل مع أي أشخاص أو جهات وهمية تدعي طلب رسوم أو مبالغ لتسريع قبول طلبك.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="faqItem3">
+                    <button class="faq-question" aria-expanded="false" id="faqQuest3">
+                        <span>كيف سأعلم بنتيجة دراسة طلبي؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer" id="faqAns3">
+                        <p>بعد اكتمال دراسة الطلب (والتي تستغرق عادة من 7 إلى 10 أيام عمل)، سنقوم بإرسال إشعار فوري لبريدك الإلكتروني، بالإضافة لرسالة نصية SMS إلى رقم الهاتف المرفق بملفك تحتوي على نتيجة القرار والخطوات التالية.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="faqItem4">
+                    <button class="faq-question" aria-expanded="false" id="faqQuest4">
+                        <span>كم تبلغ قيمة المساعدة المالية وكيف يتم توزيعها؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer" id="faqAns4">
+                        <p>تختلف قيمة المساعدة حسب عدد أفراد الأسرة المقيمين معاً في نفس المنزل ومستوى الفقر المادي، وتبدأ المساعدات المالية من 2,500 ليرة تركية شهرياً يتم تسليمها عبر خدمة الـ PTT التركية، بالإضافة إلى حصص وسلال غذائية شهرية مخصصة للأسر المستحقة.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-card">
+            <div class="modal-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="modal-title">تم إرسال طلبك بنجاح!</h3>
+            <p class="modal-text">نشكرك على إتمام التسجيل. تم تسجيل طلبك بنجاح في قاعدة البيانات وجاري نقله لفريق التدقيق والتقييم.</p>
+            <div class="application-receipt">
+                <span class="receipt-label">رقم مرجع الطلب (Application Reference):</span>
+                <span class="receipt-code" id="receiptCode">NOOR-99482-TR</span>
+            </div>
+            
+            <!-- Direct WhatsApp Verification Action -->
+            <div class="whatsapp-action-wrapper" style="margin-bottom: 1.25rem;">
+                <a href="#" id="whatsappBtn" target="_blank" rel="noopener" class="btn btn-whatsapp btn-block" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #ffffff; padding: 0.9rem 1.25rem; border-radius: 12px; font-weight: 800; text-decoration: none; font-size: 1.05rem; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35); transition: all 0.3s ease; width: 100%; border: none;">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 1.5rem;"></i>
+                    <span>إرسال برقية الطلب عبر الواتساب للتحقق</span>
+                </a>
+            </div>
+
+            <p class="modal-note">اضغط على زر الواتساب أعلاه لإرسال تفاصيل طلبك مباشرة للإدارة لتسريع عملية التحقق والاعتماد.</p>
+            <button class="btn btn-primary btn-block" id="closeModalBtn">إغلاق النافذة</button>
+        </div>
+    </div>
+
+    <!-- Registration Guide Modal -->
+    <div class="modal-overlay" id="guideModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
+        <div class="modal-card" style="max-width: 620px; text-align: right; border-radius: 24px; padding: 2.5rem; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 0.6rem;">
+                    <i class="fa-solid fa-graduation-cap" style="color: var(--primary-color);"></i>
+                    الدليل الشامل للتسجيل وقبول الطلب
+                </h3>
+                <button type="button" id="closeGuideModalBtn" style="background: none; border: none; font-size: 1.35rem; color: var(--text-muted); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <div style="background: rgba(13, 148, 136, 0.08); border-right: 4px solid var(--primary-color); padding: 1rem 1.25rem; border-radius: 12px;">
+                    <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.4rem; color: var(--primary-color);"><i class="fa-solid fa-list-check"></i> 1. البيانات المطلوبة قبل البدء</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dark); line-height: 1.6;">تأكد من تجهيز الاسم الثلاثي، رقم الكملك التركي (99)، رقم هاتف تركي ينتهي بـ 05، وعنوان بريد إلكتروني Gmail فعال.</p>
+                </div>
+
+                <div style="background: rgba(79, 70, 229, 0.08); border-right: 4px solid #4f46e5; padding: 1rem 1.25rem; border-radius: 12px;">
+                    <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.4rem; color: #4f46e5;"><i class="fa-solid fa-keyboard"></i> 2. شروط كتابة الحقول لتفادي الرفض</h4>
+                    <ul style="font-size: 0.88rem; color: var(--text-dark); margin-right: 1.25rem; line-height: 1.7;">
+                        <li><strong>رقم الهاتف:</strong> يتكون من 11 رقماً ويبدأ بـ 05 (مثال: 05381234567).</li>
+                        <li><strong>كلمة المرور:</strong> تتكون من 8 خانات على الأقل وتجنب الأرقام المكررة أو المتسلسلة (مثال: 12345678).</li>
+                        <li><strong>البريد:</strong> يجب أن ينتهي بـ `@gmail.com`.</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(37, 211, 102, 0.08); border-right: 4px solid #25D366; padding: 1rem 1.25rem; border-radius: 12px;">
+                    <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.4rem; color: #25D366;"><i class="fa-brands fa-whatsapp"></i> 3. خطوة التحقق الفوري عبر الواتساب</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dark); line-height: 1.6;">بعد الضغط على "تقديم الطلب"، ستظهر لك برقية الواتساب المباشرة. الضغط على إرسال البرقية يمنح طلبك الأولوية للتدقيق خلال 48 ساعة.</p>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-block" id="startRegisterNowBtn" style="margin-top: 1.75rem; width: 100%;">فهمت التعليمات، البدء بالتسجيل الآن 🚀</button>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <i class="fa-solid fa-hand-holding-heart logo-icon"></i>
+                        <span class="logo-text">جمعية<span>النور</span></span>
+                    </a>
+                    <p class="brand-tagline">مبادرة إنسانية رقمية مستقلة لتسهيل وتنظيم المساعدات المالية عبر الـ PTT والمساعدات الغذائية للأسر ذات الاحتياج في تركيا.</p>
+                </div>
+                <div class="footer-links-group">
+                    <div class="footer-links-col">
+                        <h4>روابط سريعة</h4>
+                        <a href="#hero">الرئيسية</a>
+                        <a href="#features">كيف نعمل</a>
+                        <a href="#register">تقديم طلب جديد</a>
+                        <a href="#faq">الأسئلة الشائعة</a>
+                    </div>
+                    <div class="footer-links-col">
+                        <h4>معلومات قانونية</h4>
+                        <a href="#">سياسة الخصوصية</a>
+                        <a href="#">شروط الاستخدام</a>
+                        <a href="#">حماية البيانات الشخصية KVKK</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2026 جمعية النور للمساعدات الإنسانية. جميع الحقوق محفوظة.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="تويتر"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" aria-label="إنستغرام"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="تلغرام"><i class="fa-brands fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

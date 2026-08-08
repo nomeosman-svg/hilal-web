@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | طلبات المساعدات</title>
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --primary-glow: rgba(13, 148, 136, 0.15);
+            --secondary: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.4);
+            --bg-card-hover: rgba(30, 41, 59, 0.6);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(51, 65, 85, 0.5);
+            --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 10% 20%, rgba(13, 148, 136, 0.1) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Header Navigation */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem 2rem;
+            border-radius: 20px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            font-size: 1.75rem;
+            color: var(--primary);
+        }
+
+        .brand-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .brand-badge {
+            background-color: rgba(13, 148, 136, 0.2);
+            color: #2dd4bf;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            border: 1px solid rgba(45, 212, 191, 0.3);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        /* Stat Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            border-color: rgba(13, 148, 136, 0.3);
+        }
+
+        .stat-info h3 {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .icon-blue {
+            background-color: rgba(79, 70, 229, 0.15);
+            color: #818cf8;
+        }
+
+        .icon-teal {
+            background-color: rgba(13, 148, 136, 0.15);
+            color: #2dd4bf;
+        }
+
+        .icon-orange {
+            background-color: rgba(249, 115, 22, 0.15);
+            color: #fb923c;
+        }
+
+        /* Data Section Container */
+        .data-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.55rem 2.5rem 0.55rem 1rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        /* Responsive Table styling */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(15, 23, 42, 0.4);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        .data-table th {
+            background-color: rgba(30, 41, 59, 0.7);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .data-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .ref-badge {
+            background-color: rgba(79, 70, 229, 0.15);
+            color: #a5b4fc;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: 600;
+            border: 1px solid rgba(129, 140, 248, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--border-color);
+        }
+
+        /* Loading Indicator */
+        .loading-overlay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 0;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            gap: 0.75rem;
+        }
+
+        .spinner-icon {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .marital-badge {
+            font-size: 0.8rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .marital-single { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .marital-married { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .marital-divorced { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .marital-widowed { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-brand">
+                <i class="fa-solid fa-hand-holding-heart brand-icon"></i>
+                <h1 class="brand-title">بوابة الإشراف والمراجعة</h1>
+                <span class="brand-badge">جمعية النور</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline" id="refreshBtn"><i class="fa-solid fa-rotate-right"></i> تحديث</button>
+                <button class="btn btn-outline" id="settingsBtn" style="border-color: #25D366; color: #25D366;"><i class="fa-brands fa-whatsapp"></i> إعدادات الواتساب</button>
+                <a href="/api/admin/export" class="btn btn-primary" id="exportBtn"><i class="fa-solid fa-file-csv"></i> تصدير Excel (CSV)</a>
+                <button type="button" class="btn btn-outline" id="clearAllBtn" style="border-color: #ef4444; color: #ef4444;"><i class="fa-solid fa-trash-can"></i> مسح جميع الطلبات</button>
+                <a href="/api/admin/logout" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> خروج</a>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3 id="statTotalTitle">إجمالي طلبات التسجيل</h3>
+                    <div class="stat-number" id="totalCount">0</div>
+                </div>
+                <div class="stat-icon-box icon-blue">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>أكثر المناطق / المحافظات تسجيلاً</h3>
+                    <div class="stat-number" style="font-size: 1.35rem;" id="topProvince">-</div>
+                </div>
+                <div class="stat-icon-box icon-teal">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>معدل أفراد الأسر</h3>
+                    <div class="stat-number" id="avgFamilySize">0</div>
+                </div>
+                <div class="stat-icon-box icon-orange">
+                    <i class="fa-solid fa-people-group"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Data Table Section -->
+        <main class="data-section">
+            <div class="section-title-wrapper" style="flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h2 class="section-title"><i class="fa-solid fa-list-check"></i> طلبات المساعدات الواردة</h2>
+                    <!-- Country Filter Tabs -->
+                    <div class="country-tabs" style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+                        <button type="button" class="btn btn-primary country-tab active" data-country="ALL" style="padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem;">
+                            🌐 كافـة الدول (<span id="countAll">0</span>)
+                        </button>
+                        <button type="button" class="btn btn-outline country-tab" data-country="LB" style="padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; border-color: #e11d48; color: #f43f5e;">
+                            🇱🇧 دولـة لبنـان (<span id="countLB">0</span>)
+                        </button>
+                        <button type="button" class="btn btn-outline country-tab" data-country="TR" style="padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; border-color: #0d9488; color: #2dd4bf;">
+                            🇹🇷 دولـة تركيـا (<span id="countTR">0</span>)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="ابحث بالاسم، الهاتف، القضاء، أو الرمز المرجعي...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>الرمز المرجعي</th>
+                            <th>الدولة</th>
+                            <th>الاسم الكامل</th>
+                            <th>نوع الوثيقة / المعرف</th>
+                            <th>رقم الهاتف</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>كلمة المرور</th>
+                            <th>المحافظة والقضاء / الولاية</th>
+                            <th>تفاصيل الاستلام والعملة</th>
+                            <th>أفراد الأسرة</th>
+                            <th>الحالة الاجتماعية</th>
+                            <th>حالة الطلب</th>
+                            <th>تاريخ التقديم</th>
+                            <th>التواصل والإشعار</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data will be loaded via script -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="loading-overlay" id="loadingState">
+                <i class="fa-solid fa-circle-notch fa-spin spinner-icon"></i>
+                <span>جاري تحميل طلبات المستفيدين...</span>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon"><i class="fa-regular fa-folder-open"></i></div>
+                <h3>لا توجد طلبات مسجلة حالياً</h3>
+                <p>بمجرد قيام المستفيدين بالتسجيل عبر الاستمارة، ستظهر طلباتهم هنا تلقائياً.</p>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- WhatsApp Settings Modal -->
+    <div id="settingsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;">
+        <div style="background: #1e293b; border: 1px solid var(--border-color); width: 100%; max-width: 520px; border-radius: 20px; padding: 2rem; color: #f8fafc; box-shadow: var(--shadow-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <h3 style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.25rem;"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> إعدادات استلام إشعارات الواتساب</h3>
+                <button type="button" id="closeSettingsModal" style="background: none; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="settingsForm">
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem;">📱 رقم الواتساب الذي ستصل عليه الإشعارات:</label>
+                    <input type="text" id="adminPhoneInput" placeholder="مثال: 905380000000" style="width: 100%; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.6); color: white; font-size: 1rem; direction: ltr; text-align: right;" required>
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.4rem; font-size: 0.8rem;">أدخل رقمك مع كود الدولة (مثال: 90 لتركيا بدون 0 في البداية).</small>
+                </div>
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem;">🔑 رمز CallMeBot API Key (للإرسال التلقائي الصامت):</label>
+                    <input type="text" id="callmebotKeyInput" placeholder="أدخل الرمز (مثال: 123456)" style="width: 100%; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.6); color: white; font-size: 1rem; direction: ltr; text-align: right;">
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.4rem; font-size: 0.8rem;">اتركه فارغاً إن كنت لا تملك الرمز بعد.</small>
+                </div>
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem;">⚡ رابط / اسم صفحة الفيسبوك ماسنجر (موقع لبنان):</label>
+                    <input type="text" id="messengerPageInput" placeholder="مثال: https://www.facebook.com/profile.php?id=... أو اسم المستخدم" style="width: 100%; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.6); color: white; font-size: 1rem; direction: ltr; text-align: right;">
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.4rem; font-size: 0.8rem;">يُستخدم لإنشاء رابط تأكيد الطلب مباشرة للمستفيدين عبر ماسنجر.</small>
+                </div>
+                <div style="margin-bottom: 1.5rem; border-top: 1px dashed var(--border-color); padding-top: 1.25rem;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem; color: #f43f5e;">🔒 تغيير كلمة مرور الأدمن (اختياري):</label>
+                    <input type="password" id="newAdminPasswordInput" placeholder="أدخل كلمة مرور جديدة قوية (8 خانات على الأقل)" style="width: 100%; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.6); color: white; font-size: 1rem;">
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.4rem; font-size: 0.8rem;">اتركها فارغة إذا لا ترغب في تغيير كلمة المرور الحالية.</small>
+                </div>
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                    <button type="button" id="cancelSettingsBtn" class="btn btn-outline">إلغاء</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: var(--primary); border-color: var(--primary);"><i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات والأمان</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let registrationsList = [];
+        const totalCountEl = document.getElementById('totalCount');
+        const topProvinceEl = document.getElementById('topProvince');
+        const avgFamilySizeEl = document.getElementById('avgFamilySize');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        const escapeHtml = (str) => {
+            if (!str) return '';
+            return str.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        };
+
+        const formatPhoneForWhatsApp = (phoneStr) => {
+            if (!phoneStr) return '';
+            let clean = phoneStr.toString().replace(/\D/g, '');
+            while (clean.startsWith('0')) {
+                clean = clean.substring(1);
+            }
+            if (clean.startsWith('5')) {
+                clean = '90' + clean;
+            }
+            return clean;
+        };
+
+        const tableBody = document.getElementById('tableBody');
+        const loadingState = document.getElementById('loadingState');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsModal = document.getElementById('closeSettingsModal');
+        const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
+        const settingsForm = document.getElementById('settingsForm');
+        const adminPhoneInput = document.getElementById('adminPhoneInput');
+        const callmebotKeyInput = document.getElementById('callmebotKeyInput');
+        const messengerPageInput = document.getElementById('messengerPageInput');
+
+        // Settings Modal Handlers
+        const openSettings = () => {
+            fetch('/api/admin/settings', { credentials: 'same-origin' })
+                .then(res => res.json())
+                .then(data => {
+                    adminPhoneInput.value = data.adminPhone || '';
+                    callmebotKeyInput.value = data.callmebotApiKey || '';
+                    if (messengerPageInput) messengerPageInput.value = data.messengerPageUsername || '';
+                    settingsModal.style.display = 'flex';
+                })
+                .catch(err => console.error('Error fetching settings:', err));
+        };
+
+        const closeSettings = () => {
+            settingsModal.style.display = 'none';
+        };
+
+        if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
+        if (closeSettingsModal) closeSettingsModal.addEventListener('click', closeSettings);
+        if (cancelSettingsBtn) cancelSettingsBtn.addEventListener('click', closeSettings);
+
+        const newAdminPasswordInput = document.getElementById('newAdminPasswordInput');
+
+        if (settingsForm) {
+            settingsForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const payload = {
+                    adminPhone: adminPhoneInput.value.trim(),
+                    callmebotApiKey: callmebotKeyInput.value.trim(),
+                    messengerPageUsername: messengerPageInput ? messengerPageInput.value.trim() : '',
+                    newPassword: newAdminPasswordInput ? newAdminPasswordInput.value.trim() : ''
+                };
+                fetch('/api/admin/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json().then(data => ({ status: res.status, body: data })))
+                .then(result => {
+                    if (result.body.success) {
+                        alert('✅ تم حفظ الإعدادات وتحديث الأمان بنجاح!');
+                        if (result.body.settings && result.body.settings.adminPhone) {
+                            adminPhoneInput.value = result.body.settings.adminPhone;
+                        }
+                        if (newAdminPasswordInput) newAdminPasswordInput.value = '';
+                        closeSettings();
+                    } else {
+                        alert('❌ ' + (result.body.error || 'فشل حفظ الإعدادات'));
+                    }
+                })
+                .catch(err => alert('حدث خطأ في الاتصال بالسيرفر'));
+            });
+        }
+
+        const formatMaritalStatus = (status) => {
+            const map = {
+                'single': { text: 'أعزب/عزباء', class: 'marital-single' },
+                'married': { text: 'متزوج/متزوجة', class: 'marital-married' },
+                'divorced': { text: 'مطلق/مطلقة', class: 'marital-divorced' },
+                'widowed': { text: 'أرمل/أرملة', class: 'marital-widowed' }
+            };
+            const match = map[status] || { text: status, class: '' };
+            return `<span class="marital-badge ${match.class}">${match.text}</span>`;
+        };
+
+        const formatProvince = (province) => {
+            const map = {
+                'istanbul': 'إسطنبول',
+                'ankara': 'أنقرة',
+                'izmir': 'إزمير',
+                'gaziantep': 'غازي عنتاب',
+                'hatay': 'هاتاي',
+                'sanliurfa': 'شانلي أورفا',
+                'mersin': 'مرسين',
+                'bursa': 'بورصة',
+                'adana': 'أضنة',
+                'other': 'ولاية أخرى'
+            };
+            return map[province] || province;
+        };
+
+        window.toggleRowPassword = (btn) => {
+            const pwdWrapper = btn.parentElement;
+            if (!pwdWrapper) return;
+            const pwdSpan = pwdWrapper.querySelector('span');
+            const icon = btn.querySelector('i');
+            if (!pwdSpan || !icon) return;
+
+            const realPassword = btn.getAttribute('data-password') || '';
+            if (btn.classList.contains('showing')) {
+                pwdSpan.textContent = '••••••••';
+                btn.classList.remove('showing');
+                icon.className = 'fa-regular fa-eye';
+            } else {
+                pwdSpan.textContent = realPassword;
+                btn.classList.add('showing');
+                icon.className = 'fa-regular fa-eye-slash';
+            }
+        };
+
+        window.deleteSingleRegistration = (btnOrId, name) => {
+            let id = btnOrId;
+            let targetName = name;
+            if (typeof btnOrId === 'object' && btnOrId && btnOrId.getAttribute) {
+                id = btnOrId.getAttribute('data-id');
+                targetName = btnOrId.getAttribute('data-name');
+            }
+            if (confirm(`⚠️ هل أنت متأكد من رغبتك في مسح طلب المتقدم (${targetName || ''}) نهائياً؟`)) {
+                fetch('/api/admin/delete-registration', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ id })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ تم مسح التسجيل بنجاح');
+                        fetchRegistrations();
+                    } else {
+                        alert('❌ فشل مسح التسجيل');
+                    }
+                })
+                .catch(err => alert('حدث خطأ أثناء مسح التسجيل'));
+            }
+        };
+
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', () => {
+                const confirmFirst = confirm('⚠️ تحذير شديد! هل أنت متأكد من مسح كـافـة طلبات المتقدمين المسجلة في النظام نهائياً؟');
+                if (confirmFirst) {
+                    const confirmSecond = prompt('تأكيد إضافي: يرجى كتابة "مسح" لتنفيذ المسح الشامل لجميع الطلبات:');
+                    if (confirmSecond && confirmSecond.trim() === 'مسح') {
+                        fetch('/api/admin/clear-all-registrations', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'same-origin'
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('✅ تم مسح جميع التسجيلات بنجاح');
+                                fetchRegistrations();
+                            } else {
+                                alert('❌ فشل مسح التسجيلات');
+                            }
+                        })
+                        .catch(err => alert('حدث خطأ أثناء مسح التسجيلات'));
+                    }
+                }
+            });
+        }
+
+        window.updateStatus = (id, newStatus) => {
+            fetch('/api/admin/update-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ id, status: newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.notifyWhatsappUrl) {
+                        const openWa = confirm('✅ تم تحديث حالة الطلب بنجاح!\n\nهل ترغب في فتح الواتساب لإرسال البرقية التحديثية للمستفيد الآن؟');
+                        if (openWa) {
+                            window.open(data.notifyWhatsappUrl, '_blank');
+                        }
+                    }
+                    // Refresh data
+                    fetchRegistrations();
+                } else {
+                    alert('❌ فشل تحديث الحالة');
+                }
+            })
+            .catch(err => alert('حدث خطأ أثناء التحديث'));
+        };
+
+        let activeCountryFilter = 'ALL';
+
+        const isLebanonRecord = (item) => {
+            if (!item) return false;
+            return item.country === 'LB' || (item.refCode && item.refCode.toString().endsWith('-LB'));
+        };
+
+        const formatDocType = (item) => {
+            if (isLebanonRecord(item)) {
+                const map = {
+                    'lebanese_id': 'الهوية اللبنانية / إخراج قيد',
+                    'unhcr_card': 'بطاقة المفوضية UNHCR',
+                    'passport_residence': 'جواز سفر / إقامة'
+                };
+                const docName = map[item.docType] || item.docType || 'وثيقة رسمية';
+                return `<span style="color: #f43f5e; font-weight: 700;">${docName}</span>` + (item.tcNumber ? `<br><small style="color: var(--text-muted); font-family: monospace;"># ${escapeHtml(item.tcNumber)}</small>` : '');
+            } else {
+                return item.tcNumber ? `<span style="font-family: monospace; color: #2dd4bf;">TC: ${escapeHtml(item.tcNumber)}</span>` : '<span style="color: var(--text-muted);">غير متوفر</span>';
+            }
+        };
+
+        const formatLocation = (item) => {
+            const provName = formatProvince(item.province);
+            if (isLebanonRecord(item) && item.district) {
+                return `<strong>${escapeHtml(provName)}</strong><br><small style="color: #fb923c;"><i class="fa-solid fa-location-dot"></i> قضاء ${escapeHtml(item.district)}</small>`;
+            }
+            return `<strong>${escapeHtml(provName)}</strong>`;
+        };
+
+        const formatPayoutInfo = (item) => {
+            if (isLebanonRecord(item)) {
+                const method = item.payoutMethod || 'OMT / Whish';
+                const curr = item.currency || 'USD';
+                const currBadge = curr === 'USD' ? '<span style="background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 800; font-size: 0.75rem;">$ USD</span>' : '<span style="background: rgba(234, 179, 8, 0.15); color: #eab308; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 800; font-size: 0.75rem;">LBP</span>';
+                return `<div style="font-weight: 700; font-size: 0.85rem;">${escapeHtml(method)} ${currBadge}</div>`;
+            } else {
+                return '<span style="color: #38bdf8; font-weight: 700;"><i class="fa-solid fa-credit-card"></i> كرت PTT المالي</span>';
+            }
+        };
+
+        const filterAndRender = () => {
+            let list = registrationsList || [];
+
+            // 1. Update country tab badge counts
+            const countAll = list.length;
+            const countLB = list.filter(r => isLebanonRecord(r)).length;
+            const countTR = list.filter(r => !isLebanonRecord(r)).length;
+
+            const countAllEl = document.getElementById('countAll');
+            const countLBEl = document.getElementById('countLB');
+            const countTREl = document.getElementById('countTR');
+
+            if (countAllEl) countAllEl.textContent = countAll;
+            if (countLBEl) countLBEl.textContent = countLB;
+            if (countTREl) countTREl.textContent = countTR;
+
+            // 2. Filter by Active Country Tab
+            if (activeCountryFilter === 'LB') {
+                list = list.filter(r => isLebanonRecord(r));
+            } else if (activeCountryFilter === 'TR') {
+                list = list.filter(r => !isLebanonRecord(r));
+            }
+
+            // 3. Filter by Search Query
+            const query = (searchInput.value || '').toLowerCase().trim();
+            if (query) {
+                list = list.filter(item => {
+                    const fullName = `${item.firstName} ${item.lastName}`.toLowerCase();
+                    return fullName.includes(query) ||
+                           (item.phoneNumber && item.phoneNumber.includes(query)) ||
+                           (item.refCode && item.refCode.toLowerCase().includes(query)) ||
+                           (item.email && item.email.toLowerCase().includes(query)) ||
+                           (item.district && item.district.toLowerCase().includes(query)) ||
+                           (item.province && item.province.toLowerCase().includes(query)) ||
+                           (item.tcNumber && item.tcNumber.includes(query));
+                });
+            }
+
+            renderData(list);
+            calculateStats(list);
+        };
+
+        // Setup Country Tab Buttons
+        document.querySelectorAll('.country-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.country-tab').forEach(b => {
+                    b.classList.remove('active', 'btn-primary');
+                    b.classList.add('btn-outline');
+                });
+                btn.classList.add('active', 'btn-primary');
+                btn.classList.remove('btn-outline');
+                activeCountryFilter = btn.getAttribute('data-country');
+
+                const statTitle = document.getElementById('statTotalTitle');
+                if (statTitle) {
+                    if (activeCountryFilter === 'LB') statTitle.textContent = 'طلبات دولة لبنان 🇱🇧';
+                    else if (activeCountryFilter === 'TR') statTitle.textContent = 'طلبات دولة تركيا 🇹🇷';
+                    else statTitle.textContent = 'إجمالي طلبات التسجيل (كافة الدول)';
+                }
+
+                filterAndRender();
+            });
+        });
+
+        const renderData = (data) => {
+            loadingState.style.display = 'none';
+            if (data.length === 0) {
+                emptyState.style.display = 'block';
+                tableBody.innerHTML = '';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            tableBody.innerHTML = data.map(item => {
+                const date = new Date(item.submittedAt).toLocaleDateString('ar-EG', {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                const formattedPhone = formatPhoneForWhatsApp(item.phoneNumber);
+                const safeFirstName = escapeHtml(item.firstName);
+                const safeLastName = escapeHtml(item.lastName);
+                const safeEmail = escapeHtml(item.email);
+                const safePhone = escapeHtml(item.phoneNumber);
+                const isLb = isLebanonRecord(item);
+                const countryBadge = isLb ? 
+                    '<span style="background: rgba(225, 29, 72, 0.15); color: #f43f5e; padding: 0.2rem 0.55rem; border-radius: 9999px; font-weight: 800; font-size: 0.78rem; border: 1px solid rgba(225, 29, 72, 0.3);">🇱🇧 لبنان</span>' : 
+                    '<span style="background: rgba(13, 148, 136, 0.15); color: #2dd4bf; padding: 0.2rem 0.55rem; border-radius: 9999px; font-weight: 800; font-size: 0.78rem; border: 1px solid rgba(45, 212, 191, 0.3);">🇹🇷 تركيا</span>';
+
+                const waVerifyText = `مرحباً ${safeFirstName}، التواصل معك من إدارة جمعية النور بشأن طلبك المرفق برقم المرجع (${item.refCode}).`;
+                const waLink = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(waVerifyText)}`;
+                
+                const currentStatus = item.status || 'pending';
+                const statusStyles = {
+                    'pending': 'background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);',
+                    'approved': 'background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);',
+                    'delivered': 'background: rgba(59, 130, 246, 0.15); color: #3b82f6; border-color: rgba(59, 130, 246, 0.3);',
+                    'rejected': 'background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);'
+                };
+
+                return `
+                    <tr>
+                        <td><span class="ref-badge">${item.refCode}</span></td>
+                        <td>${countryBadge}</td>
+                        <td><strong>${safeFirstName} ${safeLastName}</strong></td>
+                        <td>${formatDocType(item)}</td>
+                        <td dir="ltr" style="text-align: right;">${safePhone}</td>
+                        <td>${safeEmail}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.4rem; font-family: monospace;">
+                                <span>••••••••</span>
+                                <button type="button" onclick="toggleRowPassword(this)" data-password="${escapeHtml(item.password || '')}" title="عرض/إخفاء كلمة المرور" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.2rem; font-size: 0.9rem;">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>${formatLocation(item)}</td>
+                        <td>${formatPayoutInfo(item)}</td>
+                        <td style="font-weight: bold; text-align: center;">${item.familyCount}</td>
+                        <td>${formatMaritalStatus(item.maritalStatus)}</td>
+                        <td>
+                            <select onchange="updateStatus('${item.id}', this.value)" style="padding: 0.35rem 0.6rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; border: 1px solid; ${statusStyles[currentStatus] || ''}">
+                                <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>🟡 قيد التدقيق</option>
+                                <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>🟢 مقبول</option>
+                                <option value="delivered" ${currentStatus === 'delivered' ? 'selected' : ''}>🔵 تم التسليم</option>
+                                <option value="rejected" ${currentStatus === 'rejected' ? 'selected' : ''}>🔴 غير مستوفي</option>
+                            </select>
+                        </td>
+                        <td><span style="font-size: 0.85rem; color: var(--text-muted);">${date}</span></td>
+                        <td style="white-space: nowrap;">
+                            <div style="display: flex; gap: 0.4rem; align-items: center;">
+                                <a href="${waLink}" target="_blank" rel="noopener" class="btn-wa-contact" style="display: inline-flex; align-items: center; gap: 0.4rem; background-color: #25D366; color: white; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: transform 0.2s ease;">
+                                    <i class="fa-brands fa-whatsapp"></i> مراسلة
+                                </a>
+                                <button type="button" data-id="${escapeHtml(item.id)}" data-name="${safeFirstName} ${safeLastName}" onclick="deleteSingleRegistration(this)" title="مسح هذا الطلب" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 0.4rem 0.7rem; cursor: pointer; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                    <i class="fa-solid fa-trash-can"></i> مسح
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        };
+
+        const fetchRegistrations = () => {
+            loadingState.style.display = 'flex';
+            tableBody.innerHTML = '';
+            emptyState.style.display = 'none';
+
+            fetch('/api/admin/data', { credentials: 'same-origin' })
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = '/admin/login';
+                        return null;
+                    }
+                    if (!res.ok) {
+                        throw new Error(`خطأ في السيرفر (${res.status})`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (!data) return;
+                    registrationsList = data;
+                    filterAndRender();
+                })
+                .catch(err => {
+                    console.error('Error fetching data:', err);
+                    loadingState.innerHTML = `<span style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(err.message || 'فشل تحميل البيانات. الرجاء محاولة تحديث الصفحة.')}</span>`;
+                });
+        };
+
+        const calculateStats = (data) => {
+            const count = data.length;
+            totalCountEl.textContent = count;
+
+            if (count === 0) {
+                topProvinceEl.textContent = '-';
+                avgFamilySizeEl.textContent = '0';
+                return;
+            }
+
+            // Average Family Size
+            const totalFamily = data.reduce((sum, item) => sum + (item.familyCount || 0), 0);
+            avgFamilySizeEl.textContent = (totalFamily / count).toFixed(1);
+
+            // Top Province / District
+            const provinces = {};
+            data.forEach(item => {
+                const loc = item.country === 'LB' && item.district ? `${formatProvince(item.province)} (${item.district})` : formatProvince(item.province);
+                provinces[loc] = (provinces[loc] || 0) + 1;
+            });
+            let topProv = '-';
+            let maxCount = 0;
+            Object.keys(provinces).forEach(prov => {
+                if (provinces[prov] > maxCount) {
+                    maxCount = provinces[prov];
+                    topProv = prov;
+                }
+            });
+            topProvinceEl.textContent = topProv + ` (${maxCount})`;
+        };
+
+        // Search Filter Listener
+        searchInput.addEventListener('input', filterAndRender);
+
+        // Refresh action
+        refreshBtn.addEventListener('click', fetchRegistrations);
+
+        // Initial Load
+        fetchRegistrations();
+    </script>
+</body>
+</html>
