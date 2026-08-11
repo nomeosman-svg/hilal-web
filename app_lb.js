@@ -207,11 +207,16 @@ document.addEventListener('DOMContentLoaded', () => {
             checkStatusBtn.disabled = true;
             checkStatusBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري البحث...';
 
+            const passwordInput = document.getElementById('statusPasswordInput');
+            const emailInput = document.getElementById('statusEmailInput');
+            const password = passwordInput ? passwordInput.value : '';
+            const email = emailInput ? emailInput.value.trim() : '';
+
             try {
                 const response = await fetch('/api/check-status', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ refCode })
+                    body: JSON.stringify({ refCode, password, email })
                 });
 
                 const data = await response.json();
@@ -287,26 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     googleSyncSuccessBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري مزامنة حسابات البريد لجهازك...';
                 }
 
-                // 1. Try Credential Manager API if available
-                if (navigator.credentials && navigator.credentials.get) {
-                    try {
-                        const cred = await navigator.credentials.get({
-                            password: true,
-                            mediation: 'optional'
-                        });
-                        if (cred && cred.id) {
-                            email.value = cred.id;
-                            if (googleSyncSuccessBadge) {
-                                googleSyncSuccessBadge.style.display = 'block';
-                                googleSyncSuccessBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> تم جلب ومزامنة بريد جهازك بنجاح! (' + cred.id + ')';
-                            }
-                            email.style.borderColor = '#16a34a';
-                            return;
-                        }
-                    } catch (e) {
-                        console.log('Credential API skipped or unavailable', e);
-                    }
-                }
+                // Native keyboard auto-fill hint on Android/iOS
 
                 // 2. Focus & trigger native keyboard auto-fill chip bar on Android/iOS
                 setTimeout(() => {
@@ -531,18 +517,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearError('email');
             }
 
-            // Password (min 8 chars, English characters & non-sequential)
+            // Password (min 8 chars, English letters AND numbers, no weak sequences like 12345/qwerty)
             const passStr = (password && password.value ? password.value : '').trim();
             const englishRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/;
-            const commonSequences = ['12345678', '123456789', '1234567890', '987654321', '87654321'];
+            const hasLetter = /[a-zA-Z]/.test(passStr);
+            const hasNumber = /[0-9]/.test(passStr);
+            const weakBlacklist = ['12345', '123456', '1234567', '12345678', '123456789', '987654321', '87654321', '123123', '12341234', '111111', '000000', 'password', 'qwerty', 'admin', 'alnoor'];
+            const pwdLower = passStr.toLowerCase();
+
             if (!passStr || passStr.length < 8) {
                 showError('password', 'كلمة المرور يجب أن تتكون من 8 خانات على الأقل');
                 isValid = false;
             } else if (!englishRegex.test(passStr)) {
                 showError('password', 'يجب أن تتكون كلمة المرور من الأحرف والأرقام الإنجليزية فقط (يمنع استخدام الحروف العربية)');
                 isValid = false;
-            } else if (commonSequences.some(seq => passStr.includes(seq)) || /^(\d)\1+$/.test(passStr)) {
-                showError('password', 'كلمة المرور ضعيفة جداً (يمنع استخدام أرقام متسلسلة مثل 12345678)');
+            } else if (!hasLetter || !hasNumber) {
+                showError('password', 'يجب أن تحتوي كلمة المرور على أحرف وأرقام معاً (مثال: Noor2026)');
+                isValid = false;
+            } else if (weakBlacklist.some(seq => pwdLower.includes(seq)) || /^(\d)\1+$/.test(passStr) || /^(.)\1{3,}$/.test(passStr)) {
+                showError('password', 'كلمة المرور ضعيفة جداً (يمنع استخدام كلمات أو أرقام متسلسلة مثل 12345 أو qwerty)');
                 isValid = false;
             } else {
                 clearError('password');

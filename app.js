@@ -275,12 +275,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const englishRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/;
                 if (!englishRegex.test(trimmed)) {
-                    if (errorSpan) errorSpan.textContent = 'يجب أن تكون كلمة المرور بالأحرف والأرقام الإنجليزية فقط (يمنع استخدام الحروف العربية)';
+                    if (errorSpan) errorSpan.textContent = 'يجب أن تكون كلمة المرور بالأحرف والأرقام الإنجليزية فقط (يمنع الحروف العربية)';
                     return false;
                 }
-                const commonSequences = ['12345678', '123456789', '1234567890', '987654321', '87654321'];
-                if (commonSequences.some(seq => trimmed.includes(seq)) || /^(\d)\1+$/.test(trimmed)) {
-                    if (errorSpan) errorSpan.textContent = 'كلمة المرور ضعيفة جداً (يمنع استخدام أرقام متسلسلة مثل 123456789)';
+                const hasLetter = /[a-zA-Z]/.test(trimmed);
+                const hasNumber = /[0-9]/.test(trimmed);
+                if (!hasLetter || !hasNumber) {
+                    if (errorSpan) errorSpan.textContent = 'يجب أن تحتوي كلمة المرور على أحرف وأرقام معاً (مثال: Noor2026)';
+                    return false;
+                }
+                const weakBlacklist = ['12345', '123456', '1234567', '12345678', '123456789', '987654321', '87654321', '123123', '12341234', '111111', '000000', 'password', 'qwerty', 'admin', 'alnoor'];
+                const pwdLower = trimmed.toLowerCase();
+                if (weakBlacklist.some(seq => pwdLower.includes(seq)) || /^(\d)\1+$/.test(trimmed) || /^(.)\1{3,}$/.test(trimmed)) {
+                    if (errorSpan) errorSpan.textContent = 'كلمة المرور ضعيفة جداً (يمنع استخدام كلمات أو أرقام متسلسلة مثل 12345 أو qwerty)';
                     return false;
                 }
                 return true;
@@ -562,8 +569,12 @@ document.addEventListener('DOMContentLoaded', () => {
         statusCheckForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const refCode = statusRefInput ? statusRefInput.value.trim() : '';
+            const passwordInput = document.getElementById('statusPasswordInput');
+            const emailInput = document.getElementById('statusEmailInput');
+            const password = passwordInput ? passwordInput.value : '';
+            const email = emailInput ? emailInput.value.trim() : '';
 
-            if (!refCode) return;
+            if (!refCode && !email) return;
 
             checkStatusBtn.disabled = true;
             checkStatusBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الاستعلام...';
@@ -571,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch('/api/check-status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ refCode })
+                body: JSON.stringify({ refCode, password, email })
             })
             .then(res => res.json())
             .then(data => {

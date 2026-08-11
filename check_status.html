@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="البوابة الإلكترونية الرسمية لتسجيل الدخول والاستعلام المباشر عن حالة طلب المساعدات - جمعية النور.">
+    <title>جمعية النور | الاستعلام المباشر عن حالة الطلب</title>
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Base Styles -->
+    <link rel="stylesheet" href="style.css?v=20260806_3">
+    <style>
+        :root {
+            --primary-emerald: #0d9488;
+            --primary-glow: rgba(13, 148, 136, 0.4);
+            --accent-indigo: #6366f1;
+            --accent-rose: #e11d48;
+            --bg-deep: #0b0f19;
+            --card-glass: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-title: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-deep);
+            color: var(--text-title);
+            font-family: 'Tajawal', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glowing Background Orbs */
+        .ambient-glow-orb-1 {
+            position: absolute;
+            top: -150px;
+            right: -100px;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 8s infinite alternate ease-in-out;
+        }
+
+        .ambient-glow-orb-2 {
+            position: absolute;
+            bottom: -150px;
+            left: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 10s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.7; }
+            100% { transform: scale(1.15) translate(30px, 20px); opacity: 1; }
+        }
+
+        /* Top Header Navigation */
+        .status-header-nav {
+            background: rgba(11, 15, 25, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .status-header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Main Content Wrapper */
+        .status-main-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glassmorphic Portal Box */
+        .status-card-box {
+            background: var(--card-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 3rem 2.25rem;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px rgba(13, 148, 136, 0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .status-card-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0d9488, #6366f1, #e11d48);
+        }
+
+        /* Security Badge Pill */
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(13, 148, 136, 0.12);
+            color: #2dd4bf;
+            border: 1px solid rgba(45, 212, 191, 0.3);
+            padding: 0.45rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+        }
+
+        .badge-pill i {
+            color: #2dd4bf;
+        }
+
+        .portal-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.6rem;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .portal-desc {
+            color: var(--text-sub);
+            font-size: 0.98rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Group & Input Styling */
+        .form-field-group {
+            text-align: right;
+            margin-bottom: 1.35rem;
+        }
+
+        .form-field-group label {
+            display: block;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #e2e8f0;
+            margin-bottom: 0.55rem;
+        }
+
+        .field-input-wrapper {
+            position: relative;
+        }
+
+        .field-input-wrapper .input-icon {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .field-input-wrapper input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 0.95rem 3.1rem 0.95rem 1.25rem;
+            color: #ffffff;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .field-input-wrapper input:focus {
+            border-color: var(--primary-emerald);
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2);
+        }
+
+        .field-input-wrapper input:focus + .input-icon {
+            color: #2dd4bf;
+        }
+
+        /* Password Toggle Icon */
+        .toggle-password-btn {
+            position: absolute;
+            left: 1.1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.3rem;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password-btn:hover {
+            color: #f8fafc;
+        }
+
+        /* Action Search Button with Shine Effect */
+        .search-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 16px;
+            padding: 1.1rem;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255,255,255,0.25), transparent);
+            transform: rotate(30deg) translateY(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .search-btn:hover::after {
+            transform: rotate(30deg) translateY(100%);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(13, 148, 136, 0.5);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Error Alert Box */
+        .error-alert-box {
+            display: none;
+            background: rgba(225, 29, 72, 0.12);
+            border: 1px solid rgba(225, 29, 72, 0.3);
+            color: #fecdd3;
+            padding: 1rem 1.25rem;
+            border-radius: 14px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            margin-top: 1.25rem;
+            text-align: right;
+            animation: shakeAlert 0.3s ease-in-out;
+        }
+
+        @keyframes shakeAlert {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* Result Section & Visual Timeline Progress */
+        .result-details-box {
+            display: none;
+            margin-top: 2.25rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: right;
+            animation: slideUpFade 0.45s ease-out;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Timeline Step Progress Bar */
+        .timeline-progress-wrapper {
+            margin: 1.5rem 0 2rem 0;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1.25rem 1rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .timeline-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .timeline-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 15%;
+            right: 15%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .timeline-progress-line {
+            position: absolute;
+            top: 20px;
+            right: 15%;
+            height: 3px;
+            background: linear-gradient(90deg, #0d9488, #2dd4bf);
+            z-index: 1;
+            transition: width 0.6s ease;
+            width: 50%;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-icon-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 2px solid #475569;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem auto;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-icon-circle {
+            background: #0d9488;
+            border-color: #2dd4bf;
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.5);
+        }
+
+        .step-item.completed .step-icon-circle {
+            background: #10b981;
+            border-color: #34d399;
+            color: #ffffff;
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .step-item.active .step-label {
+            color: #2dd4bf;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.1rem 1.35rem;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .info-card:hover {
+            border-color: rgba(45, 212, 191, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .info-card label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.4rem;
+        }
+
+        .info-card span {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        /* Shareable URL Box */
+        .share-link-box {
+            background: rgba(13, 148, 136, 0.08);
+            border: 1px dashed rgba(45, 212, 191, 0.35);
+            border-radius: 14px;
+            padding: 0.9rem 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.85rem;
+            margin-top: 1.5rem;
+        }
+
+        .share-link-box input {
+            background: transparent;
+            border: none;
+            color: #2dd4bf;
+            font-size: 0.875rem;
+            direction: ltr;
+            width: 100%;
+            outline: none;
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .copy-btn {
+            background: #0d9488;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: #0f766e;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+        }
+
+        .quick-nav-links {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            margin-top: 2.25rem;
+        }
+
+        .quick-nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .quick-nav-links a:hover {
+            color: #2dd4bf;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="ambient-glow-orb-1"></div>
+    <div class="ambient-glow-orb-2"></div>
+
+
+
+    <!-- Main Content Wrapper -->
+    <main class="status-main-wrapper">
+        <div class="status-card-box">
+            
+            <div class="badge-pill">
+                <i class="fa-solid fa-shield-halved fa-beat-fade"></i> بوابة الاستعلام المباشر المحمية
+            </div>
+
+            <h1 class="portal-title">تسجيل الدخول والاستعلام عن الطلب</h1>
+            <p class="portal-desc">
+                أدخل البريد الإلكتروني (Gmail)، وكلمة المرور، والرمز المرجعي الخاص بطلبك للاستعلام عن النتيجة الفورية.
+            </p>
+
+            <form id="directStatusForm">
+                <!-- 1. Gmail Email -->
+                <div class="form-field-group">
+                    <label for="statusEmailInput"><i class="fa-solid fa-envelope" style="color: #2dd4bf;"></i> البريد الإلكتروني (Gmail حصراً)</label>
+                    <div class="field-input-wrapper">
+                        <input type="email" id="statusEmailInput" placeholder="example@gmail.com" pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="يجب أن ينتهي البريد بـ @gmail.com" required autocomplete="email">
+                        <i class="fa-solid fa-at input-icon"></i>
+                    </div>
+                </div>
+
+                <!-- 2. Password with Visibility Toggle (Optional) -->
+                <div class="form-field-group">
+                    <label for="statusPasswordInput"><i class="fa-solid fa-lock" style="color: #6366f1;"></i> كلمة المرور (اختياري)</label>
+                    <div class="field-input-wrapper">
+                        <input type="password" id="statusPasswordInput" placeholder="أدخل كلمة المرور (اختياري)" autocomplete="current-password">
+                        <i class="fa-solid fa-key input-icon"></i>
+                        <button type="button" class="toggle-password-btn" id="togglePwdBtn" aria-label="إظهار/إخفاء كلمة المرور">
+                            <i class="fa-solid fa-eye" id="pwdToggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. Reference Code / Status Number -->
+                <div class="form-field-group">
+                    <label for="statusRefInput"><i class="fa-solid fa-receipt" style="color: #e11d48;"></i> الرمز المرجعي للطلب</label>
+                    <div class="field-input-wrapper">
+                        <input type="text" id="statusRefInput" placeholder="مثال: NOOR-84920-LB أو NOOR-94821-TR" required autocomplete="off">
+                        <i class="fa-solid fa-hashtag input-icon"></i>
+                    </div>
+                </div>
+
+                <button type="submit" id="checkStatusBtn" class="search-btn">
+                    <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول والاستعلام
+                </button>
+            </form>
+
+            <div id="errorAlertBox" class="error-alert-box"></div>
+
+            <!-- Result Box with Visual Progress Timeline -->
+            <div id="statusResultBox" class="result-details-box">
+                
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <span id="statusBadge" style="display: inline-block; padding: 0.6rem 1.75rem; border-radius: 9999px; font-weight: 800; font-size: 1.15rem; border: 1px solid; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">-</span>
+                </div>
+
+                <!-- Timeline Progress Bar -->
+                <div class="timeline-progress-wrapper">
+                    <div class="timeline-steps">
+                        <div id="progressLine" class="timeline-progress-line"></div>
+                        <div class="step-item completed" id="step1">
+                            <div class="step-icon-circle"><i class="fa-solid fa-file-check"></i></div>
+                            <div class="step-label">تقديم الطلب</div>
+                        </div>
+                        <div class="step-item active" id="step2">
+                            <div class="step-icon-circle"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <div class="step-label">التدقيق والتقييم</div>
+                        </div>
+                        <div class="step-item" id="step3">
+                            <div class="step-icon-circle"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                            <div class="step-label">الاعتماد والتسليم</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <label><i class="fa-solid fa-user" style="color: #2dd4bf;"></i> صاحب الطلب</label>
+                        <span id="statusApplicantName">-</span>
+                    </div>
+                    <div class="info-card">
+                        <label><i class="fa-solid fa-hashtag" style="color: #6366f1;"></i> الرمز المرجعي</label>
+                        <span id="statusRefCode" style="font-family: monospace; letter-spacing: 1px;">-</span>
+                    </div>
+                </div>
+
+                <div class="info-card" id="descInfoCard" style="margin-bottom: 1.5rem; border-right: 4px solid #0d9488; background: rgba(15, 23, 42, 0.75); padding: 1.35rem 1.5rem; text-align: right; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+                    <label style="font-size: 0.95rem; font-weight: 800; color: #f8fafc; margin-bottom: 0.6rem;">
+                        <i class="fa-solid fa-file-signature" style="color: #2dd4bf; font-size: 1.15rem;"></i> الشرح الرسمي وتفاصيل القرار
+                    </label>
+                    <p id="statusDescText" style="color: #e2e8f0; font-size: 1.02rem; line-height: 1.8; font-weight: 500; margin-top: 0.5rem;">-</p>
+                </div>
+
+                <div class="share-link-box">
+                    <span style="font-size: 0.85rem; color: #94a3b8; white-space: nowrap;">رابط الاستعلام المباشر:</span>
+                    <input type="text" id="directShareUrl" readonly>
+                    <button type="button" class="copy-btn" id="copyShareBtn">
+                        <i class="fa-solid fa-copy"></i> نسخ الرابط
+                    </button>
+                </div>
+            </div>
+
+
+
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 1.5rem; color: #64748b; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1;">
+        جميع الحقوق محفوظة &copy; 2026 جمعية النور للإغاثة والدعم الإنساني.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('directStatusForm');
+            const emailInput = document.getElementById('statusEmailInput');
+            const pwdInput = document.getElementById('statusPasswordInput');
+            const refInput = document.getElementById('statusRefInput');
+            const btn = document.getElementById('checkStatusBtn');
+            const togglePwdBtn = document.getElementById('togglePwdBtn');
+            const pwdToggleIcon = document.getElementById('pwdToggleIcon');
+            const errorAlertBox = document.getElementById('errorAlertBox');
+            const resultBox = document.getElementById('statusResultBox');
+            const statusBadge = document.getElementById('statusBadge');
+            const applicantName = document.getElementById('statusApplicantName');
+            const refCodeSpan = document.getElementById('statusRefCode');
+            const descText = document.getElementById('statusDescText');
+            const shareUrlInput = document.getElementById('directShareUrl');
+            const copyBtn = document.getElementById('copyShareBtn');
+
+            // Timeline Steps Elements
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
+            const progressLine = document.getElementById('progressLine');
+
+            // Password Toggle Visibility
+            togglePwdBtn.addEventListener('click', () => {
+                const type = pwdInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                pwdInput.setAttribute('type', type);
+                pwdToggleIcon.className = type === 'password' ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+            });
+
+            // Auto-fill parameters if present in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const refQuery = urlParams.get('ref') || urlParams.get('code');
+            const emailQuery = urlParams.get('email');
+            
+            if (refQuery) refInput.value = refQuery.trim();
+            if (emailQuery) emailInput.value = emailQuery.trim();
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = emailInput.value.trim();
+                const password = pwdInput.value;
+                const refCode = refInput.value.trim();
+
+                if (!email || !refCode) {
+                    showError('يرجى كتابة البريد الإلكتروني (Gmail) والرمز المرجعي.');
+                    return;
+                }
+
+                const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
+                if (!gmailRegex.test(email)) {
+                    showError('📧 يجب أن يكون البريد الإلكتروني ينتهي بـ @gmail.com حصراً (مثال: name@gmail.com).');
+                    return;
+                }
+
+                fetchStatus(email, password, refCode);
+            });
+
+            function showError(msg) {
+                errorAlertBox.style.display = 'block';
+                errorAlertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
+                resultBox.style.display = 'none';
+            }
+
+            function hideError() {
+                errorAlertBox.style.display = 'none';
+            }
+
+            function updateTimeline(status) {
+                if (status === 'approved' || status === 'delivered') {
+                    step2.className = 'step-item completed';
+                    step3.className = 'step-item active';
+                    progressLine.style.width = '100%';
+                } else if (status === 'rejected') {
+                    step2.className = 'step-item completed';
+                    step3.className = 'step-item';
+                    progressLine.style.width = '50%';
+                } else {
+                    step2.className = 'step-item active';
+                    step3.className = 'step-item';
+                    progressLine.style.width = '50%';
+                }
+            }
+
+            function fetchStatus(email, password, refCode) {
+                hideError();
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق وتسجيل الدخول...';
+
+                fetch('/api/check-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, refCode })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول والاستعلام';
+
+                    if (data.success) {
+                        applicantName.textContent = data.applicantName;
+                        refCodeSpan.textContent = data.refCode;
+                        statusBadge.textContent = data.statusTitle;
+                        descText.textContent = data.statusDesc;
+
+                        const badgeStyles = {
+                            'pending': 'background: rgba(245, 158, 11, 0.18); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);',
+                            'approved': 'background: rgba(16, 185, 129, 0.18); color: #34d399; border-color: rgba(16, 185, 129, 0.4);',
+                            'delivered': 'background: rgba(59, 130, 246, 0.18); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);',
+                            'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.4);'
+                        };
+
+                        const borderColors = {
+                            'pending': '#f59e0b',
+                            'approved': '#10b981',
+                            'delivered': '#3b82f6',
+                            'rejected': '#ef4444'
+                        };
+                        const descCard = document.getElementById('descInfoCard');
+                        if (descCard) descCard.style.borderRightColor = borderColors[data.status] || '#0d9488';
+
+                        statusBadge.style.cssText = `display: inline-block; padding: 0.6rem 1.75rem; border-radius: 9999px; font-weight: 800; font-size: 1.15rem; border: 1px solid; box-shadow: 0 4px 15px rgba(0,0,0,0.2); ${badgeStyles[data.status] || badgeStyles['pending']}`;
+                        
+                        updateTimeline(data.status);
+
+                        const directUrl = `${window.location.origin}/status?ref=${encodeURIComponent(data.refCode)}&email=${encodeURIComponent(email)}`;
+                        shareUrlInput.value = directUrl;
+
+                        resultBox.style.display = 'block';
+                        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        showError(data.error || 'فشل التحقق من البيانات. يرجى التأكد من كلمة المرور والبريد الإلكتروني والرمز المرجعي.');
+                    }
+                })
+                .catch(err => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول والاستعلام';
+                    showError('حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.');
+                });
+            }
+
+            copyBtn.addEventListener('click', () => {
+                if (shareUrlInput.value) {
+                    navigator.clipboard.writeText(shareUrlInput.value).then(() => {
+                        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ بنجاح';
+                        setTimeout(() => {
+                            copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> نسخ الرابط';
+                        }, 2000);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

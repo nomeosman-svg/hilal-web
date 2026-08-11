@@ -12,7 +12,8 @@
           "admin_dashboard.html",
           "admin_login.html",
           "index.html",
-          "index_lb.html"
+          "index_lb.html",
+          "check_status.html"
         ]
       }
     }
