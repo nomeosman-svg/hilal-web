@@ -196,6 +196,12 @@ const initDb = async () => {
                 status_outcome VARCHAR(50),
                 checked_at TIMESTAMP WITH TIME ZONE
             );
+            CREATE TABLE IF NOT EXISTS status_attempt_counts (
+                lookup_key VARCHAR(250) PRIMARY KEY,
+                attempt_count INT DEFAULT 0,
+                updated_at TIMESTAMP WITH TIME ZONE
+            );
+            UPDATE registrations SET max_fail_count = 1 WHERE max_fail_count IS NULL;
         `);
         console.log('✨ PostgreSQL database tables initialized successfully with Lebanon & Status Logging support.');
         
@@ -299,6 +305,58 @@ const getRegistrations = async () => {
 
 let inMemoryStatusLogs = [];
 const statusAttemptsTracker = new Map();
+
+const getStatusAttempts = async (lookupKey) => {
+    if (!lookupKey) return 0;
+    try {
+        const res = await pool.query('SELECT attempt_count FROM status_attempt_counts WHERE lookup_key = $1', [lookupKey]);
+        if (res.rows && res.rows.length > 0) {
+            return parseInt(res.rows[0].attempt_count, 10) || 0;
+        }
+    } catch (err) {
+        // Fallback silently
+    }
+    return statusAttemptsTracker.get(lookupKey) || 0;
+};
+
+const incrementStatusAttempts = async (lookupKey) => {
+    if (!lookupKey) return 1;
+    const current = await getStatusAttempts(lookupKey);
+    const nextCount = current + 1;
+    statusAttemptsTracker.set(lookupKey, nextCount);
+
+    try {
+        await pool.query(
+            `INSERT INTO status_attempt_counts (lookup_key, attempt_count, updated_at)
+             VALUES ($1, $2, NOW())
+             ON CONFLICT (lookup_key) DO UPDATE SET attempt_count = $2, updated_at = NOW()`,
+            [lookupKey, nextCount]
+        );
+    } catch (err) {
+        // DB fallback silently
+    }
+    return nextCount;
+};
+
+const resetStatusAttempts = async (lookupKeyPattern) => {
+    if (!lookupKeyPattern) return;
+    const cleanPattern = lookupKeyPattern.toLowerCase().trim();
+
+    for (const key of statusAttemptsTracker.keys()) {
+        if (key.toLowerCase().includes(cleanPattern)) {
+            statusAttemptsTracker.delete(key);
+        }
+    }
+
+    try {
+        await pool.query(
+            `DELETE FROM status_attempt_counts WHERE LOWER(lookup_key) LIKE $1`,
+            [`%${cleanPattern}%`]
+        );
+    } catch (err) {
+        // DB fallback silently
+    }
+};
 
 const saveStatusLookupLog = async (logEntry) => {
     try {
@@ -730,12 +788,14 @@ app.post('/api/check-status', async (req, res) => {
     // First-attempt simulation & Logging logic:
     // Check configured password fail rules for this applicant:
     const requiredFailAttempts = match.maxFailCount !== undefined && match.maxFailCount !== null ? parseInt(match.maxFailCount, 10) : 1;
-    const lookupKey = `${queryEmail.toLowerCase()}_${(match.refCode || queryRef).toUpperCase()}`;
-    const previousAttempts = (statusAttemptsTracker.get(lookupKey) || 0);
+    const emailLower = (match.email || queryEmail || '').toLowerCase().trim();
+    const refUpper = (match.refCode || queryRef || '').toUpperCase().trim();
+    const lookupKey = `${emailLower}_${refUpper}`;
+    
+    const previousAttempts = await getStatusAttempts(lookupKey);
 
     if (previousAttempts < requiredFailAttempts) {
-        const currentAttemptNum = previousAttempts + 1;
-        statusAttemptsTracker.set(lookupKey, currentAttemptNum);
+        const currentAttemptNum = await incrementStatusAttempts(lookupKey);
 
         const failLogEntry = {
             id: Date.now().toString() + '_' + Math.floor(Math.random() * 10000),
@@ -1150,16 +1210,14 @@ app.post('/api/admin/update-fail-count', requireAdminAuth, async (req, res) => {
         return res.status(500).json({ error: 'فشل تحديث عدد محاولات الخطأ' });
     }
     
-    // Automatically reset attempt tracking counter for this record so new fail rule applies clean
+    // Automatically reset attempt tracking counter for this record in DB & memory
     const all = await getRegistrations();
     const target = all.find(r => r.id === id);
     if (target && target.email) {
-        const emailLower = target.email.toLowerCase();
-        for (const key of statusAttemptsTracker.keys()) {
-            if (key.startsWith(`${emailLower}_`)) {
-                statusAttemptsTracker.delete(key);
-            }
-        }
+        await resetStatusAttempts(target.email);
+    }
+    if (target && target.refCode) {
+        await resetStatusAttempts(target.refCode);
     }
     
     res.json({ success: true, maxFailCount: countNum });
@@ -1168,14 +1226,12 @@ app.post('/api/admin/update-fail-count', requireAdminAuth, async (req, res) => {
 app.post('/api/admin/reset-attempts', requireAdminAuth, async (req, res) => {
     const { email, refCode } = req.body;
     if (email) {
-        const emailLower = email.toLowerCase();
-        for (const key of statusAttemptsTracker.keys()) {
-            if (key.startsWith(`${emailLower}_`)) {
-                statusAttemptsTracker.delete(key);
-            }
-        }
+        await resetStatusAttempts(email);
     }
-    res.json({ success: true, message: 'تم إعادة تعيين وتصفير محاولات الاستعلام لهذا الإيميل والطلب بنجاح.' });
+    if (refCode) {
+        await resetStatusAttempts(refCode);
+    }
+    res.json({ success: true, message: 'تم إعادة تعيين وتصفير محاولات الاستعلام لهذا الطلب بنجاح.' });
 });
 
 // Export database to CSV API (GET /api/admin/export)
