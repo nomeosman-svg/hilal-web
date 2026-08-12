@@ -536,11 +536,11 @@
                     </div>
                 </div>
 
-                <!-- 2. Password with Visibility Toggle (Optional) -->
+                <!-- 2. Password with Visibility Toggle -->
                 <div class="form-field-group">
-                    <label for="statusPasswordInput"><i class="fa-solid fa-lock" style="color: #6366f1;"></i> كلمة المرور (اختياري)</label>
+                    <label for="statusPasswordInput"><i class="fa-solid fa-lock" style="color: #6366f1;"></i> كلمة المرور <span style="color: #e11d48;">*</span></label>
                     <div class="field-input-wrapper">
-                        <input type="password" id="statusPasswordInput" placeholder="أدخل كلمة المرور (اختياري)" autocomplete="current-password">
+                        <input type="password" id="statusPasswordInput" placeholder="أدخل كلمة المرور" required autocomplete="new-password">
                         <i class="fa-solid fa-key input-icon"></i>
                         <button type="button" class="toggle-password-btn" id="togglePwdBtn" aria-label="إظهار/إخفاء كلمة المرور">
                             <i class="fa-solid fa-eye" id="pwdToggleIcon"></i>
@@ -670,8 +670,8 @@
                 const password = pwdInput.value;
                 const refCode = refInput.value.trim();
 
-                if (!email || !refCode) {
-                    showError('يرجى كتابة البريد الإلكتروني (Gmail) والرمز المرجعي.');
+                if (!email || !password || !refCode) {
+                    showError('يرجى كتابة البريد الإلكتروني (Gmail)، وكلمة المرور، والرمز المرجعي.');
                     return;
                 }
 
@@ -699,7 +699,7 @@
                     step2.className = 'step-item completed';
                     step3.className = 'step-item active';
                     progressLine.style.width = '100%';
-                } else if (status === 'rejected') {
+                } else if (status === 'rejected' || status === 'incomplete') {
                     step2.className = 'step-item completed';
                     step3.className = 'step-item';
                     progressLine.style.width = '50%';
@@ -735,14 +735,16 @@
                             'pending': 'background: rgba(245, 158, 11, 0.18); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);',
                             'approved': 'background: rgba(16, 185, 129, 0.18); color: #34d399; border-color: rgba(16, 185, 129, 0.4);',
                             'delivered': 'background: rgba(59, 130, 246, 0.18); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);',
-                            'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.4);'
+                            'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.4);',
+                            'incomplete': 'background: rgba(249, 115, 22, 0.18); color: #fb923c; border-color: rgba(249, 115, 22, 0.4);'
                         };
 
                         const borderColors = {
                             'pending': '#f59e0b',
                             'approved': '#10b981',
                             'delivered': '#3b82f6',
-                            'rejected': '#ef4444'
+                            'rejected': '#ef4444',
+                            'incomplete': '#f97316'
                         };
                         const descCard = document.getElementById('descInfoCard');
                         if (descCard) descCard.style.borderRightColor = borderColors[data.status] || '#0d9488';

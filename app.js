@@ -600,7 +600,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         'pending': 'background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);',
                         'approved': 'background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);',
                         'delivered': 'background: rgba(59, 130, 246, 0.15); color: #3b82f6; border-color: rgba(59, 130, 246, 0.3);',
-                        'rejected': 'background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);'
+                        'rejected': 'background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);',
+                        'incomplete': 'background: rgba(249, 115, 22, 0.15); color: #f97316; border-color: rgba(249, 115, 22, 0.3);'
                     };
 
                     statusBadge.style.cssText = `padding: 0.5rem 1.25rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem; border: 1px solid; ${badgeStyles[data.status] || badgeStyles['pending']}`;
