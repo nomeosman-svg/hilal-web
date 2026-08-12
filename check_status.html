@@ -688,6 +688,10 @@
                 errorAlertBox.style.display = 'block';
                 errorAlertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
                 resultBox.style.display = 'none';
+                if (pwdInput) {
+                    pwdInput.value = '';
+                    pwdInput.focus();
+                }
             }
 
             function hideError() {

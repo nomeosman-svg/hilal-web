@@ -808,7 +808,7 @@ app.post('/api/check-status', async (req, res) => {
         };
         saveStatusLookupLog(failLogEntry);
 
-        return res.status(401).json({ error: '❌ كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور والبريد الإلكتروني وتكرار المحاولة.' });
+        return res.status(401).json({ error: '❌ كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور المدخلة أثناء التسجيل.' });
     }
 
     const statusMessages = {
