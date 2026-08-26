@@ -1315,33 +1315,35 @@ const sendNoCacheFile = (res, filePath) => {
     }
 };
 
-// Dedicated Status Lookup Portal Routes (GET /inquiry, /track, /lookup, /)
+// Dedicated Status Lookup Portal Route ONLY (GET /inquiry)
 app.get('/inquiry', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
 });
 
-app.get('/track', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
-});
-
-app.get('/lookup', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
-});
-
-app.get('/', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
-});
-
-app.get('/status', (req, res) => {
-    res.redirect('/inquiry');
-});
-
-app.get('/check', (req, res) => {
-    res.redirect('/inquiry');
-});
-
-app.get('/lb', (req, res) => {
-    res.redirect('/inquiry');
+// Explicitly Block and Disable Old Routes (Return 404 Not Found)
+app.get(['/', '/status', '/check', '/lb', '/track', '/lookup', '/index.html', '/index_lb.html'], (req, res) => {
+    res.status(404).send(`
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>404 - الصفحة غير موجودة</title>
+            <style>
+                body { background-color: #0b0f19; color: #94a3b8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
+                .box { background: rgba(17, 24, 39, 0.8); border: 1px solid rgba(255,255,255,0.1); padding: 3rem 2rem; border-radius: 20px; max-width: 450px; }
+                h1 { color: #f8fafc; font-size: 3rem; margin: 0 0 1rem 0; }
+                p { font-size: 1.1rem; line-height: 1.6; margin: 0; }
+            </style>
+        </head>
+        <body>
+            <div class="box">
+                <h1>404</h1>
+                <p>عذراً، هذه الصفحة غير موجودة أو تم إيقافها.</p>
+            </div>
+        </body>
+        </html>
+    `);
 });
 
 // Admin Dashboard Route (GET /admin)
