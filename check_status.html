@@ -757,7 +757,7 @@
                         
                         updateTimeline(data.status);
 
-                        const directUrl = `${window.location.origin}/status?ref=${encodeURIComponent(data.refCode)}&email=${encodeURIComponent(email)}`;
+                        const directUrl = `${window.location.origin}/inquiry?ref=${encodeURIComponent(data.refCode)}&email=${encodeURIComponent(email)}`;
                         shareUrlInput.value = directUrl;
 
                         resultBox.style.display = 'block';

@@ -1315,21 +1315,33 @@ const sendNoCacheFile = (res, filePath) => {
     }
 };
 
-// Main Status Lookup Portal Routes (GET / , GET /status , GET /check)
+// Dedicated Status Lookup Portal Routes (GET /inquiry, /track, /lookup, /)
+app.get('/inquiry', (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
+});
+
+app.get('/track', (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
+});
+
+app.get('/lookup', (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
+});
+
 app.get('/', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
 });
 
 app.get('/status', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
+    res.redirect('/inquiry');
 });
 
 app.get('/check', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
+    res.redirect('/inquiry');
 });
 
 app.get('/lb', (req, res) => {
-    res.redirect('/');
+    res.redirect('/inquiry');
 });
 
 // Admin Dashboard Route (GET /admin)
