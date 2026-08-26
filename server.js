@@ -664,6 +664,8 @@ app.use((req, res, next) => {
         'vercel.json',
         'admin_dashboard.html',
         'admin_login.html',
+        'index.html',
+        'app.js',
         '.git'
     ];
     const blockedExtensions = ['.json', '.env', '.git', '.md', '.yml', '.yaml'];
@@ -1311,7 +1313,11 @@ const sendNoCacheFile = (res, filePath) => {
     }
 };
 
-// Lebanon Dedicated Site Route (GET /lb)
+// Lebanon Main Portal Routes (GET / and GET /lb)
+app.get('/', (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'index_lb.html'));
+});
+
 app.get('/lb', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'index_lb.html'));
 });
@@ -1339,11 +1345,6 @@ app.get('/admin/login', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'admin_login.html'));
 });
 
-// Serve frontend main page (GET /)
-app.get('/', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'index.html'));
-});
-
 // Serve CSS & JS Assets explicitly for Vercel Serverless Function compatibility
 app.get('/style.css', (req, res) => {
     res.setHeader('Content-Type', 'text/css; charset=utf-8');
@@ -1364,17 +1365,6 @@ app.get('/app_lb.js', (req, res) => {
         res.send(content);
     } catch (err) {
         res.sendFile(path.join(__dirname, 'app_lb.js'));
-    }
-});
-
-app.get('/app.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-cache');
-    try {
-        const content = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
-        res.send(content);
-    } catch (err) {
-        res.sendFile(path.join(__dirname, 'app.js'));
     }
 });
 
