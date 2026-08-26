@@ -7,10 +7,8 @@
       "config": {
         "includeFiles": [
           "style.css",
-          "app_lb.js",
           "admin_dashboard.html",
           "admin_login.html",
-          "index_lb.html",
           "check_status.html"
         ]
       }

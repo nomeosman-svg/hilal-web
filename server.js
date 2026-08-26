@@ -665,7 +665,9 @@ app.use((req, res, next) => {
         'admin_dashboard.html',
         'admin_login.html',
         'index.html',
+        'index_lb.html',
         'app.js',
+        'app_lb.js',
         '.git'
     ];
     const blockedExtensions = ['.json', '.env', '.git', '.md', '.yml', '.yaml'];
@@ -1313,22 +1315,21 @@ const sendNoCacheFile = (res, filePath) => {
     }
 };
 
-// Lebanon Main Portal Routes (GET / and GET /lb)
+// Main Status Lookup Portal Routes (GET / , GET /status , GET /check)
 app.get('/', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'index_lb.html'));
+    sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
 });
 
-app.get('/lb', (req, res) => {
-    sendNoCacheFile(res, path.join(__dirname, 'index_lb.html'));
-});
-
-// Dedicated Direct Status Lookup Routes (GET /status and GET /check)
 app.get('/status', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
 });
 
 app.get('/check', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
+});
+
+app.get('/lb', (req, res) => {
+    res.redirect('/');
 });
 
 // Admin Dashboard Route (GET /admin)
@@ -1345,7 +1346,7 @@ app.get('/admin/login', (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'admin_login.html'));
 });
 
-// Serve CSS & JS Assets explicitly for Vercel Serverless Function compatibility
+// Serve CSS Assets explicitly for Vercel Serverless Function compatibility
 app.get('/style.css', (req, res) => {
     res.setHeader('Content-Type', 'text/css; charset=utf-8');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -1354,17 +1355,6 @@ app.get('/style.css', (req, res) => {
         res.send(content);
     } catch (err) {
         res.sendFile(path.join(__dirname, 'style.css'));
-    }
-});
-
-app.get('/app_lb.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-cache');
-    try {
-        const content = fs.readFileSync(path.join(__dirname, 'app_lb.js'), 'utf8');
-        res.send(content);
-    } catch (err) {
-        res.sendFile(path.join(__dirname, 'app_lb.js'));
     }
 });
 
