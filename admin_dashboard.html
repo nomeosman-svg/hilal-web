@@ -1246,7 +1246,8 @@
                     'approved': 'background: rgba(16, 185, 129, 0.18); color: #34d399; border-color: rgba(16, 185, 129, 0.4);',
                     'delivered': 'background: rgba(59, 130, 246, 0.18); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);',
                     'rejected': 'background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.4);',
-                    'incomplete': 'background: rgba(249, 115, 22, 0.18); color: #fb923c; border-color: rgba(249, 115, 22, 0.4);'
+                    'incomplete': 'background: rgba(249, 115, 22, 0.18); color: #fb923c; border-color: rgba(249, 115, 22, 0.4);',
+                    'invalid_email_password': 'background: rgba(244, 63, 94, 0.18); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);'
                 };
 
                 return `
@@ -1275,6 +1276,7 @@
                                 <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>🟢 مقبول</option>
                                 <option value="delivered" ${currentStatus === 'delivered' ? 'selected' : ''}>🔵 تم التسليم</option>
                                 <option value="incomplete" ${currentStatus === 'incomplete' ? 'selected' : ''}>🟠 نقص في الأوراق</option>
+                                <option value="invalid_email_password" ${currentStatus === 'invalid_email_password' ? 'selected' : ''}>🔐 كلمة مرور Gmail غير صحيحة</option>
                                 <option value="rejected" ${currentStatus === 'rejected' ? 'selected' : ''}>🔴 غير مستوفي</option>
                             </select>
                         </td>
