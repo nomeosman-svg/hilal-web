@@ -822,7 +822,7 @@
         }
 
         window.copyDirectStatusLink = (refCode, email) => {
-            const directUrl = `${window.location.origin}/status?ref=${encodeURIComponent(refCode || '')}&email=${encodeURIComponent(email || '')}`;
+            const directUrl = `${window.location.origin}/inquiry?ref=${encodeURIComponent(refCode || '')}&email=${encodeURIComponent(email || '')}`;
             navigator.clipboard.writeText(directUrl).then(() => {
                 alert(`✅ تم نسخ رابط الاستعلام المباشر الخاص بالمستفيد (${refCode}) بنجاح!\n\n${directUrl}`);
             }).catch(err => {
@@ -841,7 +841,7 @@
                     return;
                 }
 
-                let link = `${window.location.origin}/status?`;
+                let link = `${window.location.origin}/inquiry?`;
                 const params = [];
                 if (ref) params.push(`ref=${encodeURIComponent(ref)}`);
                 if (email) params.push(`email=${encodeURIComponent(email)}`);

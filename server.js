@@ -1315,13 +1315,13 @@ const sendNoCacheFile = (res, filePath) => {
     }
 };
 
-// Dedicated Status Lookup Portal Route ONLY (GET /inquiry)
-app.get('/inquiry', (req, res) => {
+// Status Lookup Portal Routes (GET /, /inquiry, /status, /check, /track, /lookup)
+app.get(['/', '/inquiry', '/status', '/check', '/track', '/lookup'], (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
 });
 
-// Explicitly Block and Disable Old Routes (Return 404 Not Found)
-app.get(['/', '/status', '/check', '/lb', '/track', '/lookup', '/index.html', '/index_lb.html'], (req, res) => {
+// Explicitly Block Old Inactive Registration Routes (Return 404 Not Found)
+app.get(['/lb', '/index.html', '/index_lb.html'], (req, res) => {
     res.status(404).send(`
         <!DOCTYPE html>
         <html lang="ar" dir="rtl">
