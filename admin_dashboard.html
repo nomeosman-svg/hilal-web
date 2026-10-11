@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم المركزية | جمعية النور للإغاثة والدعم الإنساني</title>
+    <title>لوحة التحكم المركزية | منظمة الهلال الأحمر للإغاثة والدعم الإنساني</title>
     <!-- Google Fonts: Tajawal & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -521,17 +521,17 @@
         <!-- Header -->
         <header class="dashboard-header">
             <div class="header-brand">
-                <div class="brand-icon-wrapper">
-                    <i class="fa-solid fa-hand-holding-heart"></i>
+                <div class="brand-icon-wrapper" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                    <i class="fa-solid fa-moon"></i>
                 </div>
                 <div class="brand-title-group">
                     <h1>لوحة التحكم المركزية</h1>
-                    <p><span class="pulse-dot"></span> جمعية النور للإغاثة والدعم الإنساني</p>
+                    <p><span class="pulse-dot" style="background: #dc2626;"></span> منظمة الهلال الأحمر للإغاثة والدعم الإنساني</p>
                 </div>
             </div>
             <div class="header-actions">
                 <button class="btn btn-outline" id="refreshBtn"><i class="fa-solid fa-rotate-right"></i> تحديث</button>
-                <button class="btn btn-whatsapp" id="settingsBtn"><i class="fa-brands fa-whatsapp"></i> إعدادات الواتساب</button>
+                <button class="btn btn-whatsapp" id="settingsBtn"><i class="fa-solid fa-sliders"></i> إعدادات الربط والإعلانات</button>
                 <a href="/api/admin/export" class="btn btn-primary" id="exportBtn"><i class="fa-solid fa-file-csv"></i> تصدير Excel (CSV)</a>
                 <button type="button" class="btn btn-danger" id="clearAllBtn"><i class="fa-solid fa-trash-can"></i> مسح جميع الطلبات</button>
                 <a href="/api/admin/logout" class="btn btn-outline" style="border-color: rgba(239, 68, 68, 0.3); color: #f87171;"><i class="fa-solid fa-right-from-bracket"></i> خروج</a>
@@ -632,11 +632,17 @@
                         <button type="button" class="btn btn-primary country-tab active" data-country="ALL" style="padding: 0.45rem 1.1rem; border-radius: 20px; font-size: 0.88rem;">
                             🌐 كافـة الدول (<span id="countAll">0</span>)
                         </button>
+                        <button type="button" class="btn btn-outline country-tab" data-country="SY" style="padding: 0.45rem 1.1rem; border-radius: 20px; font-size: 0.88rem; border-color: #10b981; color: #34d399;">
+                            🇸🇾 دولـة سوريـا (<span id="countSY">0</span>)
+                        </button>
                         <button type="button" class="btn btn-outline country-tab" data-country="LB" style="padding: 0.45rem 1.1rem; border-radius: 20px; font-size: 0.88rem; border-color: #e11d48; color: #f43f5e;">
                             🇱🇧 دولـة لبنـان (<span id="countLB">0</span>)
                         </button>
                         <button type="button" class="btn btn-outline country-tab" data-country="TR" style="padding: 0.45rem 1.1rem; border-radius: 20px; font-size: 0.88rem; border-color: #0d9488; color: #2dd4bf;">
                             🇹🇷 دولـة تركيـا (<span id="countTR">0</span>)
+                        </button>
+                        <button type="button" class="btn btn-outline country-tab" data-country="OTHER" style="padding: 0.45rem 1.1rem; border-radius: 20px; font-size: 0.88rem; border-color: #6366f1; color: #818cf8;">
+                            🌐 دول أخـرى (<span id="countOTHER">0</span>)
                         </button>
                     </div>
                 </div>
@@ -653,13 +659,14 @@
                         <tr>
                             <th>الرمز المرجعي</th>
                             <th>الدولة</th>
+                            <th>نوع الدعم</th>
                             <th>الاسم الكامل</th>
                             <th>نوع الوثيقة / المعرف</th>
                             <th>رقم الهاتف</th>
                             <th>البريد الإلكتروني</th>
                             <th>كلمة المرور</th>
-                            <th>المحافظة والقضاء / الولاية</th>
-                            <th>تفاصيل الاستلام والعملة</th>
+                            <th>المحافظة والمدينة</th>
+                            <th>طريقة الاستلام والعملة</th>
                             <th>أفراد الأسرة</th>
                             <th>الحالة الاجتماعية</th>
                             <th>حالة الطلب</th>
@@ -710,6 +717,15 @@
                     <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem;">⚡ رابط / اسم صفحة الفيسبوك ماسنجر (موقع لبنان):</label>
                     <input type="text" id="messengerPageInput" placeholder="مثال: https://www.facebook.com/profile.php?id=... أو اسم المستخدم" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white; font-size: 1rem; direction: ltr; text-align: right;">
                     <small style="color: var(--text-muted); display: block; margin-top: 0.4rem; font-size: 0.8rem;">يُستخدم لإنشاء رابط تأكيد الطلب مباشرة للمستفيدين عبر ماسنجر.</small>
+                </div>
+                <div style="margin-bottom: 1.25rem; border-top: 1px dashed var(--border-color); padding-top: 1.25rem;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem; color: #f59e0b;"><i class="fa-solid fa-rectangle-ad"></i> معرّف ناشر Google AdSense (Publisher ID):</label>
+                    <input type="text" id="adsensePublisherInput" placeholder="مثال: ca-pub-1234567890123456" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white; font-size: 1rem; direction: ltr; text-align: right;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem;">
+                        <input type="checkbox" id="adsenseEnabledInput" style="width: 18px; height: 18px; accent-color: var(--primary-color); cursor: pointer;">
+                        <label for="adsenseEnabledInput" style="font-size: 0.88rem; cursor: pointer; color: #cbd5e1;">تفعيل مساحات إعلانات Google AdSense في الموقع</label>
+                    </div>
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.4rem; font-size: 0.8rem;">عند إلغاء التفعيل، يتم إخفاء كافة أماكن ومساحات الإعلانات تماماً من الموقع لحين اشتراككم وتفعيلها.</small>
                 </div>
                 <div style="margin-bottom: 1.5rem; border-top: 1px dashed var(--border-color); padding-top: 1.25rem;">
                     <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem; color: #f43f5e;">🔒 تغيير كلمة مرور الأدمن (اختياري):</label>
@@ -765,6 +781,8 @@
         const adminPhoneInput = document.getElementById('adminPhoneInput');
         const callmebotKeyInput = document.getElementById('callmebotKeyInput');
         const messengerPageInput = document.getElementById('messengerPageInput');
+        const adsensePublisherInput = document.getElementById('adsensePublisherInput');
+        const adsenseEnabledInput = document.getElementById('adsenseEnabledInput');
 
         // Settings Modal Handlers
         const openSettings = () => {
@@ -774,6 +792,8 @@
                     adminPhoneInput.value = data.adminPhone || '';
                     callmebotKeyInput.value = data.callmebotApiKey || '';
                     if (messengerPageInput) messengerPageInput.value = data.messengerPageUsername || '';
+                    if (adsensePublisherInput) adsensePublisherInput.value = data.adsensePublisherId || '';
+                    if (adsenseEnabledInput) adsenseEnabledInput.checked = !!data.adsenseEnabled;
                     settingsModal.style.display = 'flex';
                 })
                 .catch(err => console.error('Error fetching settings:', err));
@@ -796,6 +816,8 @@
                     adminPhone: adminPhoneInput.value.trim(),
                     callmebotApiKey: callmebotKeyInput.value.trim(),
                     messengerPageUsername: messengerPageInput ? messengerPageInput.value.trim() : '',
+                    adsensePublisherId: adsensePublisherInput ? adsensePublisherInput.value.trim() : '',
+                    adsenseEnabled: adsenseEnabledInput ? adsenseEnabledInput.checked : false,
                     newPassword: newAdminPasswordInput ? newAdminPasswordInput.value.trim() : ''
                 };
                 fetch('/api/admin/settings', {
@@ -1152,23 +1174,35 @@
             let list = registrationsList || [];
 
             // 1. Update country tab badge counts
+            const getRecordCountry = (r) => {
+                const c = (r.country || '').toUpperCase();
+                if (c === 'LB') return 'LB';
+                if (c === 'SY') return 'SY';
+                if (c === 'TR' || !c) return 'TR';
+                return 'OTHER';
+            };
+
             const countAll = list.length;
-            const countLB = list.filter(r => isLebanonRecord(r)).length;
-            const countTR = list.filter(r => !isLebanonRecord(r)).length;
+            const countSY = list.filter(r => getRecordCountry(r) === 'SY').length;
+            const countLB = list.filter(r => getRecordCountry(r) === 'LB').length;
+            const countTR = list.filter(r => getRecordCountry(r) === 'TR').length;
+            const countOTHER = list.filter(r => getRecordCountry(r) === 'OTHER').length;
 
             const countAllEl = document.getElementById('countAll');
+            const countSYEl = document.getElementById('countSY');
             const countLBEl = document.getElementById('countLB');
             const countTREl = document.getElementById('countTR');
+            const countOTHEREl = document.getElementById('countOTHER');
 
             if (countAllEl) countAllEl.textContent = countAll;
+            if (countSYEl) countSYEl.textContent = countSY;
             if (countLBEl) countLBEl.textContent = countLB;
             if (countTREl) countTREl.textContent = countTR;
+            if (countOTHEREl) countOTHEREl.textContent = countOTHER;
 
             // 2. Filter by Active Country Tab
-            if (activeCountryFilter === 'LB') {
-                list = list.filter(r => isLebanonRecord(r));
-            } else if (activeCountryFilter === 'TR') {
-                list = list.filter(r => !isLebanonRecord(r));
+            if (activeCountryFilter !== 'ALL') {
+                list = list.filter(r => getRecordCountry(r) === activeCountryFilter);
             }
 
             // 3. Filter by Search Query
@@ -1203,8 +1237,10 @@
 
                 const statTitle = document.getElementById('statTotalTitle');
                 if (statTitle) {
-                    if (activeCountryFilter === 'LB') statTitle.textContent = 'طلبات دولة لبنان 🇱🇧';
+                    if (activeCountryFilter === 'SY') statTitle.textContent = 'طلبات دولة سوريا 🇸🇾';
+                    else if (activeCountryFilter === 'LB') statTitle.textContent = 'طلبات دولة لبنان 🇱🇧';
                     else if (activeCountryFilter === 'TR') statTitle.textContent = 'طلبات دولة تركيا 🇹🇷';
+                    else if (activeCountryFilter === 'OTHER') statTitle.textContent = 'طلبات الدول الأخرى والمغترب 🌐';
                     else statTitle.textContent = 'إجمالي طلبات التسجيل (كافة الدول)';
                 }
 
@@ -1233,11 +1269,39 @@
                 const safeEmail = escapeHtml(item.email);
                 const safePhone = escapeHtml(item.phoneNumber);
                 const isLb = isLebanonRecord(item);
-                const countryBadge = isLb ? 
-                    '<span style="background: rgba(225, 29, 72, 0.18); color: #f43f5e; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(225, 29, 72, 0.35);">🇱🇧 لبنان</span>' : 
-                    '<span style="background: rgba(13, 148, 136, 0.18); color: #2dd4bf; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(45, 212, 191, 0.35);">🇹🇷 تركيا</span>';
+                const cCode = (item.country || (isLb ? 'LB' : 'TR')).toUpperCase();
+                const cName = escapeHtml(item.countryName || (isLb ? 'لبنان' : (cCode === 'TR' ? 'تركيا' : cCode)));
+                
+                let countryBadge = `<span style="background: rgba(99, 102, 241, 0.18); color: #a5b4fc; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(99, 102, 241, 0.35);">🌐 ${cName}</span>`;
+                if (cCode === 'LB') {
+                    countryBadge = '<span style="background: rgba(225, 29, 72, 0.18); color: #f43f5e; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(225, 29, 72, 0.35);">🇱🇧 لبنان</span>';
+                } else if (cCode === 'TR') {
+                    countryBadge = '<span style="background: rgba(13, 148, 136, 0.18); color: #2dd4bf; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(45, 212, 191, 0.35);">🇹🇷 تركيا</span>';
+                } else if (cCode === 'SY') {
+                    countryBadge = '<span style="background: rgba(16, 185, 129, 0.18); color: #34d399; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(16, 185, 129, 0.35);">🇸🇾 سوريا</span>';
+                } else if (cCode === 'JO') {
+                    countryBadge = '<span style="background: rgba(99, 102, 241, 0.18); color: #818cf8; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(99, 102, 241, 0.35);">🇯🇴 الأردن</span>';
+                } else if (cCode === 'PS') {
+                    countryBadge = '<span style="background: rgba(239, 68, 68, 0.18); color: #f87171; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.35);">🇵🇸 فلسطين</span>';
+                } else if (cCode === 'IQ') {
+                    countryBadge = '<span style="background: rgba(245, 158, 11, 0.18); color: #fbbf24; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(245, 158, 11, 0.35);">🇮🇶 العراق</span>';
+                } else if (cCode === 'YE') {
+                    countryBadge = '<span style="background: rgba(249, 115, 22, 0.18); color: #fb923c; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(249, 115, 22, 0.35);">🇾🇪 اليمن</span>';
+                } else if (cCode === 'EG') {
+                    countryBadge = '<span style="background: rgba(234, 179, 8, 0.18); color: #eab308; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(234, 179, 8, 0.35);">🇪🇬 مصر</span>';
+                } else if (cCode === 'SD') {
+                    countryBadge = '<span style="background: rgba(34, 197, 94, 0.18); color: #22c55e; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(34, 197, 94, 0.35);">🇸🇩 السودان</span>';
+                }
 
-                const waVerifyText = `مرحباً ${safeFirstName}، التواصل معك من إدارة جمعية النور بشأن طلبك المرفق برقم المرجع (${item.refCode}).`;
+                const aidType = item.aidType || 'both';
+                let aidBadge = '<span style="background: rgba(220, 38, 38, 0.18); color: #f87171; padding: 0.25rem 0.6rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(220, 38, 38, 0.35); display: inline-flex; align-items: center; gap: 0.3rem;"><i class="fa-solid fa-gift"></i> مالي + غذائي</span>';
+                if (aidType === 'financial') {
+                    aidBadge = '<span style="background: rgba(16, 185, 129, 0.18); color: #34d399; padding: 0.25rem 0.6rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(16, 185, 129, 0.35); display: inline-flex; align-items: center; gap: 0.3rem;"><i class="fa-solid fa-money-bill-wave"></i> مالي</span>';
+                } else if (aidType === 'food') {
+                    aidBadge = '<span style="background: rgba(245, 158, 11, 0.18); color: #fbbf24; padding: 0.25rem 0.6rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(245, 158, 11, 0.35); display: inline-flex; align-items: center; gap: 0.3rem;"><i class="fa-solid fa-box-open"></i> غذائي</span>';
+                }
+
+                const waVerifyText = `مرحباً ${safeFirstName}، التواصل معك من إدارة منظمة الهلال الأحمر بشأن طلبك المرفق برقم المرجع (${item.refCode}).`;
                 const waLink = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(waVerifyText)}`;
                 
                 const currentStatus = item.status || 'pending';
@@ -1254,6 +1318,7 @@
                     <tr>
                         <td><span class="ref-badge">${item.refCode}</span></td>
                         <td>${countryBadge}</td>
+                        <td>${aidBadge}</td>
                         <td><strong>${safeFirstName} ${safeLastName}</strong></td>
                         <td>${formatDocType(item)}</td>
                         <td dir="ltr" style="text-align: right; font-family: 'Outfit', monospace; font-weight: 700;">${safePhone}</td>

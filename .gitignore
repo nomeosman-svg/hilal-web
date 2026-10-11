@@ -1,2 +1,7 @@
 .vercel
 node_modules
+logs/
+*.log
+bin/cloudflared.exe
+*.backup
+.env

