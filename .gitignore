@@ -5,3 +5,4 @@ logs/
 bin/cloudflared.exe
 *.backup
 .env
+bin/update_dns.js

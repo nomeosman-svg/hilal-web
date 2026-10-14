@@ -52,7 +52,6 @@
 
             <nav class="nav-menu" id="navMenu">
                 <a href="#hero" class="nav-link active" id="navLinkHome">الرئيسية</a>
-                <a href="#programs" class="nav-link" id="navLinkPrograms">برامج الدعم</a>
                 <a href="#calculator" class="nav-link" id="navLinkCalculator"><i class="fa-solid fa-calculator" style="color: var(--primary-color);"></i> حاسبة الاستحقاق</a>
                 <a href="#guides" class="nav-link" id="navLinkGuides">دليل المساعدات</a>
                 <a href="#features" class="nav-link" id="navLinkFeatures">كيف نعمل</a>
@@ -469,125 +468,6 @@
                     <i class="fa-solid fa-money-check-dollar feature-icon"></i>
                     <h3 class="feature-title">3. استلام الدعم</h3>
                     <p class="feature-desc">إشعارك بالموافقة واستلام كرت الهلال الأحمر أو صرف الحوالة والطرود الغذائية دورياً.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Red Crescent Regional Aid Programs Section -->
-    <section class="aid-programs-section" id="programs" style="background: var(--bg-body);">
-        <div class="container">
-            <div class="section-header">
-                <span class="sub-title">
-                    <i class="fa-solid fa-hand-holding-heart"></i> مجالات الدعم
-                </span>
-                <h2 class="section-title">
-                    برامج المساعدات الميدانية
-                </h2>
-                <p class="section-desc">
-                    برامج معتمدة لتقديم المساعدات النقدية والغذائية للأسر المستحقة حسب بلد الإقامة.
-                </p>
-            </div>
-
-            <div class="programs-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
-                <!-- Card 1: Turkey Program -->
-                <div class="country-program-card" id="programCardTR">
-                    <div class="country-program-header">
-                        <span class="country-program-flag">🇹🇷</span>
-                        <div class="country-program-title">
-                            <strong>برنامج تركيا</strong>
-                            <span>بطاقة PTT الذكية</span>
-                        </div>
-                    </div>
-                    <div style="height: 160px; overflow: hidden; position: relative;">
-                        <img src="./assets/hilal_official_card.jpg" alt="برنامج الهلال الأحمر في تركيا" style="width: 100%; height: 100%; object-fit: cover;">
-                        <span style="position: absolute; bottom: 0.5rem; right: 0.5rem; background: rgba(220, 38, 38, 0.9); color: #fff; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 700;">81 ولاية</span>
-                    </div>
-                    <div class="country-program-body">
-                        <ul class="program-feature-list">
-                            <li><i class="fa-solid fa-circle-check"></i> بطاقة مصرفية ذكية تسحب من أي ATM.</li>
-                            <li><i class="fa-solid fa-circle-check"></i> مخصصات نقدية شهرية بالليرة التركية (TL).</li>
-                            <li><i class="fa-solid fa-circle-check"></i> سلال تموينية وبدل تدفئة وإيجار للأسر.</li>
-                        </ul>
-                        <button type="button" onclick="selectRegionTab('TR'); document.getElementById('register').scrollIntoView({behavior: 'smooth'});" class="btn btn-primary" style="width: 100%; justify-content: center; font-weight: 700; padding: 0.7rem; border-radius: 10px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-file-pen"></i> تقديم طلب في تركيا
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 2: Syria Program -->
-                <div class="country-program-card" id="programCardSY">
-                    <div class="country-program-header">
-                        <span class="country-program-flag">🇸🇾</span>
-                        <div class="country-program-title">
-                            <strong>برنامج سوريا</strong>
-                            <span>الإغاثة والحوالات النقدية</span>
-                        </div>
-                    </div>
-                    <div style="height: 160px; overflow: hidden; position: relative;">
-                        <img src="./assets/regional_aid_relief.jpg" alt="توزيع المساعدات في سوريا" style="width: 100%; height: 100%; object-fit: cover;">
-                        <span style="position: absolute; bottom: 0.5rem; right: 0.5rem; background: rgba(16, 185, 129, 0.9); color: #fff; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 700;">كافة المحافظات</span>
-                    </div>
-                    <div class="country-program-body">
-                        <ul class="program-feature-list">
-                            <li><i class="fa-solid fa-circle-check"></i> سلال غذائية متكاملة للأسر المتعففة.</li>
-                            <li><i class="fa-solid fa-circle-check"></i> مساعدات نقدية بالدولار أو الليرة السورية.</li>
-                            <li><i class="fa-solid fa-circle-check"></i> استلام عبر شبكات الهرم والفؤاد أو يدوياً.</li>
-                        </ul>
-                        <button type="button" onclick="selectRegionTab('SY'); document.getElementById('register').scrollIntoView({behavior: 'smooth'});" class="btn btn-primary" style="width: 100%; justify-content: center; font-weight: 700; padding: 0.7rem; border-radius: 10px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-file-pen"></i> تقديم طلب في سوريا
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 3: Lebanon Program -->
-                <div class="country-program-card" id="programCardLB">
-                    <div class="country-program-header">
-                        <span class="country-program-flag">🇱🇧</span>
-                        <div class="country-program-title">
-                            <strong>برنامج لبنان</strong>
-                            <span>منحة الدعم النقدي بالدولار</span>
-                        </div>
-                    </div>
-                    <div style="height: 160px; overflow: hidden; position: relative;">
-                        <img src="./assets/smart_aid_card.jpg" alt="برنامج الدعم في لبنان" style="width: 100%; height: 100%; object-fit: cover;">
-                        <span style="position: absolute; bottom: 0.5rem; right: 0.5rem; background: rgba(14, 165, 233, 0.9); color: #fff; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 700;">بيروت والمحافظات</span>
-                    </div>
-                    <div class="country-program-body">
-                        <ul class="program-feature-list">
-                            <li><i class="fa-solid fa-circle-check"></i> تحويل نقدي صافي بالدولار الأمريكي (USD).</li>
-                            <li><i class="fa-solid fa-circle-check"></i> صرف فوري عبر وكلاء OMT و Whish Money.</li>
-                            <li><i class="fa-solid fa-circle-check"></i> قسائم شراء مواد تموينية وحصص شهرية.</li>
-                        </ul>
-                        <button type="button" onclick="selectRegionTab('LB'); document.getElementById('register').scrollIntoView({behavior: 'smooth'});" class="btn btn-primary" style="width: 100%; justify-content: center; font-weight: 700; padding: 0.7rem; border-radius: 10px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-file-pen"></i> تقديم طلب في لبنان
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 4: Global Program -->
-                <div class="country-program-card" id="programCardGlobal">
-                    <div class="country-program-header">
-                        <span class="country-program-flag">🌐</span>
-                        <div class="country-program-title">
-                            <strong>برنامج الدعم الدولي</strong>
-                            <span>تسجيل الأسر بالخارج</span>
-                        </div>
-                    </div>
-                    <div style="height: 160px; overflow: hidden; position: relative;">
-                        <img src="./assets/hilal_distribution_live.jpg" alt="التسجيل الدولي" style="width: 100%; height: 100%; object-fit: cover;">
-                        <span style="position: absolute; bottom: 0.5rem; right: 0.5rem; background: rgba(30, 41, 59, 0.9); color: #fff; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 700;">دولي</span>
-                    </div>
-                    <div class="country-program-body">
-                        <ul class="program-feature-list">
-                            <li><i class="fa-solid fa-circle-check"></i> متاح للأسر في الأردن ومصر والعراق ومختلف الدول.</li>
-                            <li><i class="fa-solid fa-circle-check"></i> حوالات نقدية بالعملة المحلية أو الدولار.</li>
-                            <li><i class="fa-solid fa-circle-check"></i> متابعة مباشرة برقم المرجع المعتمد.</li>
-                        </ul>
-                        <button type="button" onclick="selectRegionTab('OTHER'); document.getElementById('register').scrollIntoView({behavior: 'smooth'});" class="btn btn-primary" style="width: 100%; justify-content: center; font-weight: 700; padding: 0.7rem; border-radius: 10px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-file-pen"></i> تقديم طلب دولي
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1227,7 +1107,6 @@
                         <h4 style="color: #ffffff; font-size: 1.05rem; font-weight: 800; margin-bottom: 1.25rem;">أقسام البوابة</h4>
                         <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.95rem;">
                             <li><a href="#hero" style="color: #94a3b8; transition: color 0.2s;">الصفحة الرئيسية</a></li>
-                            <li><a href="#programs" style="color: #94a3b8; transition: color 0.2s;">برامج الدعم الإقليمية</a></li>
                             <li><a href="#calculator" style="color: #94a3b8; transition: color 0.2s;">حاسبة الاستحقاق الذكية</a></li>
                             <li><a href="#guides" style="color: #94a3b8; transition: color 0.2s;">دليل المساعدات والمعايير</a></li>
                         </ul>
