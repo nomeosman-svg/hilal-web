@@ -712,52 +712,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // 11. HERO SHOWCASE IMAGE SWITCHER
-    // ==========================================
-    window.switchHeroShowcase = (type) => {
-        const img = document.getElementById('heroShowcaseImg');
-        const title = document.getElementById('heroShowcaseTitle');
-        const tabCard = document.getElementById('showcaseTabCard');
-        const tabFood = document.getElementById('showcaseTabFood');
-
-        if (type === 'food') {
-            if (img) img.src = './assets/hilal_distribution_live.jpg';
-            if (title) title.textContent = 'قوافل التوزيع الميداني للطرود والسلل التموينية 2026';
-            if (tabFood) {
-                tabFood.style.borderColor = 'var(--primary-color)';
-                tabFood.style.background = 'rgba(220, 38, 38, 0.08)';
-                tabFood.style.color = 'var(--primary-color)';
-            }
-            if (tabCard) {
-                tabCard.style.borderColor = 'var(--border-color)';
-                tabCard.style.background = 'var(--bg-body)';
-                tabCard.style.color = 'var(--text-dark)';
-            }
-        } else {
-            if (img) img.src = './assets/hilal_official_card.jpg';
-            if (title) title.textContent = 'البطاقة المصرفية الذكية وصرف الحصص المالية المعتمدة';
-            if (tabCard) {
-                tabCard.style.borderColor = 'var(--primary-color)';
-                tabCard.style.background = 'rgba(220, 38, 38, 0.08)';
-                tabCard.style.color = 'var(--primary-color)';
-            }
-            if (tabFood) {
-                tabFood.style.borderColor = 'var(--border-color)';
-                tabFood.style.background = 'var(--bg-body)';
-                tabFood.style.color = 'var(--text-dark)';
-            }
-        }
-    };
-
-    // Auto rotate hero showcase every 6 seconds
-    let showcaseMode = 'card';
-    setInterval(() => {
-        showcaseMode = showcaseMode === 'card' ? 'food' : 'card';
-        if (typeof window.switchHeroShowcase === 'function') {
-            window.switchHeroShowcase(showcaseMode);
-        }
-    }, 6000);
 
     // ==========================================
     // 12. INTERACTIVE AID CALCULATOR LOGIC
@@ -866,58 +820,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (methodEl) methodEl.textContent = methodText;
     };
 
-    // ==========================================
-    // HERO SHOWCASE MEDIA SWITCHER
-    // ==========================================
-    window.switchHeroShowcase = (type) => {
-        const img = document.getElementById('heroShowcaseImg');
-        const title = document.getElementById('heroShowcaseTitle');
-        const badge = document.getElementById('heroFloatingBadgeText');
-        const btnRelief = document.getElementById('showcaseTabRelief');
-        const btnCard = document.getElementById('showcaseTabCard');
-        const btnPtt = document.getElementById('showcaseTabPtt');
-
-        [btnRelief, btnCard, btnPtt].forEach(b => {
-            if (b) {
-                b.classList.remove('active');
-                b.style.borderColor = 'var(--border-color)';
-                b.style.background = 'var(--bg-body)';
-                b.style.color = 'var(--text-dark)';
-            }
-        });
-
-        if (type === 'relief') {
-            if (img) img.src = './assets/regional_aid_relief.jpg';
-            if (title) title.textContent = 'توزيع السلال الغذائية والتموينية الميدانية للأسر';
-            if (badge) badge.textContent = 'توزيع طرود تموينية 35 كغ';
-            if (btnRelief) {
-                btnRelief.classList.add('active');
-                btnRelief.style.borderColor = 'var(--primary-color)';
-                btnRelief.style.background = 'rgba(220, 38, 38, 0.08)';
-                btnRelief.style.color = 'var(--primary-color)';
-            }
-        } else if (type === 'card') {
-            if (img) img.src = './assets/smart_aid_card.jpg';
-            if (title) title.textContent = 'بطاقة الهلال الأحمر الرسمية المعتمدة';
-            if (badge) badge.textContent = 'بطاقة الدعم المعتمدة 2026';
-            if (btnCard) {
-                btnCard.classList.add('active');
-                btnCard.style.borderColor = 'var(--primary-color)';
-                btnCard.style.background = 'rgba(220, 38, 38, 0.08)';
-                btnCard.style.color = 'var(--primary-color)';
-            }
-        } else if (type === 'ptt') {
-            if (img) img.src = './assets/hilal_official_card.jpg';
-            if (title) title.textContent = 'بطاقة الهلال الأحمر الرسمية المعتمدة لصرف المستحقات عبر PTT';
-            if (badge) badge.textContent = 'بطاقة PTT المعتمدة 2026';
-            if (btnPtt) {
-                btnPtt.classList.add('active');
-                btnPtt.style.borderColor = 'var(--primary-color)';
-                btnPtt.style.background = 'rgba(220, 38, 38, 0.08)';
-                btnPtt.style.color = 'var(--primary-color)';
-            }
-        }
-    };
 
     // ==========================================
     // REGIONAL COUNTRY QUICK SWITCHER
