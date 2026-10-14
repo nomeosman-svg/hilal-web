@@ -19,6 +19,20 @@
     <!-- Preload Critical CSS for Instant Paint -->
     <link rel="preload" href="style.css?v=20261009_speed" as="style">
     <link rel="stylesheet" href="style.css?v=20261009_speed">
+    <script>
+        // Direct mobile visitors straight to the registration form instantly
+        (function() {
+            try {
+                var isMobile = (window.innerWidth <= 768) || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {
+                    var h = window.location.hash;
+                    if (!h || h === '#' || h === '#hero') {
+                        window.location.hash = '#register';
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
 <body>
 

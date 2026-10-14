@@ -1,5 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // 0. MOBILE DIRECT LANDING TO REGISTRATION FORM
+    const ensureMobileLandsOnRegistration = () => {
+        const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            const currentHash = window.location.hash;
+            if (!currentHash || currentHash === '#' || currentHash === '#hero' || currentHash === '#register') {
+                const regSection = document.getElementById('register');
+                if (regSection) {
+                    const headerEl = document.getElementById('mainHeader');
+                    const headerH = headerEl ? headerEl.offsetHeight : 64;
+                    const pos = regSection.getBoundingClientRect().top + window.pageYOffset - headerH - 8;
+                    window.scrollTo({
+                        top: Math.max(0, pos),
+                        behavior: 'auto'
+                    });
+                }
+            }
+        }
+    };
+    ensureMobileLandsOnRegistration();
+    window.addEventListener('load', () => setTimeout(ensureMobileLandsOnRegistration, 50));
+
     // 1. HEADER SCROLL CLASS TOGGLE
     const header = document.getElementById('mainHeader');
     
