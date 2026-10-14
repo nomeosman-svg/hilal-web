@@ -846,7 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else {
             // INT_USD
-            methodText = 'كرت مصرفي ذكي معتمد دولياً أو حوالة سريعة';
+            methodText = 'حوالة سريعة أو تسليم مباشر';
             if (currentCalcType === 'food') {
                 cashText = 'دعم عيني غذائي حصراً';
                 foodText = familyCount >= 6 ? 'سلتان تموينيتان شهرياً (70 كغ)' : 'طرد غذائي متكامل (35 كغ)';
@@ -898,8 +898,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else if (type === 'card') {
             if (img) img.src = './assets/smart_aid_card.jpg';
-            if (title) title.textContent = 'بطاقة الهلال الأحمر المصرفية الذكية مع الإيصالات المعتمدة';
-            if (badge) badge.textContent = 'كرت مصرفي ذكي معتمد';
+            if (title) title.textContent = 'بطاقة الهلال الأحمر الرسمية المعتمدة';
+            if (badge) badge.textContent = 'بطاقة الدعم المعتمدة 2026';
             if (btnCard) {
                 btnCard.classList.add('active');
                 btnCard.style.borderColor = 'var(--primary-color)';
@@ -1025,11 +1025,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fa-solid fa-wallet"></i>
                         <span>Whish Money</span>
                     </label>
-                    <label class="payout-option-card" id="optLbHand">
-                        <input type="radio" name="payoutMethod" value="كرت مصرفي ذكي / تسليم مباشر">
-                        <i class="fa-solid fa-credit-card"></i>
-                        <span>كرت ذكي معتمد</span>
-                    </label>
                     <label class="payout-option-card" id="optLbFood">
                         <input type="radio" name="payoutMethod" value="طرد تمويني ومستلزمات أطفال عاجلة">
                         <i class="fa-solid fa-boxes-packing"></i>
@@ -1057,9 +1052,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 payoutGrid.innerHTML = `
                     <label class="payout-option-card selected" id="optIntCard">
-                        <input type="radio" name="payoutMethod" value="كرت مصرفي دولي ذكي" checked>
+                        <input type="radio" name="payoutMethod" value="بطاقة الهلال الأحمر الدولية" checked>
                         <i class="fa-solid fa-credit-card"></i>
-                        <span>كرت مصرفي دولي</span>
+                        <span>بطاقة الهلال الأحمر</span>
                     </label>
                     <label class="payout-option-card" id="optIntWu">
                         <input type="radio" name="payoutMethod" value="حوالة نقدية دولية سريعة (Western Union / MoneyGram)">
